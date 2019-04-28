@@ -7,7 +7,7 @@ const devTargetFile = `${devTargetFolder}/Playground.vue`
 
 if (!fs.existsSync(resolve(devTargetFile))) {
   shell.cp(
-    resolve(`${devTargetFolder}/Playground.template.vue`),
+    resolve(`${devTargetFolder}/Playground.vue`),
     resolve(devTargetFile)
   )
 }
