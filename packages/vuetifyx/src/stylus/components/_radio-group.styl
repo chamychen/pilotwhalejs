@@ -1,0 +1,36 @@
+@import '../bootstrap'
+@import '../theme'
+
+.v-radio-roup
+  margin-top: 4px
+  
+.v-radio-roup  .v-input--selection-controls
+  margin-top: 0px
+  margin-bottom:4px
+  padding-right: 8px;
+
+.v-radio-roup .v-input--radio-group__input > .v-label
+  top: 6px
+
+.v-input--radio-group
+  &__input
+    display: flex
+    width: 100%
+
+  &--column .v-input--radio-group__input > .v-label
+    padding-bottom: 8px
+
+  &--row .v-input--radio-group__input > .v-label
+    padding-right: 8px
+
+  &--row
+    .v-input--radio-group__input
+      flex-direction: row
+      flex-wrap: wrap
+
+  &--column
+    .v-radio:not(:last-child):not(:only-child)
+      margin-bottom: 8px
+
+    .v-input--radio-group__input
+      flex-direction: column

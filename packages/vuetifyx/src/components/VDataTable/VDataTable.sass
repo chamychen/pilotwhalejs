@@ -1,0 +1,57 @@
+// Imports
+@import '../../styles/styles.sass'
+@import './_variables.scss'
+@import './_mixins.sass'
+
+// Theme
+.v-data-table.theme--light
+  +data-table-theme($material-light)
+.v-data-table.theme--dark
+  +data-table-theme($material-dark)
+
+.v-data-table__mobile-row
+  display: block
+
+  &__wrapper
+    height: 100%
+    display: flex
+    justify-content: space-between
+    align-items: center
+
+  &__header
+    font-weight: 600
+
+  &__cell
+    text-align: right
+
+.v-data-table__expand
+  &-row
+    border: none !important
+
+  &-col
+    padding: 0 !important
+    height: 0px !important
+
+    &--expanded
+      border-bottom: 1px solid rgba(0,0,0,0.12) // TODO: theme
+
+  &-content
+    transition: height $primary-transition
+
+    > .card
+      border-radius: 0
+      box-shadow: none
+
+.v-row-group
+  &__header, &__summary
+    background: lightgrey // TOOD: theme
+
+    td
+      height: 35px
+
+.v-data-table__expand-icon
+  user-select: none
+  cursor: pointer
+
+  &--active
+    transform: rotate(-180deg)

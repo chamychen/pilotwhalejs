@@ -1,0 +1,66 @@
+@import '../../styles/styles.sass'
+@import './_variables.scss'
+@import './_mixins.sass'
+
+// Theme
+.v-list.theme--light
+  +list-theme($material-light)
+
+  &.primary,
+  &.secondary,
+  &.accent,
+  &.success,
+  &.error,
+  &.warning,
+  &.info
+    > .v-list-item
+      color: map-deep-get($material-dark, 'text', 'primary')
+
+.v-list.theme--dark
+  +list-theme($material-dark)
+
+// Block
+.v-list
+  padding: 8px 0
+
+// Modifier
+.v-list--disabled
+  pointer-events: none
+
+.v-list--flat
+  .v-list-item:before
+    display: none
+
+.v-list--dense
+  .v-subheader
+    font-size: $list-dense-subheader-font-size
+    height: $list-dense-subheader-height
+    padding: 0 8px
+
+.v-list--nav
+  padding-left: 8px
+  padding-right: 8px
+
+  .v-list-item:not(:last-child):not(:only-child)
+    margin-bottom: 8px
+
+  .v-list-item,
+  .v-list-item:before
+    border-radius: 4px
+
+  &.v-list--dense .v-list-item,
+  .v-list-item--dense
+    &:not(:last-child):not(:only-child)
+      margin-bottom: 4px
+
+.v-list--shaped
+  +list-shaped($list-item-min-height)
+
+  &.v-list--two-line
+    +list-shaped($list-item-two-line-min-height)
+
+  &.v-list--three-line
+    +list-shaped($list-item-three-line-min-height)
+
+.v-list--subheader
+  padding-top: 0
