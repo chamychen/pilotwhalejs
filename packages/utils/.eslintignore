@@ -1,0 +1,12 @@
+/build/
+*.styl
+
+# Tests
+/test
+/types/test
+
+# Built files
+/es5/
+/lib/
+/lib-temp/
+/dist/

@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "public"
+  ],
+  "compilerOptions": {
+    "locale": "zh-CN",
+    "baseUrl": ".",
+    "paths": {
+      "@/test/*": [
+        "test/*"
+      ],
+      "@*": [
+        "src/*"
+      ]
+    },
+    "experimentalDecorators": true, //启用注解
+    "emitDecoratorMetadata": true, //启用注解Metadata
+    "strict": false,
+    "allowJs": true,
+    "noUnusedLocals": false /* Report errors on unused locals. */,
+    "noUnusedParameters": false /* Report errors on unused parameters. */,
+    "noImplicitReturns": false /* Report error when not all code paths in function return a value. */
+  }
+}

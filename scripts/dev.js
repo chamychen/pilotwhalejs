@@ -8,7 +8,7 @@ const alias = {
 target = alias[target] || target
 
 if (!target) {
-  shell.exec('lerna run dev --scope vuetify --stream')
+  shell.exec('lerna run dev --scope vuetifyx --stream')
 } else {
   shell.exec(`lerna run dev --scope ${target} --stream`)
 }
