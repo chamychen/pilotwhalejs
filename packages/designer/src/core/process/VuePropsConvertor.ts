@@ -33,13 +33,24 @@ export default class VuePropsConvertor {
                         config.key = fieldValue
                         config.props.ref = fieldValue
                         config.props.label = this.getI18n(fieldValue)
+                        let model = fieldValue.split('_').join('.')
                         if (!isLayoutElment) {
-                            let model = fieldValue.split('_').join('.')
                             config.model = {
                                 value: this.getModel(model),
                                 callback: val => {
                                     this.setModel(model, val)
                                 }
+                            }
+                        } else if (elementTypeName === ElementType.table.elementTypeName) {
+                            config.props.items = this.getModel(model)
+                        }
+                        break
+                    // 可不设置，设置后则比key中的model配置优先
+                    case 'model':
+                        config.model = {
+                            value: this.getModel(fieldValue, true),
+                            callback: val => {
+                                this.setModel(fieldValue, val, true)
                             }
                         }
                         break
@@ -109,6 +120,13 @@ export default class VuePropsConvertor {
                             config.props[field] = fieldValue
                         }
                         break
+                    case 'disablePagination':
+                        if (fieldValue) {
+                            config.props.disablePagination = fieldValue
+                            config.props.hideDefaultFooter = true
+                        }
+
+                        break
                     case 'change':
                     case 'update_error':
                     case 'click_append':
@@ -118,11 +136,14 @@ export default class VuePropsConvertor {
                     case 'click_prepend$inner':
                     case 'input':
                     case 'update_search$input':
+                    case 'item$selected':
                         if (!config.on) {
                             config.on = {}
                         }
                         field = field.replace('_', ':').replace('$', '-')
-                        config.on[field] = fieldValue
+                        if (typeof fieldValue === 'string') {
+                            config.on[field] = this.context[fieldValue]
+                        }
                         break
                     default:
                         config.props[field] = fieldValue
@@ -151,28 +172,32 @@ export default class VuePropsConvertor {
      * 获取国际化字符串
      */
     private getI18n(i18nKey: string) {
-        return this.i18n ? this.i18n(i18nKey) : i18nKey
+        if (i18nKey) {
+            if (this.i18n) {
+                return this.i18n(i18nKey)
+            } else {
+                let arr = i18nKey.split('_')
+                return arr[arr.length - 1]
+            }
+        }
     }
 
-    private getModel(modelName: string) {
+    private getModel(modelName: string, noFromData: boolean = false) {
         if (modelName) {
-            let result = this.context.formData
+            let result = noFromData ? this.context : this.context.currentValue
             const sections = modelName.split('.')
             sections.forEach((section: string) => {
                 if (result) {
                     result = result[section]
-                    return true
-                } else {
-                    return false
                 }
             })
             return result
         }
     }
 
-    private setModel(modelName: string, value: any) {
+    private setModel(modelName: string, value: any, noFromData: boolean = false) {
         if (modelName) {
-            let result = this.context.formData
+            let result = noFromData ? this.context : this.context.currentValue
             const sections = modelName.split('.')
             sections.forEach((section: string, index: number) => {
                 if (index === sections.length - 1) {

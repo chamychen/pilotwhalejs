@@ -55,6 +55,29 @@ exports.config = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/,
+        oneOf: [
+          {
+            test: /\.(png|jpe?g|gif)$/,
+            resourceQuery: /vuetify-preload/,
+            use: [
+              'vuetify-loader/progressive-loader',
+              {
+                loader: 'url-loader',
+                options: { limit: 8000 }
+              }
+            ]
+          },
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              name: 'img/[name].[hash:7].[ext]'
+            }
+          }
+        ]
       }
     ]
   },

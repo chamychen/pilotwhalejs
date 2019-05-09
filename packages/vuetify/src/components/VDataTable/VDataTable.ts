@@ -35,6 +35,10 @@ export default VDataIterator.extend({
       type: Array
     } as PropValidator<TableHeader[]>,
     showSelect: Boolean,
+    rowClickForSelect: {
+      type: Boolean,
+      default: true
+    },
     showExpand: Boolean,
     showGroupBy: Boolean,
     virtualRows: Boolean,
@@ -66,7 +70,9 @@ export default VDataIterator.extend({
       openCache: {} as { [key: string]: boolean },
       widths: [] as number[],
       expandWidth: 60,
-      selectWidth: 60
+      selectWidth: 60,
+      isSingleSelect: !this.showSelect || this.singleSelect,
+      isRowClickForSelect: this.rowClickForSelect || !this.showSelect || this.singleSelect
     }
   },
 
@@ -226,12 +232,12 @@ export default VDataIterator.extend({
       const progress = this.$slots['progress']
         ? this.$slots.progress
         : this.$createElement(VProgressLinear, {
-            props: {
-              color: this.loading === true ? 'primary' : this.loading,
-              height: 2,
-              indeterminate: true
-            }
-          })
+          props: {
+            color: this.loading === true ? 'primary' : this.loading,
+            height: 2,
+            indeterminate: true
+          }
+        })
 
       const th = this.$createElement(
         'th',
@@ -421,12 +427,12 @@ export default VDataIterator.extend({
     },
     genDefaultRows(items: any[], props: DataProps) {
       return this.$scopedSlots['item.expanded']
-        ? items.map((item, index) => this.genDefaultExpandedRow(item, index))
-        : items.map((item, index) => this.genDefaultSimpleRow(item, null, index))
+        ? items.map((item, index) => this.genDefaultExpandedRow(item, index, props))
+        : items.map((item, index) => this.genDefaultSimpleRow(item, null, index, props))
     },
-    genDefaultExpandedRow(item: any, rowIndex: number): VNode {
+    genDefaultExpandedRow(item: any, rowIndex: number, props: DataProps): VNode {
       const isExpanded = this.isExpanded(item)
-      const headerRow = this.genDefaultSimpleRow(item, isExpanded ? 'expanded expanded__row' : null, rowIndex)
+      const headerRow = this.genDefaultSimpleRow(item, isExpanded ? 'expanded expanded__row' : null, rowIndex, props)
       const expandedRow = this.$createElement(
         'tr',
         {
@@ -449,16 +455,19 @@ export default VDataIterator.extend({
       )
     },
     /* eslint-disable max-statements */
-    genDefaultSimpleRow(item: any, classes: string | string[] | object | null = null, rowIndex: number): VNode {
+    genDefaultSimpleRow(item: any, classes: string | string[] | object | null = null, rowIndex: number, props: DataProps): VNode {
       const scopedSlots = getPrefixedScopedSlots('item.', this.$scopedSlots)
-
       if (this.showSelect) {
         const data = {
           props: {
             value: this.isSelected(item)
           },
           on: {
-            input: (v: any) => this.select(item, v)
+            click: (e) => {
+              let isSelected = this.isSelected(item)
+              this.select(item, !isSelected)
+              e.stopPropagation()
+            }
           }
         }
 
@@ -466,10 +475,10 @@ export default VDataIterator.extend({
         scopedSlots['column.data-table-select'] = slot
           ? () => slot(data)
           : () =>
-              this.$createElement(VSimpleCheckbox, {
-                staticClass: 'v-data-table__checkbox',
-                ...data
-              })
+            this.$createElement(VSimpleCheckbox, {
+              staticClass: 'v-data-table__checkbox',
+              ...data
+            })
       }
 
       const expanded = this.isExpanded(item)
@@ -488,17 +497,17 @@ export default VDataIterator.extend({
         scopedSlots['column.data-table-expand'] = slot
           ? () => slot(data)
           : () =>
-              this.$createElement(
-                VIcon,
-                {
-                  staticClass: 'v-data-table__expand-icon',
-                  class: {
-                    'v-data-table__expand-icon--active': expanded
-                  },
-                  ...data
+            this.$createElement(
+              VIcon,
+              {
+                staticClass: 'v-data-table__expand-icon',
+                class: {
+                  'v-data-table__expand-icon--active': expanded
                 },
-                [this.expandIcon]
-              )
+                ...data
+              },
+              [this.expandIcon]
+            )
       }
 
       let rowElement: any = null
@@ -506,12 +515,20 @@ export default VDataIterator.extend({
         canEdit: false
       }
       const editMode = this.editControl && this.editControl.editMode ? this.editControl.editMode : RowEditMode.inline
-      let key = this.itemKey ? getObjectValueByPath(item, this.itemKey) : rowIndex.toString()
+      let key = null
+      if (this.itemKey) {
+        try {
+          key = getObjectValueByPath(item, this.itemKey)
+        } catch (ex) {
+          // 不需要做处理
+        }
+      }
+      key = rowIndex.toString()
       if (this.isMobile) {
         key += '_M'
         rowElement = VMobileRow
       } else {
-        if (this.editControl.edit) {
+        if (this.editControl && this.editControl.edit) {
           if (this.editControl.control) {
             editLimit = this.editControl.control(item[this.itemKey], item)
           }
@@ -527,9 +544,38 @@ export default VDataIterator.extend({
           key += '_PV'
         }
       }
+      // let on = null
+      // // 自定义行事件
+      // if (this.rowEvents) {
+      //   Object.keys(this.rowEvents).forEach(rowEventKey => {
+      //     if (rowEventKey && rowEventKey.trim().length > 0) {
+      //       rowEventKey = rowEventKey.trim()
+      //       if (typeof this.rowEvents[rowEventKey] === 'function') {
+      //         if (on === null) {
+      //           on = {}
+      //           let event = this.rowEvents[rowEventKey]
+      //           on[rowEventKey] = () => {
+      //             event(item, rowIndex, this)
+      //           }
+      //         }
+      //       }
+      //     }
+      //   })
+      // }
+      let on = null
+      if (this.isRowClickForSelect) {
+        on = {
+          click: (e) => {
+            let isSelected = this.isSelected(item)
+            this.select(item, !isSelected)
+            e.stopPropagation()
+          }
+        }
+      }
       return this.$createElement(rowElement, {
         key,
         class: classes,
+        staticClass: this.isSelected(item) ? 'active' : null,
         props: {
           headers: this.computedHeaders,
           item,
@@ -541,6 +587,7 @@ export default VDataIterator.extend({
           editMode,
           scopedSlots
         },
+        on,
         scopedSlots
       })
     },

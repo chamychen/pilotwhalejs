@@ -27,7 +27,10 @@ module.exports = merge(baseWebpackConfig, {
       vue$: 'vue/dist/vue.esm.js',
       '@config': resolve('../src/config'),
       '@components': resolve('../src/components'),
-      '@views': resolve('../src/views')
+      '@views': resolve('../src/views'),
+      '@core': resolve('../src/core'),
+      '@dto': resolve('../src/dto'),
+      '@entity': resolve('../src/entity')
     }
   },
   externals: {

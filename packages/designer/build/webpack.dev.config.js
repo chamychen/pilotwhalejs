@@ -32,7 +32,10 @@ module.exports = merge(baseWebpackConfig, {
       vue$: 'vue/dist/vue.esm.js',
       '@config': resolve('../src/config'),
       '@components': resolve('../src/components'),
-      '@views': resolve('../src/views')
+      '@views': resolve('../src/views'),
+      '@core': resolve('../src/core'),
+      '@dto': resolve('../src/dto'),
+      '@entity': resolve('../src/entity')
     }
   },
   module: {
@@ -46,29 +49,6 @@ module.exports = merge(baseWebpackConfig, {
         test: /\.js$/,
         use: 'happypack/loader?id=js',
         exclude: /node_modules/
-      },
-      {
-        test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/,
-        oneOf: [
-          {
-            test: /\.(png|jpe?g|gif)$/,
-            resourceQuery: /vuetify-preload/,
-            use: [
-              'vuetify-loader/progressive-loader',
-              {
-                loader: 'url-loader',
-                options: { limit: 8000 }
-              }
-            ]
-          },
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 10000,
-              name: 'img/[name].[hash:7].[ext]'
-            }
-          }
-        ]
       }
     ]
   },

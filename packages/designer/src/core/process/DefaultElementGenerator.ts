@@ -151,14 +151,20 @@ export default class DefaultElementGenerator {
                     currentElement.sortNo = currentSortNo
                     if (this.listElementTypeNames.includes(currentElement.elementTypeName)) {
                         if (currentElement.elementTypeName === ElementType.layout.elementTypeName) {
-                            currentElement.class = 'row wrap px-3'
-                            currentElement.style = `${currentElement.style ? currentElement.style : ''}padding-top:20px;background:#fafafa;margin-top:1px;'}`
+                            currentElement.class = 'row wrap'
+                            // currentElement.class = 'row wrap px-3'
+                            // currentElement.style = `${currentElement.style ? currentElement.style : ''}padding-top:20px;background:#fafafa;margin-top:1px;'}`
                         }
                         currentElement.key = elementPropName
                     } else {
                         currentElement.parentKey = currentParentKey
                         // add Element
                         currentElement.key = parentKey ? `${parentKey}_${elementPropName}` : elementPropName
+                    }
+                    let ExtendProps: any = Reflect.getMetadata(DesignerDecoratorType.ExtendProps, dto, elementPropName)
+                    // 原生扩展属性
+                    if (ExtendProps != null) {
+                        currentElement = { ...currentElement, ...ExtendProps }
                     }
                     this.elements.push(currentElement)
 

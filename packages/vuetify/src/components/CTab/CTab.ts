@@ -1,3 +1,4 @@
+import './CTab.sass'
 import { VNode } from 'vue'
 import TabItemDefine from './TabItemDefine'
 
@@ -37,17 +38,29 @@ export default {
     fixed: {
       type: Boolean,
       default: true
+    },
+    // 垂直tab
+    vertical: Boolean,
+    // 垂直tab且文字垂直对齐
+    verticalText: Boolean,
+    app: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      currentValue: this.value
+      currentValue: this.value,
+      currentVertical: this.vertical,
+      currentVerticalText: this.vertical && this.verticalText
     }
   },
   computed: {
     classes(): object {
       return {
-        'c-tab': true
+        'c-tab': true,
+        'c-tab-vertical': this.currentVertical,
+        'c-tab-vertical-text': this.currentVerticalText
       }
     }
   },
@@ -56,28 +69,42 @@ export default {
       this.$emit('change', this.thisValue)
     },
     genToolbar(h) {
-      let tabs = this.genTabs(h)
-      let spacer = h('VSpacer')
-      return h('VToolbar', {
-        class: this.classes,
-        props: {
-          color: this.color,
-          flat: this.flat,
-          dark: this.dark,
-          height: this.height,
-          fixed: this.fixed
-        }
-        // style: 'margin-bottom:25px'
-      }, [...tabs, spacer, this.$slots.btn])
+      if (this.currentVertical) {
+        return this.genTabs(h)
+      } else {
+        let tabContext = this.genTabContext(h)
+        let tabs = this.genTabs(h)
+        let spacer = h('VSpacer')
+        let classes = this.classes ? `${this.classes} v-toolbar-complex` : 'v-toolbar-complex'
+        let toolbar = h('VToolbar', {
+          class: classes,
+          props: {
+            color: this.color,
+            flat: this.flat,
+            dark: this.dark,
+            height: this.height,
+            fixed: this.fixed,
+            app: this.app
+          }
+        }, [...tabs, spacer, this.$slots.btn])
+        return h('div', [toolbar, tabContext])
+      }
     },
     genTabs(h) {
+      let childs = this.genTab(h)
+      if (this.currentVertical) {
+        let tabContext = this.genTabContext(h)
+        childs = childs.concat(tabContext)
+      }
       return h('VTabs', {
         class: this.classes,
         style: this.tabMaxWidth && this.$slots.btn ? `max-width:${this.tabMaxWidth};` : `max-width:100%;`,
         props: {
           backgroundColor: this.color,
           sliderColor: this.sliderColor,
-          dark: this.dark
+          dark: this.dark,
+          vertical: this.currentVertical,
+          height: this.height
         },
         model: {
           value: this.currentValue,
@@ -85,7 +112,7 @@ export default {
             this.$set(this, 'currentValue', value)
           }
         }
-      }, this.genTab(h))
+      }, childs)
     },
     genTab(h) {
       if (this.items) {
@@ -129,9 +156,7 @@ export default {
     }
   },
   render(h): VNode {
-    let toolbar = this.genToolbar(h)
-    let tabContext = this.genTabContext(h)
-    return h('div', [toolbar, tabContext])
+    return this.genToolbar(h)
   },
   monted() {
     if (!this.currentValue && this.items && this.items.length > 0) {

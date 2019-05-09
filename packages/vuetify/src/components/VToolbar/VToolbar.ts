@@ -45,7 +45,7 @@ export default VSheet.extend({
   }),
 
   computed: {
-    computedHeight (): number {
+    computedHeight(): number {
       const height = this.computedContentHeight
 
       if (!this.isExtended) return height
@@ -56,7 +56,7 @@ export default VSheet.extend({
         ? height
         : height + (!isNaN(extensionHeight) ? extensionHeight : 0)
     },
-    computedContentHeight (): number {
+    computedContentHeight(): number {
       if (this.height) return parseInt(this.height)
       if (this.isProminent && this.dense) return 96
       if (this.isProminent && this.short) return 112
@@ -65,7 +65,7 @@ export default VSheet.extend({
       if (this.short || this.$vuetify.breakpoint.smAndDown) return 56
       return 64
     },
-    classes (): object {
+    classes(): object {
       return {
         ...VSheet.options.computed.classes.call(this),
         'v-toolbar': true,
@@ -80,22 +80,22 @@ export default VSheet.extend({
         'elevation-0': this.isFlat
       }
     },
-    isCollapsed (): boolean {
+    isCollapsed(): boolean {
       return this.collapse
     },
-    isFlat (): boolean {
+    isFlat(): boolean {
       return this.flat
     },
-    isProminent (): boolean {
+    isProminent(): boolean {
       return this.prominent
     },
-    styles (): object {
+    styles(): object {
       return this.measurableStyles
     }
   },
 
   methods: {
-    genBackground () {
+    genBackground() {
       const props = {
         height: convertToUnit(this.computedHeight),
         src: this.src
@@ -109,7 +109,7 @@ export default VSheet.extend({
         staticClass: 'v-toolbar__image'
       }, [image])
     },
-    genContent () {
+    genContent() {
       return this.$createElement('div', {
         staticClass: 'v-toolbar__content',
         style: {
@@ -117,7 +117,7 @@ export default VSheet.extend({
         }
       }, getSlot(this))
     },
-    genExtension () {
+    genExtension() {
       return this.$createElement('div', {
         staticClass: 'v-toolbar__extension',
         style: {
@@ -127,7 +127,7 @@ export default VSheet.extend({
     }
   },
 
-  render (h): VNode {
+  render(h): VNode {
     this.isExtended = this.extended || !!this.$scopedSlots.extension
 
     const children = [this.genContent()]

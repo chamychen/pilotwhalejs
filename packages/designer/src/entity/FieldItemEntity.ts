@@ -6,6 +6,6 @@ export default class FieldItemEntity {
     @Reflect.metadata(DesignerDecoratorType.Element, new CommonElementDecorator(ElementType.text))
     key: string = null
 
-    @Reflect.metadata(DesignerDecoratorType.Element, new CommonElementDecorator(ElementType.text))
-    elementTypeName: string = null
+    // @Reflect.metadata(DesignerDecoratorType.Element, new CommonElementDecorator(ElementType.text))
+    // elementTypeName: string = null
 }

@@ -3,6 +3,7 @@ import { VNode } from 'vue'
 import VuePropsConvertor from './VuePropsConvertor'
 import CommonElement from '../decorator/CommonElement'
 import ElementType from '../ElementType'
+import DesignerDecoratorType from '@core/decorator'
 
 
 export default class RenderTool {
@@ -33,15 +34,17 @@ export default class RenderTool {
                 })
             }
             let h = this.context.$createElement
+            let control
             if (current.elementTypeName === ElementType.table.elementTypeName) {
                 // table
                 let config = new VuePropsConvertor(this.context, this.i18n).getConfig(current)
                 if (children) {
                     let headers = []
+                    let regex = new RegExp(`^${current.key}_`)
                     children.forEach(item => {
                         let col = {
                             text: item.key,
-                            value: item.key,
+                            value: item.key.replace(regex, ''),
                             editor: item
                         }
                         headers.push(col)
@@ -50,11 +53,11 @@ export default class RenderTool {
                         config.props.headers = headers
                     }
                 }
-                let control = h(current.elementName, config)
+                control = h(current.elementName, config)
                 return control
             } else {
                 // other element
-                let control = h(current.elementName, new VuePropsConvertor(this.context, this.i18n).getConfig(current), childControl)
+                control = h(current.elementName, new VuePropsConvertor(this.context, this.i18n).getConfig(current), childControl)
                 return control
             }
         }

@@ -41,7 +41,7 @@ const wrapper = Vue.extend({
     tabs: Boolean
   },
 
-  render (h, { props, data, slots }): VNode { // eslint-disable-line max-statements
+  render(h, { props, data, slots }): VNode { // eslint-disable-line max-statements
     dedupeModelListeners(data)
     const children = rebuildSlots(slots(), h)
 
@@ -101,7 +101,7 @@ const wrapper = Vue.extend({
       props.invertedScroll ||
       props.scrollOffScreen ||
       props.scrollTarget ||
-      props.scrollThreshold
+      props.scrollThreshold !== 300
     ) {
       return h(VAppBar, data, children)
     }

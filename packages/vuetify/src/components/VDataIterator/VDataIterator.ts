@@ -54,23 +54,32 @@ export default mixins(Themeable).extend({
   }),
 
   computed: {
-    everyItem (): boolean {
+    everyItem(): boolean {
       return !!this.internalCurrentItems.length && this.internalCurrentItems.every((i: any) => this.isSelected(i))
     },
-    someItems (): boolean {
+    someItems(): boolean {
       return this.internalCurrentItems.some((i: any) => this.isSelected(i))
     }
   },
 
   watch: {
-    value (value: any[]) {
-      this.selection = value.reduce((selection, item) => {
-        selection[getObjectValueByPath(item, this.itemKey)] = true
-        return selection
-      }, {})
+    value: {
+      handler(value: any[]) {
+        if (value) {
+          if (!Array.isArray(value)) {
+            value = [value]
+          }
+          this.selection = value.reduce((selection, item) => {
+            selection[getObjectValueByPath(item, this.itemKey)] = true
+            return selection
+          }, {})
+        }
+      },
+      // chamy add(解决默认值无法选中的问题)
+      immediate: true
     },
     selection: {
-      handler (value: Record<string, boolean>, old: Record<string, boolean>) {
+      handler(value: Record<string, boolean>, old: Record<string, boolean>) {
         if (deepEqual(value, old)) return
         const keys = Object.keys(value).filter(k => value[k])
         const selected = !keys.length ? [] : this.items.filter(i => keys.includes(String(getObjectValueByPath(i, this.itemKey))))
@@ -78,13 +87,13 @@ export default mixins(Themeable).extend({
       },
       deep: true
     },
-    expanded (value: any[]) {
+    expanded(value: any[]) {
       this.expansion = value.reduce((expansion, item) => {
         expansion[getObjectValueByPath(item, this.itemKey)] = true
         return expansion
       }, {})
     },
-    expansion (value: Record<string, boolean>, old: Record<string, boolean>) {
+    expansion(value: Record<string, boolean>, old: Record<string, boolean>) {
       if (deepEqual(value, old)) return
       const keys = Object.keys(value).filter(k => value[k])
       const expanded = !keys.length ? [] : this.items.filter(i => keys.includes(String(getObjectValueByPath(i, this.itemKey))))
@@ -92,7 +101,7 @@ export default mixins(Themeable).extend({
     }
   },
 
-  created () {
+  created() {
     const breakingProps = [
       ['disable-initial-sort', 'sort-by'],
       ['filter', 'custom-filter'],
@@ -122,17 +131,17 @@ export default mixins(Themeable).extend({
   },
 
   methods: {
-    toggleSelectAll (value: boolean): void {
+    toggleSelectAll(value: boolean): void {
       this.internalCurrentItems.forEach((item: any) => {
         const key = getObjectValueByPath(item, this.itemKey)
         this.$set(this.selection, key, value)
       })
     },
-    isSelected (item: any): boolean {
+    isSelected(item: any): boolean {
       return this.selection[getObjectValueByPath(item, this.itemKey)] || false
     },
-    select (item: any, value = true): void {
-      const selection = this.singleSelect ? {} : Object.assign({}, this.selection)
+    select(item: any, value = true): void {
+      const selection = (Object.keys(this).includes('isSingleSelect') ? this.isSingleSelect : this.singleSelect) ? {} : Object.assign({}, this.selection)
       const key = getObjectValueByPath(item, this.itemKey)
 
       if (value) selection[key] = true
@@ -141,10 +150,10 @@ export default mixins(Themeable).extend({
       this.selection = selection
       this.$emit('item-selected', { item, value })
     },
-    isExpanded (item: any): boolean {
+    isExpanded(item: any): boolean {
       return this.expansion[getObjectValueByPath(item, this.itemKey)] || false
     },
-    expand (item: any, value = true): void {
+    expand(item: any, value = true): void {
       const expansion = this.singleExpand ? {} : Object.assign({}, this.expansion)
       const key = getObjectValueByPath(item, this.itemKey)
 
@@ -154,7 +163,7 @@ export default mixins(Themeable).extend({
       this.expansion = expansion
       this.$emit('item-expanded', { item, value })
     },
-    createItemProps (item: any) {
+    createItemProps(item: any) {
       const props = {
         item,
         select: {
@@ -177,10 +186,10 @@ export default mixins(Themeable).extend({
 
       return props
     },
-    genEmptyWrapper (content: VNodeChildren) {
+    genEmptyWrapper(content: VNodeChildren) {
       return this.$createElement('div', content)
     },
-    genEmpty (itemsLength: number) {
+    genEmpty(itemsLength: number) {
       if (itemsLength <= 0 && this.loading) {
         const loading = this.$slots['loading'] || this.$vuetify.lang.t(this.loadingText)
         return this.genEmptyWrapper(loading)
@@ -194,7 +203,7 @@ export default mixins(Themeable).extend({
 
       return null
     },
-    genItems (props: DataProps) {
+    genItems(props: DataProps) {
       const empty = this.genEmpty(props.pagination.itemsLength)
       if (empty) return [empty]
 
@@ -214,7 +223,7 @@ export default mixins(Themeable).extend({
 
       return []
     },
-    genFooter (props: DataProps) {
+    genFooter(props: DataProps) {
       if (this.hideDefaultFooter) return null
 
       const data = {
@@ -235,24 +244,24 @@ export default mixins(Themeable).extend({
         ...data
       })
     },
-    genSlots (slot: string, props: any = {}): VNodeChildren {
+    genSlots(slot: string, props: any = {}): VNodeChildren {
       if (this.$scopedSlots[slot]) return this.$scopedSlots[slot]!(props)
       else if (this.$slots[slot]) return this.$slots[slot]
       return []
     },
-    genDefaultScopedSlot (props: any) {
+    genDefaultScopedSlot(props: any) {
       return this.$createElement('div', {
         staticClass: 'v-data-iterator'
       }, [
-        this.genSlots('header', props),
-        this.genItems(props),
-        this.genFooter(props),
-        this.genSlots('footer', props)
-      ]) as any
+          this.genSlots('header', props),
+          this.genItems(props),
+          this.genFooter(props),
+          this.genSlots('footer', props)
+        ]) as any
     }
   },
 
-  render (): VNode {
+  render(): VNode {
     return this.$createElement(VData, {
       props: this.$props,
       on: {

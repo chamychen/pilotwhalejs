@@ -2,16 +2,12 @@
   "defaultSeverity": "error",
   "extends": "typestrict",
   "linterOptions": {
-    "exclude": [
-      "**/*.spec.js",
-      "**/node_modules/**/*"
-    ]
+    "exclude": ["**/*.spec.js", "**/node_modules/**/*"]
   },
   "jsRules": {},
   "rules": {
-    "array-type": [true, "array"],
     "use-type-alias": true,
-    "no-inferrable-types": true,
+    "no-inferrable-types": false,
     "unified-signatures": true,
     "no-undefined-argument": true,
 
@@ -32,7 +28,14 @@
     // Fails with no-unused-variable for some reason
     "no-useless-cast": false,
 
-    "no-floating-promises": false
+    "no-floating-promises": false,
+
+    "array-type": false,
+
+    "no-dead-store": false,
+
+    "no-inferred-empty-object-type":false
+
   },
   "rulesDirectory": []
 }

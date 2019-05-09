@@ -8,6 +8,7 @@ import ElementType from '../core/ElementType'
 
 export default class FieldEntity {
     @Reflect.metadata(DesignerDecoratorType.Element, new LayoutTab(['baseInfoTab', 'cssTab', 'eventTab']))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { vertical: true, verticalText: true })
     tabs = null
 
     /**
@@ -17,6 +18,7 @@ export default class FieldEntity {
      * @memberof FieldEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, new LayoutForm(ElementType.layout, 'tabs', 'baseInfoTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { height: 300 })
     baseInfo: BaseInfoEntity = new BaseInfoEntity()
 
     /**
@@ -26,6 +28,7 @@ export default class FieldEntity {
      * @memberof FieldEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, new LayoutForm(ElementType.layout, 'tabs', 'cssTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { height: 300 })
     css: CssEntity = new CssEntity()
 
     /**
@@ -35,5 +38,6 @@ export default class FieldEntity {
      * @memberof FieldEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, new LayoutForm(ElementType.table, 'tabs', 'eventTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { height: 300 })
     event: EventEntity = new EventEntity()
 }
