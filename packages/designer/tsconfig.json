@@ -5,6 +5,7 @@
     "public"
   ],
   "compilerOptions": {
+    "module": "esnext",
     "locale": "zh-CN",
     "baseUrl": ".",
     "paths": {

@@ -38,7 +38,7 @@ export default mixins(Themeable).extend({
     value: Boolean
   },
 
-  render (h, ctx: RenderContext): VNode {
+  render(h, ctx: RenderContext): VNode {
     const { children, listeners, props } = ctx
     const data = {
       staticClass: 'v-label',
@@ -56,7 +56,8 @@ export default mixins(Themeable).extend({
         left: convertToUnit(props.left),
         right: convertToUnit(props.right),
         position: props.absolute ? 'absolute' : 'relative'
-      }
+      },
+      ref: 'label'
     }
 
     return h('label', Colorable.options.methods.setTextColor(props.focused && props.color, data), children)

@@ -38,6 +38,8 @@ module.exports = {
     'no-multiple-empty-lines': 'off',
     'eol-last': 'off',
     'prefer-const': 'off',
-    'no-trailing-spaces': 'off'
+    'no-trailing-spaces': 'off',
+    'no-useless-constructor': 'off',
+    'no-eval': 'off'
   }
 }

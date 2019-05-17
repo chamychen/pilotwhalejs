@@ -1,9 +1,8 @@
 import utils from 'pilotwhale-utils'
 import { VNode } from 'vue'
 import VuePropsConvertor from './VuePropsConvertor'
-import CommonElement from '../decorator/CommonElement'
-import ElementType from '../ElementType'
-import DesignerDecoratorType from '@core/decorator'
+import ElementTypes from '../element/ElementTypes'
+import ElementFactory from '@core/element/ElementFactory'
 
 
 export default class RenderTool {
@@ -17,11 +16,15 @@ export default class RenderTool {
         this.i18n = i18n
     }
 
+    /**
+     * 创建UI
+     * @param current 要生成UI的元素
+     */
     public genUI(current?: any): VNode {
         let entites = this.entites
         if (entites) {
             if (!current) {
-                current = new CommonElement(ElementType.container)
+                current = ElementFactory.createElement(ElementTypes.container).toProps()
                 current.class = 'grid-list-md'
             }
             let childControl = []
@@ -35,7 +38,7 @@ export default class RenderTool {
             }
             let h = this.context.$createElement
             let control
-            if (current.elementTypeName === ElementType.table.elementTypeName) {
+            if (current.elementTypeName === ElementTypes.table.elementTypeName) {
                 // table
                 let config = new VuePropsConvertor(this.context, this.i18n).getConfig(current)
                 if (children) {

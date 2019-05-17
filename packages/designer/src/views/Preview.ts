@@ -1,11 +1,8 @@
-import BaseDesigner from '@core/BaseDesigner'
-import FieldEntity from '@dto/FieldEntity'
-import BaseInfoEntity from '@entity/BaseInfoEntity'
-import CssEntity from '@entity/CssEntity'
-import EventEntity from '@entity/EventEntity'
+import FieldSetterService from '@service/FieldSetterService'
+import BaseDesignerComponent from '@core/BaseDesignerComponent'
 
 export default ({
-  mixins: [BaseDesigner],
+  mixins: [BaseDesignerComponent],
   props: {
     value: {
       type: Object
@@ -13,26 +10,30 @@ export default ({
   },
   data() {
     return {
-      uiEntity: new FieldEntity()
+      uiEntity: this.getUiEntity(),
+      currentValue: {}
     }
   },
-  computed: {
-    currentValue: {
-      get() {
-        if (this.value) {
-          let data = this.value
-          let fieldEntity = new FieldEntity()
-          fieldEntity.baseInfo = data as BaseInfoEntity
-          fieldEntity.css = data as CssEntity
-          fieldEntity.event = data as EventEntity
-          return fieldEntity
-        } else {
-          return {}
-        }
-      },
-      set(newValue) {
-        this.$emit('input', newValue)
-      }
+  methods: {
+    getUiEntity() {
+      let data = JSON.parse(localStorage.getItem('currentDesignData'))
+      return data
+    },
+    /**
+     * 获取分类码选项
+     */
+    getItemsWithClassificationCode() {
+      return FieldSetterService.getItemsWithClassificationCode()
+    },
+    /**
+     * 获取分类码类型
+     */
+    getItemsWithClassificationCodeType() {
+      return FieldSetterService.getItemsWithClassificationCodeType()
     }
+  },
+  created() {
+    this.registerClassificationCodeMethod('getItemsWithClassificationCode')
+    this.registerClassificationCodeMethod('getItemsWithClassificationCodeType')
   }
 })

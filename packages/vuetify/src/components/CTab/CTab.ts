@@ -1,3 +1,4 @@
+import { stringUtils } from 'pilotwhale-utils'
 import './CTab.sass'
 import { VNode } from 'vue'
 import TabItemDefine from './TabItemDefine'
@@ -13,18 +14,22 @@ export default {
       type: String
     },
     color: {
+      type: String
+    },
+    backgroundColor: {
       type: String,
       default: 'white'
     },
     sliderColor: {
+      type: String,
       default: 'primary'
     },
     tabMaxWidth: {
-      type: [String, Number]
+      type: [String]
     },
     height: {
-      type: [String, Number],
-      default: 48
+      type: [String],
+      default: '48'
     },
     dark: {
       type: Boolean,
@@ -43,9 +48,31 @@ export default {
     vertical: Boolean,
     // 垂直tab且文字垂直对齐
     verticalText: Boolean,
+    // tab居中对齐
+    centered: Boolean,
+    // tab右对齐
+    right: Boolean,
     app: {
       type: Boolean,
       default: false
+    },
+    contextClass: {
+      type: String
+    },
+    contextHeight: {
+      type: [String]
+    },
+    contextMaxHeight: {
+      type: [String]
+    },
+    contextMinHeight: {
+      type: [String]
+    },
+    contextMaxWidth: {
+      type: [String]
+    },
+    contextMinWidth: {
+      type: [String]
     }
   },
   data() {
@@ -79,7 +106,7 @@ export default {
         let toolbar = h('VToolbar', {
           class: classes,
           props: {
-            color: this.color,
+            color: this.backgroundColor,
             flat: this.flat,
             dark: this.dark,
             height: this.height,
@@ -96,15 +123,19 @@ export default {
         let tabContext = this.genTabContext(h)
         childs = childs.concat(tabContext)
       }
+      let tabMaxWidth = !stringUtils.isEmpty(this.tabMaxWidth) ? this.tabMaxWidth.trim() : null
       return h('VTabs', {
         class: this.classes,
-        style: this.tabMaxWidth && this.$slots.btn ? `max-width:${this.tabMaxWidth};` : `max-width:100%;`,
+        style: tabMaxWidth && this.$slots.btn ? (!isNaN(tabMaxWidth) ? `max-width:${tabMaxWidth}px;` : `max-width:${tabMaxWidth};`) : `max-width:100%;`,
         props: {
-          backgroundColor: this.color,
+          color: this.color,
+          backgroundColor: this.backgroundColor,
           sliderColor: this.sliderColor,
           dark: this.dark,
           vertical: this.currentVertical,
-          height: this.height
+          height: this.height,
+          centered: this.centered,
+          right: this.right
         },
         model: {
           value: this.currentValue,
@@ -150,7 +181,21 @@ export default {
             arr.push(tabItem)
           }
         })
-        let tab = h('VTabsItems', { props: { value: this.currentValue } }, arr)
+        let contextHeight = !stringUtils.isEmpty(this.contextHeight) ? this.contextHeight.trim() : null
+        let contextMinWidth = !stringUtils.isEmpty(this.contextMinWidth) ? this.contextMinWidth.trim() : null
+        let contexMaxWidth = !stringUtils.isEmpty(this.contextMaxWidth) ? this.contextMaxWidth.trim() : null
+        let contextMinHeight = !stringUtils.isEmpty(this.contextMinHeight) ? this.contextMinHeight.trim() : null
+        let contextMaxHeight = !stringUtils.isEmpty(this.contextMaxHeight) ? this.contextMaxHeight.trim() : null
+
+        let contentStyle = {
+          height: contextHeight ? (!isNaN(contextHeight) ? `${contextHeight}px` : contextHeight) : null,
+          minWidth: contextMinWidth ? (!isNaN(contextMinWidth) ? `${contextMinWidth}px` : contextMinWidth) : null,
+          maxWidth: contexMaxWidth ? (!isNaN(contexMaxWidth) ? `${contexMaxWidth}px` : contexMaxWidth) : null,
+          minHeight: contextMinHeight ? (!isNaN(contextMinHeight) ? `${contextMinHeight}px` : contextMinHeight) : null,
+          maxHeight: contextMaxHeight ? (!isNaN(contextMaxHeight) ? `${contextMaxHeight}px` : contextMaxHeight) : null,
+          overflow: 'auto'
+        }
+        let tab = h('VTabsItems', { props: { value: this.currentValue, activeClass: this.contextClass }, style: contentStyle }, arr)
         return tab
       }
     }

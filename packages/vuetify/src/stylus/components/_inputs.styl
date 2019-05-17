@@ -1,112 +1,226 @@
-@import '../bootstrap'
-@import '../theme'
+@import '../bootstrap';
+@import '../theme';
 
 /* Theme */
-v-input($material)
-  &:not(.v-input--is-disabled)
-    input,
-    textarea
-      color: $material.text.primary
+v-input($material) {
+  &:not(.v-input--is-disabled) {
+    input, textarea {
+      color: $material.text.primary;
+    }
+  }
 
-  input::placeholder,
-  textarea::placeholder
-    color: $material.text.disabled
+  input::placeholder, textarea::placeholder {
+    color: $material.text.disabled;
+  }
 
-  &--is-disabled
-    .v-label,
-    input,
-    textarea
-      color: $material.text.disabled
+  &--is-disabled {
+    .v-label, input, textarea {
+      color: $material.text.disabled;
+    }
+  }
+}
 
-theme(v-input, "v-input")
+theme(v-input, 'v-input');
 
-.v-input
-  align-items: flex-start
-  display: flex
-  flex: 1 1 auto
-  font-size: 16px
-  text-align: left
+.v-input {
+  align-items: flex-start;
+  display: flex;
+  flex: 1 1 auto;
+  font-size: 16px;
+  text-align: left;
 
-  .v-progress-linear
-    top: calc(100% - 1px)
-    left: 0
-    margin: 0
-    position: absolute
+  .v-progress-linear {
+    top: calc(100% - 1px);
+    left: 0;
+    margin: 0;
+    position: absolute;
+  }
 
-  input
-    max-height: 32px
+  input {
+    max-height: 32px;
+  }
 
-  input,
-  textarea
+  input, textarea {
     // Remove Firefox red outline
-    &:invalid
-      box-shadow: none
+    &:invalid {
+      box-shadow: none;
+    }
 
-    &:focus,
-    &:active
-      outline: none
+    &:focus, &:active {
+      outline: none;
+    }
+  }
 
-  .v-label
-    height: 20px
-    line-height: 20px
+  .v-label {
+    height: 20px;
+    line-height: 20px;
+  }
 
-  &__append-outer,
-  &__prepend-outer
-    display: inline-flex
-    margin-bottom: 4px
-    margin-top: 4px
-    line-height: 1
+  &__append-outer, &__prepend-outer {
+    display: inline-flex;
+    margin-bottom: 4px;
+    margin-top: 4px;
+    line-height: 1;
 
-    .v-icon
-      user-select: none
+    .v-icon {
+      user-select: none;
+    }
+  }
 
-  &__append-outer
-    margin-left: 9px
+  &__append-outer {
+    margin-left: 9px;
+  }
 
-  &__prepend-outer
-    margin-right: 9px
+  &__prepend-outer {
+    margin-right: 9px;
+  }
 
-  &__control
-    display: flex
-    flex-direction: column
-    height: auto
-    flex-grow: 1
-    flex-wrap: wrap
-    width: 100% // For IE11
+  &__control {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    width: 100%; // For IE11
+  }
 
-  &__icon
-    align-items: center
-    display: inline-flex
-    height: 24px
-    flex: 1 0 auto
-    justify-content: center
-    min-width: 24px
-    width: 24px
+  &__icon {
+    align-items: center;
+    display: inline-flex;
+    height: 24px;
+    flex: 1 0 auto;
+    justify-content: center;
+    min-width: 24px;
+    width: 24px;
 
-    &--clear
-      border-radius: 50%
+    &--clear {
+      border-radius: 50%;
+    }
+  }
 
-  &__slot
-    align-items: center
-    color: inherit
-    display: flex
-    margin-bottom: 8px
-    min-height: inherit
-    position: relative
-    transition: $primary-transition
-    width: 100%
+  &__slot {
+    align-items: center;
+    color: inherit;
+    display: flex;
+    margin-bottom: 8px;
+    min-height: inherit;
+    position: relative;
+    transition: $primary-transition;
+    width: 100%;
+  }
 
-  &--is-disabled:not(.v-input--is-readonly)
-    pointer-events: none
+  &--is-disabled:not(.v-input--is-readonly) {
+    pointer-events: none;
+  }
 
-  &--is-loading > .v-input__control > .v-input__slot
-    &:before,
-    &:after
-      display: none
+  &--is-loading > .v-input__control > .v-input__slot {
+    &:before, &:after {
+      display: none;
+    }
+  }
 
-  &--hide-details > .v-input__control > .v-input__slot
-    margin-bottom: 0
+  &--hide-details > .v-input__control > .v-input__slot {
+    margin-bottom: 0;
+  }
 
-  &--has-state
-    &.error--text .v-label
-      animation: shake .6s $transition.swing
+  &--has-state {
+    &.error--text .v-label {
+      animation: shake 0.6s $transition.swing;
+    }
+  }
+}
+
+.v-input .v-input__subheader, .v-input .v-subheader {
+  height: auto;
+  padding: 0px;
+  display: inline-flex;
+  margin-top: 6px;
+  font-size: 0.875rem;
+  font-weight: 400;
+  padding-left: 6px;
+  padding-right: 6px;
+  color: currentColor !important;
+}
+
+.v-input--is-focused .v-subheader {
+  font-weight: bold;
+}
+
+.v-input--outline {
+  .v-input__slot {
+    border: none !important;
+  }
+
+  .v-select__selections {
+    padding-top: 0px !important;
+  }
+
+  .v-text-field__slot, .v-select__slot {
+    min-height: 56px;
+  }
+
+  .v-select__slot input {
+    position: relative;
+    top: -12px;
+  }
+
+  fieldset {
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    bottom: 0;
+    left: 0;
+    padding-left: 8px;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: -5px;
+    transition-duration: 0.3s;
+    transition-property: border, border-width;
+    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  legend {
+    line-height: 11px;
+    padding: 0;
+    text-align: left;
+    transition: width 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+    border: 0;
+    color: inherit;
+    display: table;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .v-label {
+    position: absolute;
+    left: 0px;
+    right: auto;
+    top: 18px;
+  }
+
+  input, textarea, select {
+    margin-top: 12px !important;
+  }
+}
+
+.v-input--outline .v-label--active, .v-input--is-outlineExpand .v-label {
+  transform: translateY(-24px) scale(0.75);
+}
+
+.v-input--is-outlineExpand {
+  fieldset {
+    border-width: 1px;
+  }
+}
+
+.v-input--is-focused, .v-input--has-state {
+  fieldset {
+    border-color: currentColor;
+    border-width: 2px;
+  }
+}
+
+.v-input--outline > .v-input__control > .v-input__slot:after, .v-input--outline > .v-input__control > .v-input__slot:before {
+  display: none !important;
+}

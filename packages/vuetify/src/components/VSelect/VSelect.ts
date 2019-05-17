@@ -395,6 +395,7 @@ export default baseMixins.extend<options>().extend({
           this.genClearIcon(),
           this.genIconSlot()
         ]),
+        this.genFieldset(),
         this.genMenu(),
         this.genProgress()
       ]

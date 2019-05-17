@@ -1,12 +1,12 @@
 import { VNode, VNodeDirective } from 'vue'
 import { consoleWarn } from '../../util/console'
 
-function transform (el: HTMLElement, value: string) {
+function transform(el: HTMLElement, value: string) {
   el.style['transform'] = value
   el.style['webkitTransform'] = value
 }
 
-function opacity (el: HTMLElement, value: number) {
+function opacity(el: HTMLElement, value: number) {
   el.style['opacity'] = value.toString()
 }
 
@@ -16,7 +16,7 @@ export interface RippleOptions {
   circle?: boolean
 }
 
-function isTouchEvent (e: MouseEvent | TouchEvent): e is TouchEvent {
+function isTouchEvent(e: MouseEvent | TouchEvent): e is TouchEvent {
   return e.constructor.name === 'TouchEvent'
 }
 
@@ -47,7 +47,7 @@ const calculate = (e: MouseEvent | TouchEvent, el: HTMLElement, value: RippleOpt
 
 const ripples = {
   /* eslint-disable max-statements */
-  show (e: MouseEvent | TouchEvent, el: HTMLElement, value: RippleOptions = {}) {
+  show(e: MouseEvent | TouchEvent, el: HTMLElement, value: RippleOptions = {}) {
     if (!el._ripple || !el._ripple.enabled) {
       return
     }
@@ -91,7 +91,7 @@ const ripples = {
     }, 0)
   },
 
-  hide (el: HTMLElement | null) {
+  hide(el: HTMLElement | null) {
     if (!el || !el._ripple || !el._ripple.enabled) return
 
     const ripples = el.getElementsByClassName('v-ripple__animation')
@@ -123,11 +123,11 @@ const ripples = {
   }
 }
 
-function isRippleEnabled (value: any): value is true {
+function isRippleEnabled(value: any): value is true {
   return typeof value === 'undefined' || !!value
 }
 
-function rippleShow (e: MouseEvent | TouchEvent) {
+function rippleShow(e: MouseEvent | TouchEvent) {
   const value: RippleOptions = {}
   const element = e.currentTarget as HTMLElement
   if (!element || !element._ripple || element._ripple.touched) return
@@ -141,15 +141,19 @@ function rippleShow (e: MouseEvent | TouchEvent) {
   ripples.show(e, element, value)
 }
 
-function rippleHide (e: Event) {
+function rippleHide(e: Event) {
   const element = e.currentTarget as HTMLElement | null
   if (!element) return
 
-  window.setTimeout(() => { element._ripple!.touched = false })
+  window.setTimeout(() => {
+    if (element._ripple) {
+      element._ripple.touched = false
+    }
+  })
   ripples.hide(element)
 }
 
-function updateRipple (el: HTMLElement, binding: VNodeDirective, wasEnabled: boolean) {
+function updateRipple(el: HTMLElement, binding: VNodeDirective, wasEnabled: boolean) {
   const enabled = isRippleEnabled(binding.value)
   if (!enabled) {
     ripples.hide(el)
@@ -181,7 +185,7 @@ function updateRipple (el: HTMLElement, binding: VNodeDirective, wasEnabled: boo
   }
 }
 
-function removeListeners (el: HTMLElement) {
+function removeListeners(el: HTMLElement) {
   el.removeEventListener('mousedown', rippleShow)
   el.removeEventListener('touchstart', rippleHide)
   el.removeEventListener('touchend', rippleHide)
@@ -191,7 +195,7 @@ function removeListeners (el: HTMLElement) {
   el.removeEventListener('dragstart', rippleHide)
 }
 
-function directive (el: HTMLElement, binding: VNodeDirective, node: VNode) {
+function directive(el: HTMLElement, binding: VNodeDirective, node: VNode) {
   updateRipple(el, binding, false)
 
   if (process.env.NODE_ENV === 'development') {
@@ -206,12 +210,12 @@ function directive (el: HTMLElement, binding: VNodeDirective, node: VNode) {
   }
 }
 
-function unbind (el: HTMLElement) {
+function unbind(el: HTMLElement) {
   delete el._ripple
   removeListeners(el)
 }
 
-function update (el: HTMLElement, binding: VNodeDirective) {
+function update(el: HTMLElement, binding: VNodeDirective) {
   if (binding.value === binding.oldValue) {
     return
   }

@@ -48,7 +48,7 @@ const wrapper = Vue.extend({
     data.attrs = data.attrs || {}
 
     if (props.app) {
-      deprecate('<v-toolbar app>', '<v-app-bar app>')
+      // deprecate('<v-toolbar app>', '<v-app-bar app>')
       data.attrs.app = props.app
     }
 

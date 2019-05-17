@@ -16,7 +16,7 @@ import Loadable from '../../mixins/loadable'
 import Ripple from '../../directives/ripple'
 
 // Utilities
-import { keyCodes } from '../../util/helpers'
+import { convertToUnit, keyCodes } from '../../util/helpers'
 import { deprecate } from '../../util/console'
 import mixins, { ExtractVue } from '../../util/mixins'
 
@@ -36,7 +36,7 @@ const dirtyTypes = ['color', 'file', 'time', 'date', 'datetime-local', 'week', '
 
 /* @vue/component */
 export default mixins<options &
-/* eslint-disable indent */
+  /* eslint-disable indent */
   ExtractVue<[
     typeof VInput,
     typeof Maskable,
@@ -100,7 +100,7 @@ export default mixins<options &
   }),
 
   computed: {
-    classes (): object {
+    classes(): object {
       return {
         'v-text-field': true,
         'v-text-field--full-width': this.fullWidth,
@@ -112,21 +112,20 @@ export default mixins<options &
         'v-text-field--box': this.box,
         'v-text-field--enclosed': this.isEnclosed,
         'v-text-field--reverse': this.reverse,
-        'v-text-field--outline': this.outline,
         'v-text-field--placeholder': this.placeholder
       }
     },
-    counterValue () {
+    counterValue() {
       return (this.internalValue || '').toString().length
     },
-    directivesInput () {
+    directivesInput() {
       return []
     },
     internalValue: {
-      get () {
+      get() {
         return this.lazyValue
       },
-      set (val: any) {
+      set(val: any) {
         if (this.mask && val !== this.lazyValue) {
           this.lazyValue = this.unmaskText(this.maskText(this.unmaskText(val)))
           this.setSelectionRange()
@@ -136,12 +135,12 @@ export default mixins<options &
         }
       }
     },
-    isDirty () {
+    isDirty() {
       return (this.lazyValue != null &&
         this.lazyValue.toString().length > 0) ||
         this.badInput
     },
-    isEnclosed () {
+    isEnclosed() {
       return (
         this.box ||
         this.isSolo ||
@@ -149,45 +148,45 @@ export default mixins<options &
         this.fullWidth
       )
     },
-    isLabelActive () {
+    isLabelActive() {
       return this.isDirty || dirtyTypes.includes(this.type)
     },
-    isSingle () {
+    isSingle() {
       return this.isSolo || this.singleLine
     },
-    isSolo () {
+    isSolo() {
       return this.solo || this.soloInverted
     },
-    labelPosition () {
-      const offset = (this.prefix && !this.labelValue) ? this.prefixWidth : 0
-
+    labelPosition() {
+      let offset = (this.prefix && !this.labelValue) ? this.prefixWidth : 0
+      if (this.labelValue && this.prependWidth) offset -= this.prependWidth
       return (!this.$vuetify.rtl !== !this.reverse) ? {
         left: 'auto',
         right: offset
       } : {
-        left: offset,
-        right: 'auto'
-      }
+          left: offset,
+          right: 'auto'
+        }
     },
-    showLabel () {
+    showLabel() {
       return this.hasLabel && (!this.isSingle || (!this.isLabelActive && !this.placeholder && !this.prefixLabel))
     },
-    labelValue () {
+    labelValue() {
       return !this.isSingle &&
-        Boolean(this.isFocused || this.isLabelActive || this.placeholder || this.prefixLabel)
+        Boolean(this.isFocused || this.isLabelActive || this.placeholder || this.prefixLabel || this.outlineExpand)
     },
-    prefixWidth () {
-      if (!this.prefix && !this.$refs.prefix) return
+    // prefixWidth() {
+    //   if (!this.prefix && !this.$refs.prefix) return
 
-      return this.$refs.prefix.offsetWidth
-    },
-    prefixLabel () {
+    //   return this.$refs.prefix.offsetWidth
+    // },
+    prefixLabel() {
       return (this.prefix && !this.value)
     }
   },
 
   watch: {
-    isFocused (val) {
+    isFocused(val) {
       // Sets validationState from validatable
       this.hasColor = val
 
@@ -197,7 +196,7 @@ export default mixins<options &
         this.$emit('change', this.lazyValue)
       }
     },
-    value (val) {
+    value(val) {
       if (this.mask && !this.internalChange) {
         const masked = this.maskText(this.unmaskText(val))
         this.lazyValue = this.unmaskText(masked)
@@ -211,24 +210,24 @@ export default mixins<options &
     }
   },
 
-  mounted () {
+  mounted() {
     this.autofocus && this.onFocus()
   },
 
   methods: {
     /** @public */
-    focus () {
+    focus() {
       this.onFocus()
     },
     /** @public */
-    blur () {
+    blur() {
       this.$refs.input ? this.$refs.input.blur() : this.onBlur()
     },
-    clearableCallback () {
+    clearableCallback() {
       this.internalValue = null
       this.$nextTick(() => this.$refs.input.focus())
     },
-    genAppendSlot () {
+    genAppendSlot() {
       const slot = []
 
       if (this.$slots['append-outer']) {
@@ -239,7 +238,7 @@ export default mixins<options &
 
       return this.genSlot('append', 'outer', slot)
     },
-    genPrependInnerSlot () {
+    genPrependInnerSlot() {
       const slot = []
 
       if (this.$slots['prepend-inner']) {
@@ -250,7 +249,7 @@ export default mixins<options &
 
       return this.genSlot('prepend', 'inner', slot)
     },
-    genIconSlot () {
+    genIconSlot() {
       const slot = []
 
       if (this.$slots['append']) {
@@ -261,7 +260,7 @@ export default mixins<options &
 
       return this.genSlot('append', 'inner', slot)
     },
-    genInputSlot () {
+    genInputSlot() {
       const input = VInput.options.methods.genInputSlot.call(this)
 
       const prepend = this.genPrependInnerSlot()
@@ -273,7 +272,7 @@ export default mixins<options &
 
       return input
     },
-    genClearIcon () {
+    genClearIcon() {
       if (!this.clearable) return null
 
       const icon = !this.isDirty ? '' : 'clear'
@@ -288,7 +287,7 @@ export default mixins<options &
         )
       ])
     },
-    genCounter () {
+    genCounter() {
       if (this.counter === false || this.counter == null) return null
 
       const max = this.counter === true ? this.$attrs.maxlength : this.counter
@@ -302,17 +301,17 @@ export default mixins<options &
         }
       })
     },
-    genDefaultSlot () {
+    genDefaultSlot() {
       return [
+        this.genFieldset(),
         this.genTextFieldSlot(),
         this.genClearIcon(),
         this.genIconSlot(),
         this.genProgress()
       ]
     },
-    genLabel () {
-      if (!this.showLabel) return null
-
+    genLabel() {
+      if (!this.showLabel || this.isSubheader) return null
       const data = {
         props: {
           absolute: true,
@@ -330,7 +329,7 @@ export default mixins<options &
 
       return this.$createElement(VLabel, data, this.$slots.label || this.label)
     },
-    genInput () {
+    genInput() {
       const listeners = Object.assign({}, this.$listeners)
       delete listeners['change'] // Change should not be bound externally
 
@@ -361,33 +360,33 @@ export default mixins<options &
 
       return this.$createElement('input', data)
     },
-    genMessages () {
+    genMessages() {
       if (this.hideDetails) return null
 
       return this.$createElement('div', {
         staticClass: 'v-text-field__details'
       }, [
-        VInput.options.methods.genMessages.call(this),
-        this.genCounter()
-      ])
+          VInput.options.methods.genMessages.call(this),
+          this.genCounter()
+        ])
     },
-    genTextFieldSlot () {
+    genTextFieldSlot() {
       return this.$createElement('div', {
         staticClass: 'v-text-field__slot'
       }, [
-        this.genLabel(),
-        this.prefix ? this.genAffix('prefix') : null,
-        this.genInput(),
-        this.suffix ? this.genAffix('suffix') : null
-      ])
+          this.genLabel(),
+          this.prefix ? this.genAffix('prefix') : null,
+          this.genInput(),
+          this.suffix ? this.genAffix('suffix') : null
+        ])
     },
-    genAffix (type: 'prefix' | 'suffix') {
+    genAffix(type: 'prefix' | 'suffix') {
       return this.$createElement('div', {
         'class': `v-text-field__${type}`,
         ref: type
       }, this[type])
     },
-    onBlur (e?: Event) {
+    onBlur(e?: Event) {
       this.isFocused = false
       // Reset internalChange state
       // to allow external change
@@ -396,12 +395,12 @@ export default mixins<options &
 
       this.$emit('blur', e)
     },
-    onClick () {
+    onClick() {
       if (this.isFocused || this.disabled) return
 
       this.$refs.input.focus()
     },
-    onFocus (e?: Event) {
+    onFocus(e?: Event) {
       if (!this.$refs.input) return
 
       if (document.activeElement !== this.$refs.input) {
@@ -413,21 +412,21 @@ export default mixins<options &
         e && this.$emit('focus', e)
       }
     },
-    onInput (e: Event) {
+    onInput(e: Event) {
       const target = e.target as HTMLInputElement
       this.internalChange = true
       this.mask && this.resetSelections(target)
       this.internalValue = target.value
       this.badInput = target.validity && target.validity.badInput
     },
-    onKeyDown (e: KeyboardEvent) {
+    onKeyDown(e: KeyboardEvent) {
       this.internalChange = true
 
       if (e.keyCode === keyCodes.enter) this.$emit('change', this.internalValue)
 
       this.$emit('keydown', e)
     },
-    onMouseDown (e: Event) {
+    onMouseDown(e: Event) {
       // Prevent input from being blurred
       if (e.target !== this.$refs.input) {
         e.preventDefault()
@@ -436,7 +435,7 @@ export default mixins<options &
 
       VInput.options.methods.onMouseDown.call(this, e)
     },
-    onMouseUp (e: Event) {
+    onMouseUp(e: Event) {
       if (this.hasMouseDown) this.focus()
 
       VInput.options.methods.onMouseUp.call(this, e)

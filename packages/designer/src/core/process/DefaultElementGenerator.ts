@@ -1,29 +1,20 @@
-import utils from 'pilotwhale-utils'
+import ElementClassificationCode, { ClassificationCodeType } from '@core/decorator/ElementClassificationCode'
+import ElementFactory from '@core/element/ElementFactory'
+import utils, { stringUtils } from 'pilotwhale-utils'
 import DesignerDecoratorType from '../decorator'
 import ElementGroup from '../decorator/ElementGroup'
-import CommonElement from '../decorator/CommonElement'
-import ElementType, { SimpleElement } from '../ElementType'
-import BaseInfoEntity from '../../entity/BaseInfoEntity'
-import CssEntity from '../../entity/CssEntity'
-import EventEntity from '../../entity/EventEntity'
-import ElementFilter from '../decorator/ElementFilter'
+import ElementTypes, { ElementType } from '../element/ElementTypes'
+import { SimpleElement } from '@core/element/SimpleElementCreator'
+
 
 export default class DefaultElementGenerator {
-    /**
-    *元素类型属性差异树
-    *
-    * @static
-    * @memberof DefaultElementGenerator
-    */
-    public static ElementTypeProps = null
-
     /**
      *拥有子元素的类型
      *
      * @private
      * @memberof DefaultElementGenerator
      */
-    private listElementTypeNames = [ElementType.layout.elementTypeName, ElementType.table.elementTypeName]
+    private listElementTypeNames = [ElementTypes.layout.elementTypeName, ElementTypes.table.elementTypeName]
 
     private dto: any
 
@@ -31,10 +22,6 @@ export default class DefaultElementGenerator {
 
     constructor(dto: any) {
         this.dto = dto
-        // 初始化元素类型属性差异树
-        if (!DefaultElementGenerator.ElementTypeProps) {
-            DefaultElementGenerator.ElementTypeProps = this.buildEntityDiffTree()
-        }
     }
 
     /**
@@ -42,50 +29,7 @@ export default class DefaultElementGenerator {
      */
     public getInitElements() {
         this.initElements()
-        this.extendElementDefaultProps()
         return this.elements && this.elements.length > 0 ? this.elements : null
-    }
-
-    /**
-    * 
-    * @param definedEntity 构建差异树
-    */
-    private buildEntityDiffTree() {
-        let entitys = [new BaseInfoEntity(), new CssEntity(), new EventEntity()]
-        if (entitys) {
-            let result: any = {}
-            entitys.forEach(definedEntity => {
-                Object.keys(definedEntity).forEach(key => {
-                    if (Reflect.hasMetadata(DesignerDecoratorType.Element, definedEntity, key)) {
-                        let tagFilterMetaData: ElementFilter = Reflect.getMetadata(DesignerDecoratorType.ElementFilter, definedEntity, key)
-                        if (!tagFilterMetaData) {
-                            if (!result.all) {
-                                result.all = []
-                            }
-                            result.all.push(key)
-                        } else {
-                            if (tagFilterMetaData.include) {
-                                tagFilterMetaData.include.forEach(item => {
-                                    if (!Reflect.has(result, item)) {
-                                        Reflect.set(result, item, { include: [], exclude: [] })
-                                    }
-                                    result[item].include.push(key)
-                                })
-                                if (tagFilterMetaData.exclude) {
-                                    tagFilterMetaData.exclude.forEach(item => {
-                                        if (!Reflect.has(result, item)) {
-                                            Reflect.set(result, item, { include: [], exclude: [] })
-                                        }
-                                        result[item].exclude.push(key)
-                                    })
-                                }
-                            }
-                        }
-                    }
-                })
-            })
-            return result
-        }
     }
 
     /**
@@ -100,12 +44,14 @@ export default class DefaultElementGenerator {
             dto = this.dto
         }
         if (dto) {
+            // 过滤出具有DesignerDecoratorType.Element注解的属性
             let elementPropNames = Object.keys(dto).filter(elementPropName =>
                 Reflect.hasMetadata(DesignerDecoratorType.Element, dto, elementPropName)
             )
             if (elementPropNames) {
                 elementPropNames.forEach((elementPropName: string, index: number) => {
-                    let currentElement = Reflect.getMetadata(DesignerDecoratorType.Element, dto, elementPropName)
+                    let simpleElement: SimpleElement = Reflect.getMetadata(DesignerDecoratorType.Element, dto, elementPropName)
+                    let currentElement = ElementFactory.createElement(simpleElement.elementType).mergeProps(simpleElement).toProps()
                     let currentParentKey = parentKey
                     let currentSortNo = index
 
@@ -123,15 +69,15 @@ export default class DefaultElementGenerator {
                             let hasFlex = ElementGroup.groupXsFlex || ElementGroup.groupMdFlex || ElementGroup.groupLgFlex
                             let flex = hasFlex ? [ElementGroup.groupXsFlex, ElementGroup.groupMdFlex, ElementGroup.groupLgFlex] : [12]
                             // add group flex
-                            this.addLayoutElement(flexKey, ElementType.flex, index, currentParentKey, flex)
+                            this.addLayoutElement(flexKey, ElementTypes.flex, index, currentParentKey, flex)
                             // add group layout
-                            this.addLayoutElement(layoutKey, ElementType.layout, 0, flexKey)
+                            this.addLayoutElement(layoutKey, ElementTypes.layout, 0, flexKey)
                         }
                         currentParentKey = layoutKey
                         currentSortNo = ElementGroup.elementSortNo
                     }
 
-                    if (parentElementTypeName === ElementType.table.elementTypeName) {
+                    if (parentElementTypeName === ElementTypes.table.elementTypeName) {
                         currentElement.noFlex = true
                     }
                     if (!currentElement.noFlex) {
@@ -139,7 +85,7 @@ export default class DefaultElementGenerator {
                         let flexKey = parentKey ? `${parentKey}_${elementPropName}_@flex` : `${elementPropName}_@flex`
                         let hasFlex = currentElement.smallFlex || currentElement.middleFlex || currentElement.largeFlex
                         let flex = hasFlex ? [currentElement.smallFlex, currentElement.middleFlex, currentElement.largeFlex] : [12]
-                        this.addLayoutElement(flexKey, ElementType.flex, currentSortNo, currentParentKey, flex)
+                        this.addLayoutElement(flexKey, ElementTypes.flex, currentSortNo, currentParentKey, flex)
                         currentSortNo = 0
                         currentParentKey = flexKey
                     } else {
@@ -150,10 +96,8 @@ export default class DefaultElementGenerator {
                     currentElement.largeFlex = null // 重置
                     currentElement.sortNo = currentSortNo
                     if (this.listElementTypeNames.includes(currentElement.elementTypeName)) {
-                        if (currentElement.elementTypeName === ElementType.layout.elementTypeName) {
+                        if (currentElement.elementTypeName === ElementTypes.layout.elementTypeName) {
                             currentElement.class = 'row wrap'
-                            // currentElement.class = 'row wrap px-3'
-                            // currentElement.style = `${currentElement.style ? currentElement.style : ''}padding-top:20px;background:#fafafa;margin-top:1px;'}`
                         }
                         currentElement.key = elementPropName
                     } else {
@@ -166,6 +110,8 @@ export default class DefaultElementGenerator {
                     if (ExtendProps != null) {
                         currentElement = { ...currentElement, ...ExtendProps }
                     }
+                    // 初始化分类码定义
+                    this.initClassificationCode(dto, elementPropName, currentElement)
                     this.elements.push(currentElement)
 
                     // 迭代构建子元素
@@ -187,50 +133,59 @@ export default class DefaultElementGenerator {
      * @param parentKey 父级key
      * @param flex 
      */
-    private addLayoutElement(key: string, elementType: SimpleElement, sortNo: number, parentKey?: string, flex?: Array<number>) {
+    private addLayoutElement(key: string, elementType: ElementType, sortNo: number, parentKey?: string, flex?: Array<number>) {
         if (!elementType) {
-            throw new Error('getLayoutElementKey method elementType props cannot be empty')
-        } else if (utils.stringUtils.isEmpty(key)) {
-            throw new Error('getLayoutElementKey method key props cannot be empty')
+            throw new Error('addLayoutElement method elementType props cannot be empty')
+        } else if (stringUtils.isEmpty(key)) {
+            throw new Error('addLayoutElement method key props cannot be empty')
         } else {
-            let el = new CommonElement(elementType, flex)
-            el.key = key
-            el.parentKey = parentKey
-            el.sortNo = sortNo !== null ? sortNo : 0
-            this.elements.push(el)
+            let element = ElementFactory.createElement(elementType).toProps()
+            element.key = key
+            element.parentKey = parentKey
+            element.sortNo = sortNo !== null ? sortNo : 0
+            if (flex) {
+                let lastFlex = 12
+                flex.forEach((flex, index) => {
+                    switch (index) {
+                        case 0:
+                            lastFlex = element.smallFlex = flex || lastFlex
+                            break
+                        case 1:
+                            lastFlex = element.middleFlex = flex || lastFlex
+                            break
+                        case 2:
+                            lastFlex = element.largeFlex = flex || lastFlex
+                            break
+                    }
+                })
+            }
+            this.elements.push(element)
         }
     }
 
     /**
-     * 合并元素默认属性
+     * 初始化分类码
+     * @param element 
+     * @param elementPropName 
+     * @param config 
      */
-    private extendElementDefaultProps() {
-        if (this.elements) {
-            let allProps = { ...new BaseInfoEntity(), ...new CssEntity(), ...new EventEntity() }
-            for (let i = 0; i < this.elements.length; i++) {
-                let currentEl = this.elements[i]
-                let newEl: any = {}
-                Object.keys(allProps).forEach(prop => {
-                    let val = allProps[prop]
-                    if (val) {
-                        if (DefaultElementGenerator.ElementTypeProps.all && DefaultElementGenerator.ElementTypeProps.all.includes(prop)) {
-                            newEl[prop] = val
-                        } else if (DefaultElementGenerator.ElementTypeProps[currentEl.elementTypeName]) {
-                            let includeProps = DefaultElementGenerator.ElementTypeProps[currentEl.elementTypeName].include
-                            if (includeProps && includeProps.includes(prop)) {
-                                newEl[prop] = val
-                            }
-                            if (!includeProps) {
-                                let excludeProps = DefaultElementGenerator.ElementTypeProps[currentEl.elementTypeName].exclude
-                                if (excludeProps && !excludeProps.includes(prop)) {
-                                    newEl[prop] = val
-                                }
-                            }
-                        }
-                    }
-                })
-                newEl = { ...newEl, ...currentEl }
-                this.elements[i] = newEl
+    private initClassificationCode(element: any, elementPropName: string, config: any) {
+        let elementClassificationCode: ElementClassificationCode = Reflect.getMetadata(DesignerDecoratorType.ClassificationCode, element, elementPropName)
+        if (elementClassificationCode) {
+            config.classificationCodeType = elementClassificationCode.type
+            switch (elementClassificationCode.type) {
+                case ClassificationCodeType.Code:
+                    config.classificationCode = elementClassificationCode.code
+                    break
+                case ClassificationCodeType.JSON:
+                    config.classificationCodeJSON = elementClassificationCode.code
+                    break
+                case ClassificationCodeType.URL:
+                    config.classificationCodeUrl = elementClassificationCode.code
+                    break
+                case ClassificationCodeType.METHOD:
+                    config.classificationCodeMethod = elementClassificationCode.code
+                    break
             }
         }
     }

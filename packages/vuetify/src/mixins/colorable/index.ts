@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { VNodeData } from 'vue/types/vnode'
 import { consoleError } from '../../util/console'
 
-function isCssColor (color?: string | false): boolean {
+function isCssColor(color?: string | false): boolean {
   return !!color && !!color.match(/^(#|(rgb|hsl)a?\()/)
 }
 
@@ -14,7 +14,33 @@ export default Vue.extend({
   },
 
   methods: {
-    setBackgroundColor (color?: string | false, data: VNodeData = {}): VNodeData {
+    setColor(color: string, colorAttr: string, data: VNodeData = {}): VNodeData {
+      if (!data.style) {
+        data.style = {}
+      }
+      if (!data.class) {
+        data.class = {}
+      }
+      if (typeof data.style === 'string') {
+        consoleError('style must be an object', this)
+        return data
+      }
+      if (typeof data.class === 'string') {
+        consoleError('class must be an object', this)
+        return data
+      }
+      if (!color) {
+        color = 'primary'
+      }
+      if (isCssColor(color)) {
+        data.style[colorAttr] = `${color}`
+      } else if (color) {
+        data.class[color] = true
+      }
+      return data
+    },
+
+    setBackgroundColor(color?: string | false, data: VNodeData = {}): VNodeData {
       if (typeof data.style === 'string') {
         consoleError('style must be an object', this)
         return data
@@ -39,7 +65,7 @@ export default Vue.extend({
       return data
     },
 
-    setTextColor (color?: string | false, data: VNodeData = {}): VNodeData {
+    setTextColor(color?: string | false, data: VNodeData = {}): VNodeData {
       if (typeof data.style === 'string') {
         consoleError('style must be an object', this)
         return data
