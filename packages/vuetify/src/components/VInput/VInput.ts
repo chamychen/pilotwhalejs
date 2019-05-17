@@ -142,6 +142,12 @@ export default mixins<options &
     this.$_modelEvent = (this.$options.model && this.$options.model.event) || 'input'
   },
 
+  mounted() {
+    this.setLabelWidth()
+    this.setPrefixWidth()
+    this.setPrependWidth()
+  },
+
   methods: {
     genContent() {
       return [
@@ -368,11 +374,6 @@ export default mixins<options &
       if (!this.outline || !this.$refs['prepend-inner']) return
       this.prependWidth = this.$refs['prepend-inner'].offsetWidth
     }
-  },
-  mounted() {
-    this.setLabelWidth()
-    this.setPrefixWidth()
-    this.setPrependWidth()
   },
   render(h): VNode {
     return h('div', this.setTextColor(this.validationState, {
