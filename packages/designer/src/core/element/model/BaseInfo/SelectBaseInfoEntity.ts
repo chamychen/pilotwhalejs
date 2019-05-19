@@ -1,16 +1,17 @@
-import BaseEntity from './BaseEntity'
-import DesignerDecoratorType from '@core/decorator'
-import SimpleElementCreator from '@core/element/SimpleElementCreator'
-import ElementTypes from '@core/element/ElementTypes'
-import ElementGroup from '@core/decorator/ElementGroup'
-import ElementClassificationCode, { ClassificationCodeType } from '@core/decorator/ElementClassificationCode'
+import CommonBaseInfoEntity from './CommonBaseInfoEntity'
+import DesignerDecoratorType from '@core/element/decorator'
+import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
+import ElementTypes, { ElementType } from '@core/element/types'
+import ElementGroup from '@core/element/decorator/ElementGroup'
+import ElementClassificationCode, { ClassificationCodeType } from '@core/element/decorator/ElementClassificationCode'
+import ElementPropsTmpl from '@core/element/decorator/ElementPropsTmpl'
 
-export default class SelectEntity extends BaseEntity {
+export default class SelectBaseInfoEntity extends CommonBaseInfoEntity {
     /**
     *禁用模式：1默认2禁用3只读
     *
     * @type {string}
-    * @memberof SelectBaseEntity
+    * @memberof SelectBaseInfoEntity
     */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.radioList))
     disableMode: string = null
@@ -19,17 +20,18 @@ export default class SelectEntity extends BaseEntity {
      *选项code
      *
      * @type {Array<any>}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('itemsGroup', 1))
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.singleSelect, null, true))
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select, null, true))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
     items: string = null
 
     /**
      *是否多选
      *
      * @type {boolean}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('itemsGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, null, true))
@@ -39,27 +41,29 @@ export default class SelectEntity extends BaseEntity {
      *分类码类型
      *
      * @type {string}
-     * @memberof SelectEntity
+     * @memberof SelectBaseInfoEntity
      */
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.singleSelect))
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select))
     @Reflect.metadata(DesignerDecoratorType.ClassificationCode, new ElementClassificationCode(ClassificationCodeType.METHOD, 'getItemsWithClassificationCodeType'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
     classificationCodeType: string = null
 
     /**
      *分类码(系统内)
      *
      * @type {string}
-     * @memberof SelectEntity
+     * @memberof SelectBaseInfoEntity
      */
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.singleSelect))
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select))
     @Reflect.metadata(DesignerDecoratorType.ClassificationCode, new ElementClassificationCode(ClassificationCodeType.METHOD, 'getItemsWithClassificationCode'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
     classificationCode: string = null
 
     /**
      *分类码URL
      *
      * @type {string}
-     * @memberof SelectEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     classificationCodeUrl: string = null
@@ -69,7 +73,7 @@ export default class SelectEntity extends BaseEntity {
      *分类码JSON
      *
      * @type {string}
-     * @memberof SelectEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     classificationCodeJSON: string = null
@@ -78,17 +82,18 @@ export default class SelectEntity extends BaseEntity {
      *分类码Method
      *
      * @type {string}
-     * @memberof SelectEntity
+     * @memberof SelectBaseInfoEntity
      */
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.singleSelect))
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select))
     @Reflect.metadata(DesignerDecoratorType.ClassificationCode, new ElementClassificationCode(ClassificationCodeType.METHOD, 'getClassificationCodeMethods'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
     classificationCodeMethod: string = null
 
     /**
      *对应选择项中选项文本的属性名称
      *
      * @type {string}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     itemText: string = 'text'
 
@@ -96,7 +101,7 @@ export default class SelectEntity extends BaseEntity {
      *对应选择项中选项值的属性名称
      *
      * @type {string}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     itemValue: string = 'value'
 
@@ -104,7 +109,7 @@ export default class SelectEntity extends BaseEntity {
         *最大输入长度
         *
         * @type {number}
-        * @memberof SelectBaseEntity
+        * @memberof SelectBaseInfoEntity
         */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('counterGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
@@ -114,7 +119,7 @@ export default class SelectEntity extends BaseEntity {
      *显示输入/已选字符数
      *
      * @type {boolean}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('counterGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, null, true))
@@ -125,16 +130,17 @@ export default class SelectEntity extends BaseEntity {
      *验证方法名
      *
      * @type {Array<string>}
-     * @memberof InputEntity
+     * @memberof InputBaseInfoEntity
      */
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.singleSelect))
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
     validMethods: Array<string> = null
 
     /**
      *前置外部图标
      *
      * @type {string}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('preIconGroup', 1, null, [6]))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
@@ -144,7 +150,7 @@ export default class SelectEntity extends BaseEntity {
      *是否内部图标
      *
      * @type {boolean}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('preIconGroup', 2, null, [6]))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, null, true))
@@ -155,7 +161,7 @@ export default class SelectEntity extends BaseEntity {
      *后置内部图标
      *
      * @type {string}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('appendIconGroup', 1, null, [6]))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
@@ -165,7 +171,7 @@ export default class SelectEntity extends BaseEntity {
      *是否后置外部图标
      *
      * @type {boolean}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('appendIconGroup', 2, null, [6]))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, null, true))
@@ -177,7 +183,7 @@ export default class SelectEntity extends BaseEntity {
      *清空按钮图标
      *
      * @type {string}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('clearIconGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
@@ -187,7 +193,7 @@ export default class SelectEntity extends BaseEntity {
      *是否需要清空按钮
      *
      * @type {boolean}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('clearIconGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, null, true))
@@ -199,7 +205,7 @@ export default class SelectEntity extends BaseEntity {
      *前置文字
      *
      * @type {string}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('iconTextGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [6]))
@@ -209,7 +215,7 @@ export default class SelectEntity extends BaseEntity {
      *后置文本
     *
     * @type {string}
-    * @memberof SelectBaseEntity
+    * @memberof SelectBaseInfoEntity
     */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('iconTextGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [6]))
@@ -220,7 +226,7 @@ export default class SelectEntity extends BaseEntity {
      *占位符
      *
      * @type {string}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     placeholder: string = null
@@ -229,7 +235,7 @@ export default class SelectEntity extends BaseEntity {
      *格式掩码
      *
      * @type {string}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     mask: string = null
@@ -239,7 +245,7 @@ export default class SelectEntity extends BaseEntity {
      *提示信息
      *
      * @type {string}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('hph', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
@@ -260,7 +266,7 @@ export default class SelectEntity extends BaseEntity {
      *无数据的显示文本
      *
      * @type {string}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     noDataText: string = null
@@ -274,7 +280,7 @@ export default class SelectEntity extends BaseEntity {
      *已选项小土豆样式
      *
      * @type {boolean}
-     * @memberof SelectBaseEntity
+     * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('chipsGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.switch, [12, 4]))
@@ -300,7 +306,7 @@ export default class SelectEntity extends BaseEntity {
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.switch, [12, 4]))
     smallChips: boolean = true
 
-    constructor(elementName: string, type: string, elementTypeName: string) {
-        super(elementName, type, elementTypeName)
+    constructor(elementType: ElementType) {
+        super(elementType)
     }
 }

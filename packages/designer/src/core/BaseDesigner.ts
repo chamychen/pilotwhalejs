@@ -1,7 +1,7 @@
 import ClassificationCodeItem from '@entity/ClassificationCode/ClassificationCodeItem'
 import Vue from 'vue'
-import DefaultElementGenerator from './process/DefaultElementGenerator'
-import RenderTool from './process/RenderTool'
+import DecoratorCompiler from './element/decorator/DecoratorCompiler'
+import RenderTool from './RenderTool'
 
 export default Vue.extend({
     props: {
@@ -38,7 +38,7 @@ export default Vue.extend({
     },
     render() {
         if (this.uiEntity) {
-            let dto = new DefaultElementGenerator(this.uiEntity).getInitElements()
+            let dto = new DecoratorCompiler(this.uiEntity).getInitElements()
             let el = new RenderTool(this, dto, null).genUI(null)
             return el
         } else {

@@ -1,16 +1,15 @@
-import AbstractCssEntity from '@core/element/model/CssInfo/AbstractCssEntity'
+import AbstractCssInfoEntity from '@core/element/model/CssInfo/AbstractCssInfoEntity'
 import 'reflect-metadata'
-import ElementTypes from '@core/element/ElementTypes'
-import SimpleElementCreator from '@core/element/SimpleElementCreator'
-import DesignerDecoratorType from '@core/decorator'
-import ElementGroup from '@core/decorator/ElementGroup'
+import ElementTypes from '@core/element/types'
+import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
+import DesignerDecoratorType from '@core/element/decorator'
 
-export default class TableCssEntity extends AbstractCssEntity {
+export default class TableCssInfoEntity extends AbstractCssInfoEntity {
     /**
      *展开图标icon
      *
      * @type {string}
-     * @memberof TabCssEntity
+     * @memberof TabCssInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     expandIcon: string = null
@@ -19,7 +18,7 @@ export default class TableCssEntity extends AbstractCssEntity {
      *折叠图标icon
      *
      * @type {string}
-     * @memberof TabCssEntity
+     * @memberof TabCssInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     shrinkIcon: string = null

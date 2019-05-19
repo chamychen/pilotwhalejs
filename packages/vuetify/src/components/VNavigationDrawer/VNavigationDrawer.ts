@@ -138,7 +138,7 @@ export default mixins(
 
       return marginTop
     },
-    maxHeight (): number | null {
+    maxHeight (): number | null {      
       if (!this.hasApp) return null
 
       const maxHeight = (

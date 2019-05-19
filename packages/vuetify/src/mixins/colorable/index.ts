@@ -2,10 +2,6 @@ import Vue from 'vue'
 import { VNodeData } from 'vue/types/vnode'
 import { consoleError } from '../../util/console'
 
-function isCssColor(color?: string | false): boolean {
-  return !!color && !!color.match(/^(#|(rgb|hsl)a?\()/)
-}
-
 export default Vue.extend({
   name: 'colorable',
 
@@ -14,6 +10,9 @@ export default Vue.extend({
   },
 
   methods: {
+    isCssColor(color?: string | false): boolean {
+      return !!color && !!color.match(/^(#|(rgb|hsl)a?\()/)
+    },
     setColor(color: string, colorAttr: string, data: VNodeData = {}): VNodeData {
       if (!data.style) {
         data.style = {}
@@ -32,7 +31,7 @@ export default Vue.extend({
       if (!color) {
         color = 'primary'
       }
-      if (isCssColor(color)) {
+      if (this.isCssColor(color)) {
         data.style[colorAttr] = `${color}`
       } else if (color) {
         data.class[color] = true
@@ -49,7 +48,7 @@ export default Vue.extend({
         consoleError('class must be an object', this)
         return data
       }
-      if (isCssColor(color)) {
+      if (this.isCssColor(color)) {
         data.style = {
           ...data.style,
           'background-color': `${color}`,
@@ -74,7 +73,7 @@ export default Vue.extend({
         consoleError('class must be an object', this)
         return data
       }
-      if (isCssColor(color)) {
+      if (this.isCssColor(color)) {
         data.style = {
           ...data.style,
           'color': `${color}`,

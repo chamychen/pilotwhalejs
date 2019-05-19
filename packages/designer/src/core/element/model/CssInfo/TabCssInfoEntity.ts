@@ -1,16 +1,16 @@
-import AbstractCssEntity from '@core/element/model/CssInfo/AbstractCssEntity'
+import AbstractCssInfoEntity from '@core/element/model/CssInfo/AbstractCssInfoEntity'
 import 'reflect-metadata'
-import ElementTypes from '@core/element/ElementTypes'
-import SimpleElementCreator from '@core/element/SimpleElementCreator'
-import DesignerDecoratorType from '@core/decorator'
-import ElementGroup from '@core/decorator/ElementGroup'
+import ElementTypes from '@core/element/types'
+import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
+import DesignerDecoratorType from '@core/element/decorator'
+import ElementGroup from '@core/element/decorator/ElementGroup'
 
-export default class TabCssEntity extends AbstractCssEntity {
+export default class TabCssInfoEntity extends AbstractCssInfoEntity {
     /**
      *选中颜色
      *
      * @type {number}
-     * @memberof TabCssEntity
+     * @memberof TabCssInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('colorGroup2', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.color, [4]))
@@ -20,7 +20,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *tab最大宽度
      *
      * @type {[number, string]}
-     * @memberof TabCssEntity
+     * @memberof TabCssInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('colorGroup2', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [4]))
@@ -30,7 +30,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *context高度
      *
      * @type {[number, string]}
-     * @memberof TabCssEntity
+     * @memberof TabCssInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('colorGroup2', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [4]))
@@ -40,7 +40,7 @@ export default class TabCssEntity extends AbstractCssEntity {
     *context最小高度
     *
     * @type {[number, string]}
-    * @memberof TabCssEntity
+    * @memberof TabCssInfoEntity
     */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('mhGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [6]))
@@ -50,7 +50,7 @@ export default class TabCssEntity extends AbstractCssEntity {
     *context最大高度
     *
     * @type {[number, string]}
-    * @memberof TabCssEntity
+    * @memberof TabCssInfoEntity
     */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('mhGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [6]))
@@ -60,7 +60,7 @@ export default class TabCssEntity extends AbstractCssEntity {
     *context最大宽度
     *
     * @type {[number, string]}
-    * @memberof TabCssEntity
+    * @memberof TabCssInfoEntity
     */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('mwGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [6]))
@@ -70,7 +70,7 @@ export default class TabCssEntity extends AbstractCssEntity {
     *context最大宽度
     *
     * @type {[number, string]}
-    * @memberof TabCssEntity
+    * @memberof TabCssInfoEntity
     */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('mwGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [6]))
@@ -81,7 +81,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *app
      *
      * @type {boolean}
-     * @memberof TabCssEntity
+     * @memberof TabCssInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('tabStyleGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, [4]))
@@ -91,7 +91,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *flat
      *
      * @type {boolean}
-     * @memberof TabCssEntity
+     * @memberof TabCssInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('tabStyleGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, [4]))
@@ -101,7 +101,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *fixed
      *
      * @type {boolean}
-     * @memberof TabCssEntity
+     * @memberof TabCssInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('tabStyleGroup', 3))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, [4]))
@@ -111,7 +111,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *显示输入/已选字符数
      *
      * @type {boolean}
-     * @memberof InputEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('verticalGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, [6]))
@@ -122,7 +122,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *显示输入/已选字符数
      *
      * @type {boolean}
-     * @memberof InputEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('verticalGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, [6]))
@@ -133,7 +133,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *显示输入/已选字符数
      *
      * @type {boolean}
-     * @memberof InputEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('alignGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, [6]))
@@ -143,7 +143,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *显示输入/已选字符数
      *
      * @type {boolean}
-     * @memberof InputEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('alignGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, [6]))
@@ -154,7 +154,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *css class
      *
      * @type {string}
-     * @memberof TabCssEntity
+     * @memberof TabCssInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     contextClass: string = null
@@ -163,7 +163,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *css class
      *
      * @type {string}
-     * @memberof TabCssEntity
+     * @memberof TabCssInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     class: string = null
@@ -172,7 +172,7 @@ export default class TabCssEntity extends AbstractCssEntity {
      *css
      *
      * @type {string}
-     * @memberof TabCssEntity
+     * @memberof TabCssInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.textarea))
     style: string = null

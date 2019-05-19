@@ -1,8 +1,8 @@
 import utils from 'pilotwhale-utils'
 import { VNode } from 'vue'
-import VuePropsConvertor from './VuePropsConvertor'
-import ElementTypes from '../element/ElementTypes'
-import ElementFactory from '@core/element/ElementFactory'
+import ComponentConvertor from './element/types/ComponentConvertor'
+import ElementTypes from './element/types'
+import ElementFactory from '@core/element/types/ElementFactory'
 
 
 export default class RenderTool {
@@ -40,7 +40,7 @@ export default class RenderTool {
             let control
             if (current.elementTypeName === ElementTypes.table.elementTypeName) {
                 // table
-                let config = new VuePropsConvertor(this.context, this.i18n).getConfig(current)
+                let config = new ComponentConvertor(this.context, this.i18n).getConfig(current)
                 if (children) {
                     let headers = []
                     let regex = new RegExp(`^${current.key}_`)
@@ -60,7 +60,7 @@ export default class RenderTool {
                 return control
             } else {
                 // other element
-                control = h(current.elementName, new VuePropsConvertor(this.context, this.i18n).getConfig(current), childControl)
+                control = h(current.elementName, new ComponentConvertor(this.context, this.i18n).getConfig(current), childControl)
                 return control
             }
         }

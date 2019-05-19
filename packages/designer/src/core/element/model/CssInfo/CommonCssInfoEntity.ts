@@ -1,10 +1,10 @@
 import 'reflect-metadata'
-import AbstractCssEntity from '@core/element/model/CssInfo/AbstractCssEntity'
-import ElementTypes from '@core/element/ElementTypes'
-import SimpleElementCreator from '@core/element/SimpleElementCreator'
-import DesignerDecoratorType from '@core/decorator'
+import AbstractCssInfoEntity from '@core/element/model/CssInfo/AbstractCssInfoEntity'
+import ElementTypes from '@core/element/types'
+import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
+import DesignerDecoratorType from '@core/element/decorator'
 
-export default class CommonCssEntity extends AbstractCssEntity {
+export default class CommonCssInfoEntity extends AbstractCssInfoEntity {
     /**
      *css class
      *

@@ -1,7 +1,7 @@
 import FieldSetterService from '@service/FieldSetterService'
 import BaseDesigner from '@core/BaseDesigner'
-import ElementTypes from '@core/element/ElementTypes'
-import ElementFactory from '@core/element/ElementFactory'
+import ElementTypes from '@core/element/types'
+import ElementFactory from '@core/element/types/ElementFactory'
 
 export default ({
   mixins: [BaseDesigner],
@@ -35,6 +35,21 @@ export default ({
   },
   methods: {
     /**
+     * 设置tab的高度
+     */
+    setTabContextHeight() {
+      let height = 0
+      let bodyHeight = window.innerHeight
+      let appBar = document.getElementById('appBar')
+      if (appBar) {
+        let appBarHeight = appBar.children[0].clientHeight
+        height = bodyHeight - appBarHeight
+      } else {
+        height = bodyHeight
+      }
+      this.$refs.tabs.currentContextHeight = height + 'px'
+    },
+    /**
      * 获取分类码选项
      */
     getItemsWithClassificationCode() {
@@ -50,5 +65,9 @@ export default ({
   created() {
     this.registerClassificationCodeMethod('getItemsWithClassificationCode')
     this.registerClassificationCodeMethod('getItemsWithClassificationCodeType')
+  },
+  mounted() {
+    this.setTabContextHeight()
+    window.onresize = this.setTabContextHeight
   }
 })

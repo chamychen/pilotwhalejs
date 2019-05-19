@@ -80,7 +80,7 @@ export default baseMixins.extend<options>().extend({
     vertical: Boolean
   },
 
-  data () {
+  data() {
     return {
       resizeTimeout: 0,
       slider: {
@@ -95,7 +95,7 @@ export default baseMixins.extend<options>().extend({
   },
 
   computed: {
-    classes (): object {
+    classes(): object {
       return {
         'v-tabs--align-with-title': this.alignWithTitle,
         'v-tabs--centered': this.centered,
@@ -106,10 +106,10 @@ export default baseMixins.extend<options>().extend({
         'v-tabs--vertical': this.vertical
       }
     },
-    isReversed (): boolean {
+    isReversed(): boolean {
       return this.$vuetify.rtl && this.vertical
     },
-    sliderStyles (): object {
+    sliderStyles(): object {
       return {
         height: convertToUnit(this.slider.height),
         left: this.isReversed ? undefined : convertToUnit(this.slider.left),
@@ -134,14 +134,14 @@ export default baseMixins.extend<options>().extend({
     '$vuetify.rtl': 'onResize'
   },
 
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
       window.setTimeout(this.callSlider, 30)
     })
   },
 
   methods: {
-    callSlider () {
+    callSlider() {
       if (
         this.hideSlider ||
         !this.$refs.items ||
@@ -173,13 +173,14 @@ export default baseMixins.extend<options>().extend({
 
       return true
     },
-    genBar (items: VNode[], slider: VNode | null) {
+    genBar(items: VNode[], slider: VNode | null) {
       return this.$createElement(VTabsBar, this.setTextColor(this.color, {
-        staticClass: this.backgroundColor,
+        staticClass: this.backgroundColor && !this.isCssColor(this.backgroundColor) ? this.backgroundColor : null,
         style: {
           height: this.height ? {
             height: convertToUnit(this.height)
-          } : null
+          } : null,
+          backgroundColor: this.backgroundColor && this.isCssColor(this.backgroundColor) ? this.backgroundColor : null
         },
         props: {
           activeClass: this.activeClass,
@@ -200,11 +201,11 @@ export default baseMixins.extend<options>().extend({
         },
         ref: 'items'
       }), [
-        this.genSlider(slider),
-        items
-      ])
+          this.genSlider(slider),
+          items
+        ])
     },
-    genItems (items: VNode | null, item: VNode[]) {
+    genItems(items: VNode | null, item: VNode[]) {
       // If user provides items
       // opt to use theirs
       if (items) return items
@@ -224,7 +225,7 @@ export default baseMixins.extend<options>().extend({
         }
       }, item)
     },
-    genSlider (slider: VNode | null) {
+    genSlider(slider: VNode | null) {
       if (this.hideSlider) return null
 
       if (!slider) {
@@ -238,13 +239,13 @@ export default baseMixins.extend<options>().extend({
         style: this.sliderStyles
       }, [slider])
     },
-    onResize () {
+    onResize() {
       if (this._isDestroyed) return
 
       clearTimeout(this.resizeTimeout)
       this.resizeTimeout = window.setTimeout(this.callSlider, 0)
     },
-    parseNodes () {
+    parseNodes() {
       let items = null
       let slider = null
       const item = []
@@ -281,7 +282,7 @@ export default baseMixins.extend<options>().extend({
     }
   },
 
-  render (h): VNode {
+  render(h): VNode {
     const { tab, slider, items, item } = this.parseNodes()
 
     return h('div', {
@@ -293,8 +294,8 @@ export default baseMixins.extend<options>().extend({
         value: this.onResize
       }]
     }, [
-      this.genBar(tab, slider),
-      this.genItems(items, item)
-    ])
+        this.genBar(tab, slider),
+        this.genItems(items, item)
+      ])
   }
 })

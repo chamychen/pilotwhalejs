@@ -1,6 +1,5 @@
-import ElementFactory from '@core/element/ElementFactory'
 import { stringUtils, arrayUtils } from 'pilotwhale-utils'
-import ElementTypes, { ElementType } from '@core/element/ElementTypes'
+import ElementTypes, { ElementType } from '@core/element/types'
 
 /**
  * 用于创建基本控件
@@ -71,7 +70,7 @@ export default class SimpleElementCreator {
      * @param slot 
      * @param elementFlex 
      */
-    static createSlotElement(elementType: ElementType, parentKey?: string, slot?: string, elementFlex?: Array<number>): SimpleElement {
+    static createContainerElement(elementType: ElementType, parentKey?: string, slot?: string, elementFlex?: Array<number>): SimpleElement {
         let element = SimpleElementCreator.createCommonElement(elementType, elementFlex)
         if (!stringUtils.isEmpty(parentKey)) {
             element.parentKey = parentKey.trim()

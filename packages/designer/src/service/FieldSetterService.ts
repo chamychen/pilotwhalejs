@@ -1,4 +1,4 @@
-import { ClassificationCodeType } from '@core/decorator/ElementClassificationCode'
+import { ClassificationCodeType } from '@core/element/decorator/ElementClassificationCode'
 import ClassificationCodeItem from '@entity/ClassificationCode/ClassificationCodeItem'
 import ClassificationCodeService from '@service/ClassificationCodeService'
 

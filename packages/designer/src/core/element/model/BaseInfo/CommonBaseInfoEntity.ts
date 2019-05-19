@@ -1,9 +1,9 @@
-import ElementTypes from '@core/element/ElementTypes'
-import DesignerDecoratorType from '@core/decorator'
-import SimpleElementCreator from '@core/element/SimpleElementCreator'
+import ElementTypes, { ElementType } from '@core/element/types'
+import DesignerDecoratorType from '@core/element/decorator'
+import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
 import { stringUtils } from 'pilotwhale-utils'
 
-export default class BaseEntity {
+export default class CommonBaseInfoEntity {
     /**
       *控件id
       *
@@ -13,21 +13,33 @@ export default class BaseEntity {
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     key: string = null
 
+    /**
+     * 元素类型名称
+     */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     elementTypeName: string = null
 
+    /**
+     * 组件名称
+     */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     elementName: string = null
 
+    /**
+     * 父级key
+     */
     parentKey: string = null
 
+    /**
+     * 一般为input的输入类型或其他
+     */
     type: string = null
 
     /**
      *默认值
      *
      * @type {*}
-     * @memberof BaseEntity
+     * @memberof CommonBaseInfoEntity
      */
     defaultValue: any = null
 
@@ -35,7 +47,7 @@ export default class BaseEntity {
      *排序号
      *
      * @type {number}
-     * @memberof BaseEntity
+     * @memberof CommonBaseInfoEntity
      */
     sortNo: number = null
 
@@ -43,22 +55,18 @@ export default class BaseEntity {
      *占位符
      *
      * @type {string}
-     * @memberof BaseEntity
+     * @memberof CommonBaseInfoEntity
      */
     slot: string = null
 
 
-    constructor(elementName: string, type: string, elementTypeName: string) {
-        if (!stringUtils.isEmpty(elementName)) {
-            this.elementName = elementName.trim()
-            this.type = type ? type.trim() : null
+    constructor(elementType: ElementType) {
+        if (elementType) {
+            this.elementTypeName = elementType.elementTypeName
+            this.elementName = elementType.elementName
+            this.type = elementType.type
         } else {
-            throw new Error('BaseEntity constructor [elementName] Can not be empty')
-        }
-        if (!stringUtils.isEmpty(elementTypeName)) {
-            this.elementTypeName = elementTypeName.trim()
-        } else {
-            throw new Error('BaseEntity constructor [elementTypeName] Can not be empty')
+            throw new Error('CommonBaseInfoEntity constructor [elementType] Can not be null')
         }
     }
 }

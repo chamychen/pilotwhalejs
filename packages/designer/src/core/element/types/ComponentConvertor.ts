@@ -1,8 +1,8 @@
-import ElementClassificationCode, { ClassificationCodeType } from '@core/decorator/ElementClassificationCode'
+import ElementClassificationCode, { ClassificationCodeType } from '@core/element/decorator/ElementClassificationCode'
 import utils from 'pilotwhale-utils'
-import ElementTypes, { noEditElementTypes } from '../element/ElementTypes'
+import ElementTypes, { noEditElementTypes } from '.'
 import { TabItemDefine } from 'vuetify'
-export default class VuePropsConvertor {
+export default class ComponentConvertor {
     private context: any
     private i18n?: any
 
@@ -32,7 +32,7 @@ export default class VuePropsConvertor {
                         break
                     case 'key':
                         config.key = fieldValue
-                        config.props.ref = fieldValue
+                        config.ref = fieldValue
                         config.props.label = this.getI18n(fieldValue)
                         let model = fieldValue.split('_').join('.')
                         if (!isLayoutElment) {

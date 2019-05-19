@@ -1,10 +1,10 @@
 import 'reflect-metadata'
-import ElementTypes from '@core/element/ElementTypes'
-import SimpleElementCreator from '@core/element/SimpleElementCreator'
-import DesignerDecoratorType from '@core/decorator'
-import ElementGroup from '@core/decorator/ElementGroup'
+import ElementTypes from '@core/element/types'
+import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
+import DesignerDecoratorType from '@core/element/decorator'
+import ElementGroup from '@core/element/decorator/ElementGroup'
 
-export default abstract class AbstractCssEntity {
+export default abstract class AbstractCssInfoEntity {
     noFlex: boolean = null
 
     /**

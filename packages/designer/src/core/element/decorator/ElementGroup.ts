@@ -1,3 +1,6 @@
+/**
+ * 元素组合
+ */
 export default class ElementGroup {
     groupName: string
     groupXsFlex: number
@@ -8,7 +11,14 @@ export default class ElementGroup {
     elementLgFlex: number
     elementSortNo: number
 
-    constructor(groupName: string, elementSortNo: number, elementFlex?: Array<number>, groupFlex?: Array<number>) {
+    /**
+     * 元素组合构造器
+     * @param groupName 组合名称
+     * @param sortNo 排序号
+     * @param elementFlex 当前元素在组合中所占flex
+     * @param groupFlex 组合自身的flex(为避免混乱，此处取组合中第一个元素的设置)
+     */
+    constructor(groupName: string, sortNo: number, elementFlex?: Array<number>, groupFlex?: Array<number>) {
         if (groupName) {
             groupName = groupName.trim()
         }
@@ -16,7 +26,7 @@ export default class ElementGroup {
             throw new Error('ElementGroup class groupName field cannot be empty')
         } else {
             this.groupName = groupName
-            this.elementSortNo = elementSortNo
+            this.elementSortNo = sortNo
 
             if (groupFlex) {
                 groupFlex.forEach((flex, index) => {

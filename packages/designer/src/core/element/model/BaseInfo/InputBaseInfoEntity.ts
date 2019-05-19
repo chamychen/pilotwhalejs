@@ -1,61 +1,28 @@
-import BaseEntity from './BaseEntity'
-import DesignerDecoratorType from '@core/decorator'
-import SimpleElementCreator from '@core/element/SimpleElementCreator'
-import ElementTypes from '@core/element/ElementTypes'
-import ElementGroup from '@core/decorator/ElementGroup'
+import 'reflect-metadata'
+import ElementTypes, { ElementType } from '@core/element/types'
+import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
+import DesignerDecoratorType from '@core/element/decorator'
+import ElementGroup from '@core/element/decorator/ElementGroup'
+import CommonBaseInfoEntity from '@core/element/model/BaseInfo/CommonBaseInfoEntity'
+import ElementPropsTmpl from '@core/element/decorator/ElementPropsTmpl'
 
-export default class SingleSelectorGroupBaseEntity extends BaseEntity {
+export default class InputBaseInfoEntity extends CommonBaseInfoEntity {
     /**
-    *禁用模式：1默认2禁用3只读
-    *
-    * @type {string}
-    * @memberof SingleSelectorGroupBaseEntity
-    */
+     *禁用模式：1默认2禁用3只读
+     *
+     * @type {string}
+     * @memberof InputBaseInfoEntity
+     */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.radioList))
     disableMode: string = null
 
-    /**
-     *选项code
-     *
-     * @type {Array<any>}
-     * @memberof SingleSelectorGroupBaseEntity
-     */
-    @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('itemsGroup', 1))
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.singleSelect, null, true))
-    items: string = null
 
     /**
-     *是否多选
+     *最大输入长度
      *
-     * @type {boolean}
-     * @memberof SingleSelectorGroupBaseEntity
+     * @type {number}
+     * @memberof InputBaseInfoEntity
      */
-    @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('itemsGroup', 2))
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, null, true))
-    multiple: boolean = false
-
-    /**
-     *对应选择项中选项文本的属性名称
-     *
-     * @type {string}
-     * @memberof SingleSelectorGroupBaseEntity
-     */
-    itemText: string = 'text'
-
-    /**
-     *对应选择项中选项值的属性名称
-     *
-     * @type {string}
-     * @memberof SingleSelectorGroupBaseEntity
-     */
-    itemValue: string = 'value'
-
-    /**
-        *最大输入长度
-        *
-        * @type {number}
-        * @memberof SingleSelectorGroupBaseEntity
-        */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('counterGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
     maxlength: number = 50
@@ -64,27 +31,23 @@ export default class SingleSelectorGroupBaseEntity extends BaseEntity {
      *显示输入/已选字符数
      *
      * @type {boolean}
-     * @memberof SingleSelectorGroupBaseEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('counterGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, null, true))
     @Reflect.metadata(DesignerDecoratorType.ExtendProps, { noLabel: true })
     counter: boolean = true
 
-    /**
-     *验证方法名
-     *
-     * @type {Array<string>}
-     * @memberof InputEntity
-     */
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.singleSelect))
+
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
     validMethods: Array<string> = null
 
     /**
      *前置外部图标
      *
      * @type {string}
-     * @memberof SingleSelectorGroupBaseEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('preIconGroup', 1, null, [6]))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
@@ -94,7 +57,7 @@ export default class SingleSelectorGroupBaseEntity extends BaseEntity {
      *是否内部图标
      *
      * @type {boolean}
-     * @memberof SingleSelectorGroupBaseEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('preIconGroup', 2, null, [6]))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, null, true))
@@ -105,7 +68,7 @@ export default class SingleSelectorGroupBaseEntity extends BaseEntity {
      *后置内部图标
      *
      * @type {string}
-     * @memberof SingleSelectorGroupBaseEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('appendIconGroup', 1, null, [6]))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
@@ -115,7 +78,7 @@ export default class SingleSelectorGroupBaseEntity extends BaseEntity {
      *是否后置外部图标
      *
      * @type {boolean}
-     * @memberof SingleSelectorGroupBaseEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('appendIconGroup', 2, null, [6]))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, null, true))
@@ -123,10 +86,34 @@ export default class SingleSelectorGroupBaseEntity extends BaseEntity {
     isAppendOuterIcon: boolean = false
 
     /**
+     *清空按钮图标
+     *
+     * @type {string}
+     * @memberof InputBaseInfoEntity
+     */
+    @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('clearIconGroup', 1))
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
+    clearIcon: string = 'mdi-close-circle'
+
+    /**
+     *是否需要清空按钮
+     *
+     * @type {boolean}
+     * @memberof InputBaseInfoEntity
+     */
+    @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('clearIconGroup', 2))
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, null, true))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { noLabel: true })
+    clearable: boolean = true
+
+
+
+
+    /**
      *前置文字
      *
      * @type {string}
-     * @memberof SingleSelectorGroupBaseEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('iconTextGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [6]))
@@ -136,17 +123,27 @@ export default class SingleSelectorGroupBaseEntity extends BaseEntity {
      *后置文本
     *
     * @type {string}
-    * @memberof SingleSelectorGroupBaseEntity
+    * @memberof InputBaseInfoEntity
     */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('iconTextGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [6]))
     suffix: string = null
 
+
+    /**
+     *占位符
+     *
+     * @type {string}
+     * @memberof InputBaseInfoEntity
+     */
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
+    placeholder: string = null
+
     /**
      *格式掩码
      *
      * @type {string}
-     * @memberof SingleSelectorGroupBaseEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
     mask: string = null
@@ -156,7 +153,7 @@ export default class SingleSelectorGroupBaseEntity extends BaseEntity {
      *提示信息
      *
      * @type {string}
-     * @memberof SingleSelectorGroupBaseEntity
+     * @memberof InputBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('hph', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
@@ -173,7 +170,16 @@ export default class SingleSelectorGroupBaseEntity extends BaseEntity {
     @Reflect.metadata(DesignerDecoratorType.ExtendProps, { noLabel: true })
     persistentHint: boolean = false
 
-    constructor(elementName: string, type: string, elementTypeName: string) {
-        super(elementName, type, elementTypeName)
+    /**
+     *无数据的显示文本
+     *
+     * @type {string}
+     * @memberof InputBaseInfoEntity
+     */
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
+    noDataText: string = null
+
+    constructor(elementType: ElementType) {
+        super(elementType)
     }
 }

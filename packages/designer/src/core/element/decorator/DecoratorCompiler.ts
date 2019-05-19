@@ -1,18 +1,18 @@
-import ElementClassificationCode, { ClassificationCodeType } from '@core/decorator/ElementClassificationCode'
-import ElementFactory from '@core/element/ElementFactory'
+import ElementClassificationCode, { ClassificationCodeType } from '@core/element/decorator/ElementClassificationCode'
+import ElementFactory from '@core/element/types/ElementFactory'
 import utils, { stringUtils } from 'pilotwhale-utils'
-import DesignerDecoratorType from '../decorator'
-import ElementGroup from '../decorator/ElementGroup'
-import ElementTypes, { ElementType } from '../element/ElementTypes'
-import { SimpleElement } from '@core/element/SimpleElementCreator'
+import DesignerDecoratorType from '.'
+import ElementGroup from './ElementGroup'
+import ElementTypes, { ElementType } from '../types'
+import { SimpleElement } from '@core/element/decorator/SimpleElementCreator'
 
 
-export default class DefaultElementGenerator {
+export default class DecoratorCompiler {
     /**
      *拥有子元素的类型
      *
      * @private
-     * @memberof DefaultElementGenerator
+     * @memberof DecoratorCompiler
      */
     private listElementTypeNames = [ElementTypes.layout.elementTypeName, ElementTypes.table.elementTypeName]
 

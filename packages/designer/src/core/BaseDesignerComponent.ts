@@ -1,6 +1,7 @@
 import BaseDesigner from '@core/BaseDesigner'
 import Vue from 'vue'
-import RenderTool from './process/RenderTool'
+import RenderTool from './RenderTool'
+
 
 export default Vue.extend({
     mixins: [BaseDesigner],

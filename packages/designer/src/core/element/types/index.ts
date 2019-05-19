@@ -1,4 +1,3 @@
-import ExtendPropsTmpl from '@core/element/ExtendPropsTmpl'
 import { stringUtils } from 'pilotwhale-utils'
 
 class ElementType {
@@ -10,9 +9,7 @@ class ElementType {
 
     className: string
 
-    extendProps: any
-
-    constructor(elementName: string, type: string, elementTypeName: string, className: string, extendProps?: any) {
+    constructor(elementName: string, type: string, elementTypeName: string, className: string) {
         if (!stringUtils.isEmpty(elementName)) {
             this.elementName = elementName.trim()
             this.type = type ? type.trim() : null
@@ -29,7 +26,10 @@ class ElementType {
         } else {
             throw new Error('ElementType constructor [className] Can not be empty')
         }
-        this.extendProps = extendProps
+    }
+
+    newElement() {
+
     }
 }
 
@@ -58,12 +58,11 @@ const ElementTypes = {
     time: new ElementType('VTime', null, 'time', 'InputElement'), // 时间
     switch: new ElementType('VSwitch', null, 'switch', 'SingleSelectorElement'), // switch
     checkbox: new ElementType('VCheckbox', null, 'checkbox', 'SingleSelectorElement'), // checkbox
-    singleSelect: new ElementType('VSelect', null, 'singleSelect', 'SelectElement', ExtendPropsTmpl.singleSelect), // select
-    multiSelect: new ElementType('VSelect', null, 'multiSelect', 'SelectElement', ExtendPropsTmpl.multiSelect), // select
+    select: new ElementType('VSelect', null, 'select', 'SelectElement'), // select
     combobox: new ElementType('VCombobox', null, 'combobox', 'SelectElement'), // combobox
-    checkboxList: new ElementType('VRadioGroup', 'checkbox', 'integer', 'SingleSelectorGroupElement'),
-    radioList: new ElementType('VRadioGroup', 'radio', 'radioList', 'SingleSelectorGroupElement'),
-    switchList: new ElementType('VRadioGroup', 'switch', 'switchList', 'SingleSelectorGroupElement'),
+    checkboxList: new ElementType('VRadioGroup', 'checkbox', 'integer', 'SelectorGroupElement'),
+    radioList: new ElementType('VRadioGroup', 'radio', 'radioList', 'SelectorGroupElement'),
+    switchList: new ElementType('VRadioGroup', 'switch', 'switchList', 'SelectorGroupElement'),
     popupSelector: new ElementType('VPopupSelector', null, 'popupSelector', 'SelectElement')
 }
 

@@ -1,11 +1,12 @@
 import 'reflect-metadata'
-import ElementTypes from '@core/element/ElementTypes'
-import SimpleElementCreator from '@core/element/SimpleElementCreator'
-import DesignerDecoratorType from '@core/decorator'
-import ElementGroup from '@core/decorator/ElementGroup'
-import BaseEntity from '@core/element/model/BaseInfo/BaseEntity'
+import ElementTypes, { ElementType } from '@core/element/types'
+import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
+import DesignerDecoratorType from '@core/element/decorator'
+import ElementGroup from '@core/element/decorator/ElementGroup'
+import CommonBaseInfoEntity from '@core/element/model/BaseInfo/CommonBaseInfoEntity'
+import ElementPropsTmpl from '@core/element/decorator/ElementPropsTmpl'
 
-export default class TableEntity extends BaseEntity {
+export default class TableBaseInfoEntity extends CommonBaseInfoEntity {
     items: any = null
 
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('selGroups', 1))
@@ -32,19 +33,22 @@ export default class TableEntity extends BaseEntity {
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.natural_integer, [6]))
     fixedRightCols: number = null
 
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.singleSelect, null, true))
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select, null, true))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
     groupBy: Array<string> = null
 
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, null, true))
     isTreeGrid: boolean = false
 
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.singleSelect, null, true))
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select, null, true))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
     treeGridParnetField: string = null
 
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.singleSelect, null, true))
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select, null, true))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
     treeGridExpandField: string = null
 
-    constructor(elementName: string, type: string, elementTypeName: string) {
-        super(elementName, type, elementTypeName)
+    constructor(elementType: ElementType) {
+        super(elementType)
     }
 }

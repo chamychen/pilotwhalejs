@@ -1,15 +1,16 @@
-import BaseEntity from './BaseEntity'
-import DesignerDecoratorType from '@core/decorator'
-import SimpleElementCreator from '@core/element/SimpleElementCreator'
-import ElementTypes from '@core/element/ElementTypes'
-import ElementGroup from '@core/decorator/ElementGroup'
+import CommonBaseInfoEntity from './CommonBaseInfoEntity'
+import DesignerDecoratorType from '@core/element/decorator'
+import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
+import ElementTypes, { ElementType } from '@core/element/types'
+import ElementGroup from '@core/element/decorator/ElementGroup'
+import ElementPropsTmpl from '@core/element/decorator/ElementPropsTmpl'
 
-export default class SingleSelectorEntity extends BaseEntity {
+export default class SingleSelectorBaseInfoEntity extends CommonBaseInfoEntity {
     /**
     *禁用模式：1默认2禁用3只读
     *
     * @type {string}
-    * @memberof SingleSelectorEntity
+    * @memberof SingleSelectorBaseInfoEntity
     */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.radioList))
     disableMode: string = null
@@ -18,16 +19,17 @@ export default class SingleSelectorEntity extends BaseEntity {
      *验证方法名
      *
      * @type {Array<string>}
-     * @memberof InputEntity
+     * @memberof InputBaseInfoEntity
      */
-    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.singleSelect))
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
     validMethods: Array<string> = null
 
     /**
      *前置图标
      *
      * @type {string}
-     * @memberof SingleSelectorEntity
+     * @memberof SingleSelectorBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('iconGroup', 1, null, [6]))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
@@ -39,7 +41,7 @@ export default class SingleSelectorEntity extends BaseEntity {
      *后置图标
      *
      * @type {string}
-     * @memberof SingleSelectorEntity
+     * @memberof SingleSelectorBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('iconGroup', 2, null, [6]))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
@@ -50,7 +52,7 @@ export default class SingleSelectorEntity extends BaseEntity {
      *是否采用禁用样式
      *
      * @type {boolean}
-     * @memberof SingleSelectorEntity
+     * @memberof SingleSelectorBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('indeterminateGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, [6]))
@@ -60,7 +62,7 @@ export default class SingleSelectorEntity extends BaseEntity {
      *禁用样式图标
      *
      * @type {string}
-     * @memberof SingleSelectorEntity
+     * @memberof SingleSelectorBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('indeterminateGroup', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [6]))
@@ -70,7 +72,7 @@ export default class SingleSelectorEntity extends BaseEntity {
      *提示信息
      *
      * @type {string}
-     * @memberof SingleSelectorEntity
+     * @memberof SingleSelectorBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('hintGroup', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, null, true))
@@ -87,7 +89,7 @@ export default class SingleSelectorEntity extends BaseEntity {
     @Reflect.metadata(DesignerDecoratorType.ExtendProps, { noLabel: true })
     persistentHint: boolean = false
 
-    constructor(elementName: string, type: string, elementTypeName: string) {
-        super(elementName, type, elementTypeName)
+    constructor(elementType: ElementType) {
+        super(elementType)
     }
 }

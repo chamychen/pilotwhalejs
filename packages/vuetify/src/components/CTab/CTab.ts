@@ -18,7 +18,7 @@ export default {
     },
     backgroundColor: {
       type: String,
-      default: 'white'
+      default: '#f5f5f5'
     },
     sliderColor: {
       type: String,
@@ -73,13 +73,21 @@ export default {
     },
     contextMinWidth: {
       type: [String]
+    },
+    contextMarginTop: {
+      type: [String, Number]
+    },
+    contextBackgroundColor: {
+      type: [String],
+      default: 'white'
     }
   },
   data() {
     return {
       currentValue: this.value,
       currentVertical: this.vertical,
-      currentVerticalText: this.vertical && this.verticalText
+      currentVerticalText: this.vertical && this.verticalText,
+      currentContextHeight: this.contextHeight
     }
   },
   computed: {
@@ -181,7 +189,7 @@ export default {
             arr.push(tabItem)
           }
         })
-        let contextHeight = !stringUtils.isEmpty(this.contextHeight) ? this.contextHeight.trim() : null
+        let contextHeight = !stringUtils.isEmpty(this.currentContextHeight) ? this.currentContextHeight.trim() : null
         let contextMinWidth = !stringUtils.isEmpty(this.contextMinWidth) ? this.contextMinWidth.trim() : null
         let contexMaxWidth = !stringUtils.isEmpty(this.contextMaxWidth) ? this.contextMaxWidth.trim() : null
         let contextMinHeight = !stringUtils.isEmpty(this.contextMinHeight) ? this.contextMinHeight.trim() : null
@@ -193,7 +201,9 @@ export default {
           maxWidth: contexMaxWidth ? (!isNaN(contexMaxWidth) ? `${contexMaxWidth}px` : contexMaxWidth) : null,
           minHeight: contextMinHeight ? (!isNaN(contextMinHeight) ? `${contextMinHeight}px` : contextMinHeight) : null,
           maxHeight: contextMaxHeight ? (!isNaN(contextMaxHeight) ? `${contextMaxHeight}px` : contextMaxHeight) : null,
-          overflow: 'auto'
+          backgroundColor: this.contextBackgroundColor,
+          marginTop: this.contextMarginTop ? this.contextMarginTop : (this.app && !this.vertical ? '70px' : null)
+          // overflow: 'auto'
         }
         let tab = h('VTabsItems', { props: { value: this.currentValue, activeClass: this.contextClass }, style: contentStyle }, arr)
         return tab

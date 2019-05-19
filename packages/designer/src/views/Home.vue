@@ -1,6 +1,6 @@
 <template>
   <div :class="fullscreenClass">
-    <v-app-bar id="appBar" color="primary" :dark="dark" app dense fixed clipped-left clipped-right>
+    <v-app-bar id="appBar" color="primary" :dark="dark" :app='!fullscreen' dense fixed clipped-left clipped-right>
       <v-toolbar-title>Toolbar</v-toolbar-title>
     </v-app-bar>
     <v-content v-resize="setContentHeight" ref='designerContent'>
@@ -13,7 +13,7 @@
       <v-container fluid fill-height id='designerContainer'>
         <v-layout justify-center>
           <v-flex xs12>
-            <c-tab :items="[{name:'预览',key:'preview'},{name:'语言配置',key:'language'}]" :app="fullscreen" :backgroundColor="this.fullscreen?'primary':null" :dark="fullscreen" :sliderColor="this.fullscreen?'white':null" id="designerContentTab" ref='designerContentTab'>
+            <c-tab :items="[{name:'预览',key:'preview'},{name:'语言配置',key:'language'}]" :app="fullscreen" :backgroundColor="this.fullscreen?'primary':null" :dark="fullscreen" :sliderColor="this.fullscreen?'white':null" contextMarginTop="0px" id="designerContentTab" ref='designerContentTab'>
               <template slot='btn'>
                 <div style="width:200px">
                   <v-select v-model="viewType" prependIcon='computer' :items="viewTypes" itemText="name" itemValue="value" hideDetails></v-select>
@@ -61,12 +61,12 @@
 </template>
 
 <script>
-import DefaultElementGenerator from '@core/process/DefaultElementGenerator'
-import ElementFactory from '@core/element/ElementFactory'
-import ElementTypes from '@core/element/ElementTypes'
+import DecoratorCompiler from '@core/element/decorator/DecoratorCompiler'
+import ElementFactory from '@core/element/types/ElementFactory'
+import ElementTypes from '@core/element/types'
 export default {
   data: () => {
-    let fieldList = new DefaultElementGenerator(ElementFactory.createElement(ElementTypes.singleSelect)).getInitElements()
+    let fieldList = new DecoratorCompiler(ElementFactory.createElement(ElementTypes.select)).getInitElements()
     localStorage.setItem('currentDesignData', JSON.stringify(fieldList))
     return {
       contentHeight: 0,
@@ -148,16 +148,6 @@ export default {
   padding: 0px;
 }
 
-#field-setter-context .v-navigation-drawer__border {
-  display: none;
-}
-
-iframe {
-  height: 100%;
-  border: none;
-  background: white;
-}
-
 #designerContainer {
   background: rgba(240, 240, 240, 0.65);
 }
@@ -166,31 +156,16 @@ iframe {
   padding: 20px 15px 0px 15px;
 }
 
-.d-fullscreen #appBar {
-  background: black;
-}
-
 .d-fullscreen #appBar, .d-fullscreen #fieldListContext {
   display: none;
 }
 
 .d-fullscreen .v-content {
   padding-left: 0px !important;
-  padding-top: 48px !important;
 }
 
 .d-fullscreen #designerContentTab .v-sheet {
   left: 0px !important;
-}
-
-.d-fullscreen #field-setter-context {
-  padding: 10px;
-  margin-top: 48px !important;
-  max-height: calc(100% - 48px);
-}
-
-.d-fullscreen iframe {
-  background: none;
 }
 </style>
 
