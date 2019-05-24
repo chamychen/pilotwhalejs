@@ -1,8 +1,8 @@
-import CommonBaseInfoEntity from '@core/element/model/BaseInfo/CommonBaseInfoEntity'
+import CommonBaseInfoEntity from '@core/element/model/baseinfo/CommonBaseInfoEntity'
 import DesignerDecoratorType from '@core/element/decorator'
 import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
 import ElementTypes, { ElementType } from '@core/element/types'
-import CommonCssInfoEntity from '@core/element/model/CssInfo/CommonCssInfoEntity'
+import CommonCssInfoEntity from '@core/element/model/cssinfo/CommonCssInfoEntity'
 import AbstractElement from './AbstractElement'
 import ElementPropsTmpl from '../decorator/ElementPropsTmpl'
 
@@ -18,6 +18,7 @@ export default class BaseElement extends AbstractElement {
      * @memberof BaseElement
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.layout, 'tabs', 'baseInfoTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { class: 'row wrap' })
     baseInfo: CommonBaseInfoEntity
 
     /**
@@ -27,6 +28,7 @@ export default class BaseElement extends AbstractElement {
      * @memberof BaseElement
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.layout, 'tabs', 'cssTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { class: 'row wrap' })
     css: CommonCssInfoEntity
 
     constructor(elementType: ElementType) {

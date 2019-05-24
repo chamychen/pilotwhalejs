@@ -1,8 +1,8 @@
 import DesignerDecoratorType from '@core/element/decorator'
 import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
 import ElementTypes, { ElementType } from '@core/element/types'
-import InputCssInfoEntity from '@core/element/model/CssInfo/InputCssInfoEntity'
-import SelectorGroupBaseInfoEntity from '@core/element/model/BaseInfo/SelectorGroupBaseInfoEntity'
+import InputCssInfoEntity from '@core/element/model/cssinfo/InputCssInfoEntity'
+import SelectorGroupBaseInfoEntity from '@core/element/model/baseinfo/SelectorGroupBaseInfoEntity'
 import AbstractElement from './AbstractElement'
 import ElementPropsTmpl from '../decorator/ElementPropsTmpl'
 
@@ -18,6 +18,7 @@ export default class SelectorGroupElement extends AbstractElement {
      * @memberof SelectorGroupElement
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.layout, 'tabs', 'baseInfoTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { class: 'row wrap' })
     baseInfo: SelectorGroupBaseInfoEntity
 
     /**
@@ -27,6 +28,7 @@ export default class SelectorGroupElement extends AbstractElement {
      * @memberof SelectorGroupElement
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.layout, 'tabs', 'cssTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { class: 'row wrap' })
     css: InputCssInfoEntity
 
 

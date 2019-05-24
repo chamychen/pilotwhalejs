@@ -46,3 +46,38 @@ declare class arrayUtils {
      */
     static trim(arr: Array<string>): Array<string> | null
 }
+
+
+declare class cookieUtils {
+    /**
+    * 获取cookie
+    * @param cname
+    * @returns {*}
+    */
+    static getCookie(name: string)
+
+    /**
+     * 设置cookie
+     * @param cname
+     * @param cvalue
+     * @param expires 毫秒数
+     */
+    static setCookie(name: string, value: any, expires: number)
+
+    /**
+     * 清除cookie
+     * @param name
+     */
+    static clearCookie(name)
+}
+
+
+
+declare class guidUtils {
+    /**
+     * guid
+     * @param connector 连接符
+     */
+    static newId(connector?: string)
+}
+

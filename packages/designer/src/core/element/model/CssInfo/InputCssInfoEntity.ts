@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import AbstractCssInfoEntity from '@core/element/model/CssInfo/AbstractCssInfoEntity'
+import AbstractCssInfoEntity from '@core/element/model/cssinfo/AbstractCssInfoEntity'
 import ElementTypes from '@core/element/types'
 import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
 import DesignerDecoratorType from '@core/element/decorator'

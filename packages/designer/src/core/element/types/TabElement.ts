@@ -1,8 +1,8 @@
 import DesignerDecoratorType from '@core/element/decorator'
 import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
 import ElementTypes, { ElementType } from '@core/element/types'
-import TabCssInfoEntity from '@core/element/model/CssInfo/TabCssInfoEntity'
-import TabBaseInfoEntity from '@core/element/model/BaseInfo/TabBaseInfoEntity'
+import TabCssInfoEntity from '@core/element/model/cssinfo/TabCssInfoEntity'
+import TabBaseInfoEntity from '@core/element/model/baseinfo/TabBaseInfoEntity'
 import AbstractElement from './AbstractElement'
 import ElementPropsTmpl from '../decorator/ElementPropsTmpl'
 
@@ -18,6 +18,7 @@ export default class TabElement extends AbstractElement {
      * @memberof TabElement
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.layout, 'tabs', 'baseInfoTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { class: 'row wrap' })
     baseInfo: TabBaseInfoEntity
 
     /**
@@ -27,6 +28,7 @@ export default class TabElement extends AbstractElement {
      * @memberof TabElement
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.layout, 'tabs', 'cssTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { class: 'row wrap' })
     css: TabCssInfoEntity
 
     constructor(elementType: ElementType) {        

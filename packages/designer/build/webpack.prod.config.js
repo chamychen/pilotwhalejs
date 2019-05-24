@@ -33,7 +33,8 @@ module.exports = merge(baseWebpackConfig, {
       '@entity': resolve('../src/entity'),
       '@service': resolve('../src/service'),
       '@data': resolve('../src/data'),
-      '@api': resolve('../src/api')
+      '@api': resolve('../src/api'),
+      '@assets': resolve('../src/assets')
     }
   },
   externals: {

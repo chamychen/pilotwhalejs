@@ -25,6 +25,8 @@ export class SimpleElement {
 
     items: Array<string>
 
+    class: string
+
     constructor(elementType: ElementType) {
         this.elementType = elementType
     }
@@ -77,27 +79,6 @@ export default class SimpleElementCreator {
         }
         if (!stringUtils.isEmpty(slot)) {
             element.slot = slot.trim()
-        }
-        return element
-    }
-
-    /**
-     * 创建tab元素
-     * @param elementType
-     * @param parentKey 
-     * @param slot 
-     * @param elementFlex 
-     */
-    static createTabElement(items: Array<string>, fixed: boolean = false, hideHead?: boolean, elementFlex?: Array<number>): SimpleElement {
-        let element = SimpleElementCreator.createCommonElement(ElementTypes.tab, elementFlex)
-        element.hideHead = hideHead
-        element.fixed = fixed
-        element.items = arrayUtils.trim(items)
-        if (element.items) {
-            element.items = arrayUtils.removeDuplicate(element.items)
-        }
-        if (!element.items) {
-            throw new Error('SimpleElementCreator Method createTabElement props items cannot be null or empty')
         }
         return element
     }

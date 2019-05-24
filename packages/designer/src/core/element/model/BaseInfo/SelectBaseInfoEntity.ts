@@ -3,7 +3,7 @@ import DesignerDecoratorType from '@core/element/decorator'
 import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
 import ElementTypes, { ElementType } from '@core/element/types'
 import ElementGroup from '@core/element/decorator/ElementGroup'
-import ElementClassificationCode, { ClassificationCodeType } from '@core/element/decorator/ElementClassificationCode'
+import ElementClassCode, { ClassCodeType } from '@core/element/decorator/ElementClassCode'
 import ElementPropsTmpl from '@core/element/decorator/ElementPropsTmpl'
 
 export default class SelectBaseInfoEntity extends CommonBaseInfoEntity {
@@ -44,9 +44,9 @@ export default class SelectBaseInfoEntity extends CommonBaseInfoEntity {
      * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select))
-    @Reflect.metadata(DesignerDecoratorType.ClassificationCode, new ElementClassificationCode(ClassificationCodeType.METHOD, 'getItemsWithClassificationCodeType'))
+    @Reflect.metadata(DesignerDecoratorType.ClassCode, new ElementClassCode(ClassCodeType.METHOD, 'getItemsWithClassCodeType'))
     @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
-    classificationCodeType: string = null
+    classCodeType: string = null
 
     /**
      *分类码(系统内)
@@ -55,9 +55,9 @@ export default class SelectBaseInfoEntity extends CommonBaseInfoEntity {
      * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select))
-    @Reflect.metadata(DesignerDecoratorType.ClassificationCode, new ElementClassificationCode(ClassificationCodeType.METHOD, 'getItemsWithClassificationCode'))
+    @Reflect.metadata(DesignerDecoratorType.ClassCode, new ElementClassCode(ClassCodeType.METHOD, 'getItemsWithClassCode'))
     @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
-    classificationCode: string = null
+    classCode: string = null
 
     /**
      *分类码URL
@@ -66,7 +66,7 @@ export default class SelectBaseInfoEntity extends CommonBaseInfoEntity {
      * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
-    classificationCodeUrl: string = null
+    classCodeUrl: string = null
 
 
     /**
@@ -76,7 +76,7 @@ export default class SelectBaseInfoEntity extends CommonBaseInfoEntity {
      * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
-    classificationCodeJSON: string = null
+    classCodeJSON: string = null
 
     /**
      *分类码Method
@@ -85,9 +85,9 @@ export default class SelectBaseInfoEntity extends CommonBaseInfoEntity {
      * @memberof SelectBaseInfoEntity
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select))
-    @Reflect.metadata(DesignerDecoratorType.ClassificationCode, new ElementClassificationCode(ClassificationCodeType.METHOD, 'getClassificationCodeMethods'))
+    @Reflect.metadata(DesignerDecoratorType.ClassCode, new ElementClassCode(ClassCodeType.METHOD, 'getClassCodeMethods'))
     @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
-    classificationCodeMethod: string = null
+    classCodeMethod: string = null
 
     /**
      *对应选择项中选项文本的属性名称

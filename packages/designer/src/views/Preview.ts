@@ -22,18 +22,18 @@ export default ({
     /**
      * 获取分类码选项
      */
-    getItemsWithClassificationCode() {
-      return FieldSetterService.getItemsWithClassificationCode()
+    getItemsWithClassCode() {
+      return FieldSetterService.getItemsWithClassCode()
     },
     /**
      * 获取分类码类型
      */
-    getItemsWithClassificationCodeType() {
-      return FieldSetterService.getItemsWithClassificationCodeType()
+    getItemsWithClassCodeType() {
+      return FieldSetterService.getItemsWithClassCodeType()
     }
   },
   created() {
-    this.registerClassificationCodeMethod('getItemsWithClassificationCode')
-    this.registerClassificationCodeMethod('getItemsWithClassificationCodeType')
+    this.registerClassCodeMethod('getItemsWithClassCode')
+    this.registerClassCodeMethod('getItemsWithClassCodeType')
   }
 })

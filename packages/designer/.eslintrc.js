@@ -40,6 +40,7 @@ module.exports = {
     'prefer-const': 'off',
     'no-trailing-spaces': 'off',
     'no-useless-constructor': 'off',
-    'no-eval': 'off'
+    'no-eval': 'off',
+    'no-multi-spaces': 'off'
   }
 }

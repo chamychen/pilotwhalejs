@@ -1,6 +1,6 @@
 import utils from 'pilotwhale-utils'
 import { VNode } from 'vue'
-import ComponentConvertor from './element/types/ComponentConvertor'
+import ComponentConvertor from './element/ComponentConvertor'
 import ElementTypes from './element/types'
 import ElementFactory from '@core/element/types/ElementFactory'
 

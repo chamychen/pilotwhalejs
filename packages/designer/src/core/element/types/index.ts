@@ -34,6 +34,7 @@ class ElementType {
 }
 
 const ElementTypes = {
+    content: new ElementType('VContent', null, 'content', 'BaseElement'),
     container: new ElementType('VContainer', null, 'container', 'BaseElement'),
     layout: new ElementType('VLayout', null, 'layout', 'BaseElement'),
     flex: new ElementType('VFlex', null, 'flex', 'BaseElement'),

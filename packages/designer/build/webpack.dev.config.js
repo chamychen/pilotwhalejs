@@ -38,7 +38,8 @@ module.exports = merge(baseWebpackConfig, {
       '@entity': resolve('../src/entity'),
       '@service': resolve('../src/service'),
       '@data': resolve('../src/data'),
-      '@api': resolve('../src/api')
+      '@api': resolve('../src/api'),
+      '@assets': resolve('../src/assets')
     }
   },
   module: {
@@ -73,12 +74,14 @@ module.exports = merge(baseWebpackConfig, {
           }
         },
         'eslint-loader?cache=false?emitWarning=true'
-      ]
+      ],
+      debug: true
     }),
     new HappyPack({
       id: 'js',
       threadPool: happyThreadPool,
-      loaders: ['babel-loader', 'eslint-loader?cache=false?emitWarning=true']
+      loaders: ['babel-loader', 'eslint-loader?cache=false?emitWarning=true'],
+      debug: true
     })
   ]
 })

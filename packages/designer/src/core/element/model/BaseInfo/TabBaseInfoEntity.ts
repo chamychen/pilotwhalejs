@@ -2,7 +2,7 @@ import 'reflect-metadata'
 import ElementTypes, { ElementType } from '@core/element/types'
 import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
 import DesignerDecoratorType from '@core/element/decorator'
-import CommonBaseInfoEntity from '@core/element/model/BaseInfo/CommonBaseInfoEntity'
+import CommonBaseInfoEntity from '@core/element/model/baseinfo/CommonBaseInfoEntity'
 import ElementPropsTmpl from '@core/element/decorator/ElementPropsTmpl'
 
 export default class TabBaseInfoEntity extends CommonBaseInfoEntity {

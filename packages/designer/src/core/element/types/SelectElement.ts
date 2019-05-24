@@ -1,9 +1,9 @@
 import DesignerDecoratorType from '@core/element/decorator'
 import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
 import ElementTypes, { ElementType } from '@core/element/types'
-import InputCssInfoEntity from '@core/element/model/CssInfo/InputCssInfoEntity'
-import SelectBaseInfoEntity from '@core/element/model/BaseInfo/SelectBaseInfoEntity'
-import SelectEventEntity from '@core/element/model/Event/SelectEventEntity'
+import InputCssInfoEntity from '@core/element/model/cssinfo/InputCssInfoEntity'
+import SelectBaseInfoEntity from '@core/element/model/baseinfo/SelectBaseInfoEntity'
+import SelectEventEntity from '@core/element/model/eventinfo/SelectEventEntity'
 import AbstractElement from './AbstractElement'
 import ElementPropsTmpl from '../decorator/ElementPropsTmpl'
 
@@ -19,6 +19,7 @@ export default class SelectElement extends AbstractElement {
      * @memberof SelectElement
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.layout, 'tabs', 'baseInfoTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { class: 'row wrap' })
     baseInfo: SelectBaseInfoEntity
 
     /**
@@ -28,6 +29,7 @@ export default class SelectElement extends AbstractElement {
      * @memberof SelectElement
      */
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.layout, 'tabs', 'cssTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { class: 'row wrap' })
     css: InputCssInfoEntity
 
     /**

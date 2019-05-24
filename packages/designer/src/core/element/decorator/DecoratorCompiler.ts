@@ -1,4 +1,5 @@
-import ElementClassificationCode, { ClassificationCodeType } from '@core/element/decorator/ElementClassificationCode'
+import ElementButtonArea from '@core/element/decorator/ElementButtonArea'
+import ElementClassCode, { ClassCodeType } from '@core/element/decorator/ElementClassCode'
 import ElementFactory from '@core/element/types/ElementFactory'
 import utils, { stringUtils } from 'pilotwhale-utils'
 import DesignerDecoratorType from '.'
@@ -16,10 +17,28 @@ export default class DecoratorCompiler {
      */
     private listElementTypeNames = [ElementTypes.layout.elementTypeName, ElementTypes.table.elementTypeName]
 
+    /**
+     * dto对象
+     *
+     * @private
+     * @type {*}
+     * @memberof DecoratorCompiler
+     */
     private dto: any
 
+    /**
+     *构建好的元素缓存列表
+     *
+     * @private
+     * @type {Array<any>}
+     * @memberof DecoratorCompiler
+     */
     private elements: Array<any> = []
 
+    /**
+     * dto对象
+     * @param dto 
+     */
     constructor(dto: any) {
         this.dto = dto
     }
@@ -51,67 +70,38 @@ export default class DecoratorCompiler {
             if (elementPropNames) {
                 elementPropNames.forEach((elementPropName: string, index: number) => {
                     let simpleElement: SimpleElement = Reflect.getMetadata(DesignerDecoratorType.Element, dto, elementPropName)
-                    let currentElement = ElementFactory.createElement(simpleElement.elementType).mergeProps(simpleElement).toProps()
                     let currentParentKey = parentKey
                     let currentSortNo = index
-
-                    // 构建group
-                    let ElementGroup: ElementGroup = Reflect.getMetadata(DesignerDecoratorType.ElementGroup, dto, elementPropName)
-                    if (ElementGroup != null) {
-                        if (ElementGroup.groupName === '@') {
-                            throw new Error('ElementGroup props groupName cannot be @')
-                        } else {
-                            ElementGroup.groupName = ElementGroup.groupName.replace('@', '')
-                        }
-                        let layoutKey = `${parentKey}_${ElementGroup.groupName}`
-                        if (!this.elements.some(i => utils.stringUtils.compare(i.key, layoutKey))) {
-                            let flexKey = `${layoutKey}_@flex`
-                            let hasFlex = ElementGroup.groupXsFlex || ElementGroup.groupMdFlex || ElementGroup.groupLgFlex
-                            let flex = hasFlex ? [ElementGroup.groupXsFlex, ElementGroup.groupMdFlex, ElementGroup.groupLgFlex] : [12]
-                            // add group flex
-                            this.addLayoutElement(flexKey, ElementTypes.flex, index, currentParentKey, flex)
-                            // add group layout
-                            this.addLayoutElement(layoutKey, ElementTypes.layout, 0, flexKey)
-                        }
-                        currentParentKey = layoutKey
-                        currentSortNo = ElementGroup.elementSortNo
+                    // 构建Group
+                    let genGroupResult = this.genElementGroup(dto, elementPropName, parentKey, index)
+                    if (genGroupResult) {
+                        currentParentKey = genGroupResult.key
+                        currentSortNo = genGroupResult.elementSortNo
                     }
-
-                    if (parentElementTypeName === ElementTypes.table.elementTypeName) {
-                        currentElement.noFlex = true
+                    // 构建Flex
+                    let genElementFlexResult = this.genElementFlex(simpleElement, elementPropName, parentKey, parentElementTypeName, currentSortNo, currentParentKey)
+                    if (genElementFlexResult) {
+                        currentParentKey = genElementFlexResult.key
+                        currentSortNo = genElementFlexResult.elementSortNo
                     }
-                    if (!currentElement.noFlex) {
-                        // add Element Flex
-                        let flexKey = parentKey ? `${parentKey}_${elementPropName}_@flex` : `${elementPropName}_@flex`
-                        let hasFlex = currentElement.smallFlex || currentElement.middleFlex || currentElement.largeFlex
-                        let flex = hasFlex ? [currentElement.smallFlex, currentElement.middleFlex, currentElement.largeFlex] : [12]
-                        this.addLayoutElement(flexKey, ElementTypes.flex, currentSortNo, currentParentKey, flex)
-                        currentSortNo = 0
-                        currentParentKey = flexKey
-                    } else {
-                        currentElement.class = `${currentElement.class ? currentElement.class : ''} px-1`
-                    }
-                    currentElement.smallFlex = null // 重置
-                    currentElement.middleFlex = null // 重置
-                    currentElement.largeFlex = null // 重置
+                    // 构建Element
+                    let currentElement = ElementFactory.createElement(simpleElement.elementType).mergeProps(simpleElement).toProps()
+                    currentElement.smallFlex = currentElement.middleFlex = currentElement.largeFlex = null // 重置
                     currentElement.sortNo = currentSortNo
                     if (this.listElementTypeNames.includes(currentElement.elementTypeName)) {
-                        if (currentElement.elementTypeName === ElementTypes.layout.elementTypeName) {
-                            currentElement.class = 'row wrap'
-                        }
                         currentElement.key = elementPropName
+                        // currentElement.parentKey = currentElement.parentKey
                     } else {
-                        currentElement.parentKey = currentParentKey
-                        // add Element
                         currentElement.key = parentKey ? `${parentKey}_${elementPropName}` : elementPropName
+                        currentElement.parentKey = currentParentKey
                     }
+                    // 扩展属性
                     let ExtendProps: any = Reflect.getMetadata(DesignerDecoratorType.ExtendProps, dto, elementPropName)
-                    // 原生扩展属性
                     if (ExtendProps != null) {
                         currentElement = { ...currentElement, ...ExtendProps }
                     }
                     // 初始化分类码定义
-                    this.initClassificationCode(dto, elementPropName, currentElement)
+                    this.initClassCode(dto, elementPropName, currentElement)
                     this.elements.push(currentElement)
 
                     // 迭代构建子元素
@@ -123,6 +113,91 @@ export default class DecoratorCompiler {
             }
         }
         return result && result.length > 0 ? result : null
+    }
+
+    /**
+     * 生成元素组合
+     * @param dto 
+     * @param elementPropName 
+     * @param elementParentKey 
+     * @param index 
+     */
+    private genElementGroup(dto: any, elementPropName: string, elementParentKey: string, index: number): { elementSortNo: number, key: string } {
+        // 构建group
+        let ElementGroup: ElementGroup = Reflect.getMetadata(DesignerDecoratorType.ElementGroup, dto, elementPropName)
+        if (ElementGroup != null) {
+            if (ElementGroup.groupName === '@') {
+                throw new Error('ElementGroup props groupName cannot be @')
+            } else {
+                ElementGroup.groupName = ElementGroup.groupName.replace('@', '')
+            }
+            let groupKey = elementParentKey ? `${elementParentKey}_${ElementGroup.groupName}` : ElementGroup.groupName
+            if (!this.elements.some(i => utils.stringUtils.compare(i.key, groupKey))) {
+                let flexKey = `${groupKey}_@flex`
+                let flex = [12]
+                if (ElementGroup.groupXsFlex || ElementGroup.groupMdFlex || ElementGroup.groupLgFlex) {
+                    flex = [ElementGroup.groupXsFlex, ElementGroup.groupMdFlex, ElementGroup.groupLgFlex]
+                }
+                // add group flex
+                this.addLayoutElement(flexKey, ElementTypes.flex, index, elementParentKey, flex)
+                // add group layout
+                this.addLayoutElement(groupKey, ElementTypes.layout, 0, flexKey)
+            }
+            return { elementSortNo: ElementGroup.elementSortNo, key: groupKey }
+        }
+    }
+
+    /**
+     * 生成元素的flex
+     * @param simpleElement 
+     * @param elementPropName 
+     * @param elementParentKey 
+     * @param parentElementTypeName 
+     * @param sortNo 
+     * @param parentKey 
+     */
+    private genElementFlex(simpleElement: SimpleElement, elementPropName: string, elementParentKey: string, parentElementTypeName: string, sortNo: number, parentKey: string): { elementSortNo: number, key: string } {
+        if (!simpleElement.noFlex) {
+            if (parentElementTypeName === ElementTypes.table.elementTypeName) {
+                simpleElement.noFlex = true
+            } else {
+                // add Element Flex
+                let flexKey = elementParentKey ? `${elementParentKey}_${elementPropName}_@flex` : `${elementPropName}_@flex`
+                let hasFlex = simpleElement.smallFlex || simpleElement.middleFlex || simpleElement.largeFlex
+                let flex = hasFlex ? [simpleElement.smallFlex, simpleElement.middleFlex, simpleElement.largeFlex] : [12]
+                this.addLayoutElement(flexKey, ElementTypes.flex, sortNo, parentKey, flex)
+                return { elementSortNo: 0, key: flexKey }
+            }
+        } else {
+            simpleElement.class = (simpleElement.class || '') + ' px-1'
+        }
+    }
+
+    /**
+     * 初始化分类码
+     * @param element 
+     * @param elementPropName 
+     * @param config 
+     */
+    private initClassCode(element: any, elementPropName: string, config: any) {
+        let elementClassCode: ElementClassCode = Reflect.getMetadata(DesignerDecoratorType.ClassCode, element, elementPropName)
+        if (elementClassCode) {
+            config.classCodeType = elementClassCode.type
+            switch (elementClassCode.type) {
+                case ClassCodeType.Code:
+                    config.classCode = elementClassCode.code
+                    break
+                case ClassCodeType.JSON:
+                    config.classCodeJSON = elementClassCode.code
+                    break
+                case ClassCodeType.URL:
+                    config.classCodeUrl = elementClassCode.code
+                    break
+                case ClassCodeType.METHOD:
+                    config.classCodeMethod = elementClassCode.code
+                    break
+            }
+        }
     }
 
     /**
@@ -160,33 +235,6 @@ export default class DecoratorCompiler {
                 })
             }
             this.elements.push(element)
-        }
-    }
-
-    /**
-     * 初始化分类码
-     * @param element 
-     * @param elementPropName 
-     * @param config 
-     */
-    private initClassificationCode(element: any, elementPropName: string, config: any) {
-        let elementClassificationCode: ElementClassificationCode = Reflect.getMetadata(DesignerDecoratorType.ClassificationCode, element, elementPropName)
-        if (elementClassificationCode) {
-            config.classificationCodeType = elementClassificationCode.type
-            switch (elementClassificationCode.type) {
-                case ClassificationCodeType.Code:
-                    config.classificationCode = elementClassificationCode.code
-                    break
-                case ClassificationCodeType.JSON:
-                    config.classificationCodeJSON = elementClassificationCode.code
-                    break
-                case ClassificationCodeType.URL:
-                    config.classificationCodeUrl = elementClassificationCode.code
-                    break
-                case ClassificationCodeType.METHOD:
-                    config.classificationCodeMethod = elementClassificationCode.code
-                    break
-            }
         }
     }
 }

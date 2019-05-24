@@ -1,6 +1,6 @@
-import { ClassificationCodeType } from '@core/element/decorator/ElementClassificationCode'
-import ClassificationCodeItem from '@entity/ClassificationCode/ClassificationCodeItem'
-import ClassificationCodeService from '@service/ClassificationCodeService'
+import { ClassCodeType } from '@core/element/decorator/ElementClassCode'
+import ClassCodeItem from '@core/class-code/model/ClassCodeItem'
+import ClassCodeService from '@service/ClassCodeService'
 
 /**
  * 设计器服务
@@ -10,12 +10,12 @@ export default class FieldSetterService {
      * 获取分类码
      * @param code 
      */
-    static getItemsWithClassificationCode(): Array<ClassificationCodeItem> {
-        let codes = ClassificationCodeService.getAllClassificationCode()
+    static getItemsWithClassCode(): Array<ClassCodeItem> {
+        let codes = ClassCodeService.getAllClassCode()
         if (codes) {
             let result = []
             codes.forEach(element => {
-                let obj = new ClassificationCodeItem()
+                let obj = new ClassCodeItem()
                 obj.text = element.main.name
                 obj.value = element.main.code
                 obj.desc = element.main.desc
@@ -29,23 +29,23 @@ export default class FieldSetterService {
      * 获取分类码类型
      * @param code 
      */
-    static getItemsWithClassificationCodeType(): Array<ClassificationCodeItem> {
+    static getItemsWithClassCodeType(): Array<ClassCodeItem> {
         let result = []
-        let code = new ClassificationCodeItem()
+        let code = new ClassCodeItem()
         code.text = 'Code'
-        code.value = ClassificationCodeType.Code
+        code.value = ClassCodeType.Code
         result.push(code)
-        let json = new ClassificationCodeItem()
+        let json = new ClassCodeItem()
         json.text = 'JSON'
-        json.value = ClassificationCodeType.JSON
+        json.value = ClassCodeType.JSON
         result.push(json)
-        let method = new ClassificationCodeItem()
+        let method = new ClassCodeItem()
         method.text = 'METHOD'
-        method.value = ClassificationCodeType.METHOD
+        method.value = ClassCodeType.METHOD
         result.push(method)
-        let url = new ClassificationCodeItem()
+        let url = new ClassCodeItem()
         url.text = 'URL'
-        url.value = ClassificationCodeType.URL
+        url.value = ClassCodeType.URL
         result.push(url)
 
         return result

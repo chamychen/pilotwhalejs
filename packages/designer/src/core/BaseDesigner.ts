@@ -1,4 +1,4 @@
-import ClassificationCodeItem from '@entity/ClassificationCode/ClassificationCodeItem'
+import ClassCodeItem from '@core/class-code/model/ClassCodeItem'
 import Vue from 'vue'
 import DecoratorCompiler from './element/decorator/DecoratorCompiler'
 import RenderTool from './RenderTool'
@@ -9,8 +9,8 @@ export default Vue.extend({
     data() {
         return {
             // 分类码
-            classificationCode: {},
-            classificationCodeMethods: [],
+            classCode: {},
+            classCodeMethods: [],
             // 界面配置,在页面中定义
             // uiEntity: null,
             // 更新方式
@@ -22,22 +22,23 @@ export default Vue.extend({
          * 注册方法到函数分类码
          * @param methodName 
          */
-        registerClassificationCodeMethod(methodName: string) {
-            const classificationCodeMethod = new ClassificationCodeItem()
-            classificationCodeMethod.text = methodName
-            classificationCodeMethod.value = methodName
-            this.classificationCodeMethods.push(classificationCodeMethod)
+        registerClassCodeMethod(methodName: string) {
+            const classCodeMethod = new ClassCodeItem()
+            classCodeMethod.text = methodName
+            classCodeMethod.value = methodName
+            this.classCodeMethods.push(classCodeMethod)
         },
         /**
          * 函数分类码
          */
-        getClassificationCodeMethods() {
-            return this.classificationCodeMethods
+        getClassCodeMethods() {
+            return this.classCodeMethods
         }
 
     },
     render() {
         if (this.uiEntity) {
+            debugger
             let dto = new DecoratorCompiler(this.uiEntity).getInitElements()
             let el = new RenderTool(this, dto, null).genUI(null)
             return el

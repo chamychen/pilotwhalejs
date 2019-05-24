@@ -1,11 +1,11 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify'
 import Vuex from 'vuex'
 import Router from 'vue-router'
 import VueI18n from 'vue-i18n'
 import VueLazyload from 'vue-lazyload'
 import vuelidate from 'vuelidate'
 import utils from 'pilotwhale-utils'
+import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import '@mdi/font/css/materialdesignicons.css'
 
@@ -27,8 +27,7 @@ Vue.use(VueLazyload, {
   preLoad: 1.5 // 启用图片懒加载,按屏幕的1.5倍
 })
 
-// utils.componentUtils.registerComponent(require.context('@components', true, /\.vue$/))
-utils.componentUtils.registerComponent(require.context('@components', true, /\.ts$/))
+utils.componentUtils.registerComponent(require.context('@components', true, /(\.vue$)|(index\.ts$)/))
 
 // 异常处理
 // Vue.config.errorHandler = function(err, vm, info) {}
