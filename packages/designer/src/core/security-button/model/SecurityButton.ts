@@ -15,7 +15,7 @@ export default class SecurityButton {
     code: string = null
 
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text))
-    text: string = null
+    btnName: string = null
 
     /**
      *与fab互斥
@@ -53,6 +53,10 @@ export default class SecurityButton {
     @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
     @Reflect.metadata(DesignerDecoratorType.ClassCode, new ElementClassCode(ClassCodeType.METHOD, 'D-BPS'))
     sizes: string = null
+    
+
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.textarea))
+    title: string = null
 
     /**
      *说明
@@ -60,5 +64,6 @@ export default class SecurityButton {
      * @type {string}
      * @memberof ClassCodeItem
      */
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.textarea))
     desc: string = null
 }

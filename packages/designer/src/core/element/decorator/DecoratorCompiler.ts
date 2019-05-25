@@ -1,4 +1,4 @@
-import ElementButtonArea from '@core/element/decorator/ElementButtonArea'
+import ElementButtonArea from '@core/security-button/model/ElementButtonArea'
 import ElementClassCode, { ClassCodeType } from '@core/element/decorator/ElementClassCode'
 import ElementFactory from '@core/element/types/ElementFactory'
 import utils, { stringUtils } from 'pilotwhale-utils'

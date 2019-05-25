@@ -38,7 +38,6 @@ export default Vue.extend({
     },
     render() {
         if (this.uiEntity) {
-            debugger
             let dto = new DecoratorCompiler(this.uiEntity).getInitElements()
             let el = new RenderTool(this, dto, null).genUI(null)
             return el

@@ -2,10 +2,12 @@ import { stringUtils } from 'pilotwhale-utils'
 import './CTab.sass'
 import { VNode } from 'vue'
 import TabItemDefine from './TabItemDefine'
+import xbutton from '../../mixins/xbutton'
 
 /* @vue/component */
 export default {
   name: 'c-tab',
+  mixins: [xbutton],
   props: {
     items: {
       type: Array
@@ -97,6 +99,9 @@ export default {
         'c-tab-vertical': this.currentVertical,
         'c-tab-vertical-text': this.currentVerticalText
       }
+    },
+    btnCompenents(): object {
+      return this.genButtons(this.currentValue)
     }
   },
   methods: {
@@ -121,7 +126,7 @@ export default {
             fixed: this.fixed,
             app: this.app
           }
-        }, [...tabs, spacer, this.$slots.btn])
+        }, [...tabs, spacer, this.$slots.btn || this.btnCompenents])
         return h('div', [toolbar, tabContext])
       }
     },

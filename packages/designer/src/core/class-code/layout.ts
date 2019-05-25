@@ -4,17 +4,18 @@ import ClassCodeItem from './model/ClassCodeItem'
 import ClassCode from './model/ClassCode'
 import DesignerDecoratorType from '@core/element/decorator'
 import ClassCodeButtons from './button'
+import ClassCodeData from '@core/security-button/data'
 
 /**
  * 分类码
  */
 export default class ClassCodeLayout {
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.tab))
-    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { items: ['main'] })
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { items: ['main'], buttonAreas: ClassCodeButtons.mainTab, buttons: ClassCodeData })
     classCodeMainTab = null
 
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.tab))
-    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { items: ['child'], buttons: ClassCodeButtons.childTab })
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { items: ['child'], buttonAreas: ClassCodeButtons.childTab, buttons: ClassCodeData })
     classCodeChildTab = null
 
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.layout, 'classCodeMainTab', 'main'))
