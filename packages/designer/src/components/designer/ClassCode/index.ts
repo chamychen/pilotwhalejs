@@ -15,6 +15,9 @@ export default ({
     }
   },
   methods: {
+    addChild() {
+      alert(1)
+    }
   },
   created() {
 

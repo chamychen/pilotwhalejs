@@ -1,4 +1,14 @@
 const ElementPropsTmpl = {
+    tab: {
+        buttonMinWidth: 80,
+        buttonSize: 'small',
+        // buttonColor: 'white',
+        buttonDark: false,
+        buttonStyle: 'raised', // raised|flat|depressed|icon|fab
+        // buttonOutline: true,
+        buttonRound: false,
+        buttonStaticClass: 'mx-1'
+    },
     verticalTab: {
         vertical: true
     },

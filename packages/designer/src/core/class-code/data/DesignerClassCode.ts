@@ -2,6 +2,9 @@ import ClassCodeDTO from '@core/class-code/model'
 import ClassCode from '@core/class-code/model/ClassCode'
 import ClassCodeItem from '@core/class-code/model/ClassCodeItem'
 
+const DesignerClassCode = [
+]
+
 // input控件显示类型
 const inputFieldRenderType = new ClassCodeDTO()
 inputFieldRenderType.main = new ClassCode()
@@ -30,6 +33,7 @@ outline.value = 'outline'
 outline.sortNo = 1
 outline.treeNo = 3
 inputFieldRenderType.child.push(outline)
+DesignerClassCode.push(inputFieldRenderType)
 
 // Button属性sizes
 const buttonPropSizes = new ClassCodeDTO()
@@ -73,10 +77,54 @@ xlarge.value = 'x-large'
 xlarge.sortNo = 5
 xlarge.treeNo = 5
 buttonPropSizes.child.push(xlarge)
+DesignerClassCode.push(buttonPropSizes)
 
-const DesignerClassCode = [
-    inputFieldRenderType,
-    buttonPropSizes
-]
+const buttonStyle = new ClassCodeDTO()
+buttonStyle.main = new ClassCode()
+buttonStyle.main.id = 'D-BS'
+buttonStyle.main.name = 'Button style'
+buttonStyle.main.code = 'D-BS'
+buttonStyle.child = []
+// 默认样式(边框加阴影)
+const raised = new ClassCodeItem()
+raised.id = 'D-BS-Raised'
+raised.text = 'raised'
+raised.value = null
+raised.sortNo = 1
+raised.treeNo = 1
+buttonStyle.child.push(raised)
+// 无边框
+const flat = new ClassCodeItem()
+flat.id = 'D-BS-Flat'
+flat.text = 'flat'
+flat.value = 'flat'
+flat.sortNo = 2
+flat.treeNo = 2
+buttonStyle.child.push(flat)
+// 边框无阴影
+const depressed = new ClassCodeItem()
+depressed.id = 'D-BS-Depressed '
+depressed.text = 'depressed'
+depressed.value = 'depressed'
+depressed.sortNo = 3
+depressed.treeNo = 3
+buttonStyle.child.push(depressed)
+// 仅显示为图标
+const icon = new ClassCodeItem()
+icon.id = 'D-BS-Icon '
+icon.text = 'icon'
+icon.value = 'icon'
+icon.sortNo = 4
+icon.treeNo = 4
+buttonStyle.child.push(icon)
+// 仅显示为圆形图标
+const fabIcon = new ClassCodeItem()
+icon.id = 'D-BS-Fabicon '
+icon.text = 'fab icon'
+icon.value = 'fab'
+icon.sortNo = 5
+icon.treeNo = 5
+buttonStyle.child.push(icon)
+DesignerClassCode.push(buttonStyle)
 
 export default DesignerClassCode

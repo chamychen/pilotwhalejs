@@ -5,10 +5,11 @@ import TabCssInfoEntity from '@core/element/model/cssinfo/TabCssInfoEntity'
 import TabBaseInfoEntity from '@core/element/model/baseinfo/TabBaseInfoEntity'
 import AbstractElement from './AbstractElement'
 import ElementPropsTmpl from '../decorator/ElementPropsTmpl'
+import ButtonCssInfoEntity from '../model/ButtonInfo/ButtonCssInfoEntity'
 
 export default class TabElement extends AbstractElement {
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.tab))
-    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { ...ElementPropsTmpl.verticalTextTab, items: ['baseInfoTab', 'cssTab'] })
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { ...ElementPropsTmpl.verticalTextTab, items: ['baseInfoTab', 'cssTab', 'buttonTab'] })
     tabs = null
 
     /**
@@ -31,9 +32,14 @@ export default class TabElement extends AbstractElement {
     @Reflect.metadata(DesignerDecoratorType.ExtendProps, { class: 'row wrap' })
     css: TabCssInfoEntity
 
-    constructor(elementType: ElementType) {        
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.layout, 'tabs', 'buttonTab'))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { class: 'row wrap' })
+    button: ButtonCssInfoEntity
+
+    constructor(elementType: ElementType) {
         super()
         this.baseInfo = new TabBaseInfoEntity(elementType)
         this.css = new TabCssInfoEntity()
+        this.button = new ButtonCssInfoEntity()
     }
 }

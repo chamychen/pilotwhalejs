@@ -25,6 +25,7 @@ export class ButtonGroup {
     isGroup: boolean
     groupIcon: string
     groupText: string
+    groupButtonColor: string
     buttons: Array<ButtonProps>
 }
 
@@ -43,11 +44,78 @@ export default ({
         app: {
             type: Boolean,
             default: false
+        },
+        buttonMinWidth: {
+            type: Number
+        },
+        buttonMinHeight: {
+            type: Number
+        },
+        buttonSize: {
+            type: String
+        },
+        buttonColor: {
+            type: String
+        },
+        buttonDark: {
+            type: Boolean
+        },
+        buttonStyle: {
+            type: String
+        },
+        buttonOutline: {
+            type: Boolean
+        },
+        buttonRound: {
+            type: Boolean
+        },
+        buttonClickMethod: {
+            type: String
+        },
+        buttonClickContext: {
+            type: Object
+        },
+        buttonStaticClass: {
+            type: String
+        },
+        mobileBreakpoint: {
+            type: Number,
+            default: 1024
         }
     },
     data() {
         return {
             buttonStructure: {}
+        }
+    },
+    computed: {
+        btnProps() {
+            let obj: any = {}
+            if (this.buttonMinWidth) {
+                obj.minWidth = this.buttonMinWidth
+            }
+            if (this.buttonMinHeight) {
+                obj.minHeight = this.buttonMinHeight
+            }
+            if (this.buttonSize) {
+                obj[this.buttonSize] = true
+            }
+            if (this.buttonColor) {
+                obj.color = this.buttonColor
+            }
+            if (this.buttonDark) {
+                obj.dark = true
+            }
+            if (this.buttonStyle) {
+                obj[this.buttonStyle] = true
+            }
+            if (this.buttonOutline) {
+                obj.outline = this.buttonOutline
+            }
+            if (this.buttonRound) {
+                obj.round = this.buttonRound
+            }
+            return obj
         }
     },
     methods: {
@@ -64,7 +132,7 @@ export default ({
                             }
                         } else {
                             buttonGroup.buttons.forEach(button => {
-                                let btn = this.genDefaultButton(this.$createElement, button)
+                                let btn = this.genButton(this.$createElement, button)
                                 if (btn) {
                                     result.push(btn)
                                 }
@@ -73,47 +141,6 @@ export default ({
                     })
                     return result
                 }
-            }
-        },
-        genDefaultButton(h, button: ButtonProps) {
-            let iconDark = !stringUtils.isEmpty(button.color)
-            let icon = button.iconClass ? h('VIcon', {
-                class: 'px-1',
-                props: {
-                    small: true,
-                    dark: iconDark
-                },
-                domProps: {
-                    innerHTML: button.iconClass
-                }
-            }) : null
-
-            let title = button.btnName ? h('span', {
-                domProps: {
-                    innerHTML: button.btnName
-                },
-                style: {
-                    position: icon ? 'relative' : undefined,
-                    top: icon ? '1px' : undefined
-                }
-            }) : null
-
-            let objs = []
-            if (icon) {
-                objs.push(icon)
-            }
-            if (title) {
-                objs.push(title)
-            }
-            if (objs && objs.length > 0) {
-                let btn = h('VBtn', {
-                    class: 'mx-1',
-                    props: button,
-                    domProps: {
-                        title: button.title ? button.title : undefined
-                    }
-                }, objs)
-                return btn
             }
         },
         genButtonGroup(h, buttonGroup: ButtonGroup) {
@@ -127,38 +154,73 @@ export default ({
                 })
                 if (buttons && buttons.length > 0) {
                     let list = h('VList', { props: { light: true, dense: true } }, buttons)
-                    let label = buttonGroup.groupText ? h('span', {
-                        class: 'hidden-sm-and-down mr-1',
-                        domProps: {
-                            innerHTML: buttonGroup.groupText
-                        }
-                    }) : null
-                    let icon1 = h('VIcon', {
-                        class: 'hidden-sm-and-down',
-                        domProps: {
-                            innerHTML: 'mdi-menu-down'
-                        }
-                    })
-                    let icon2 = buttonGroup.groupIcon ? h('VIcon', {
-                        class: 'hidden-md-and-up',
-                        domProps: {
-                            innerHTML: buttonGroup.groupIcon
-                        }
-                    }) : null
-                    let objs = []
-                    if (label) {
-                        objs.push(label)
-                    }
-                    if (icon1) {
-                        objs.push(icon1)
-                    }
-                    if (icon2) {
-                        objs.push(icon2)
-                    }
-                    let btn = h('VBtn', { slot: 'activator', props: { ariaLabel: buttonGroup.groupText, text: true }, class: 'mx-1', style: { minWidth: '48px' } }, objs)
-                    let menu = h('VMenu', { props: { bottom: true, left: true, offsetY: true } }, [btn, list])
+                    let buttonProps = new ButtonProps()
+                    buttonProps.btnName = buttonGroup.groupText
+                    buttonProps.iconClass = buttonGroup.groupIcon
+                    buttonProps.color = buttonGroup.groupButtonColor
+                    let button = this.genButton(h, buttonProps, true)
+                    let menu = h('VMenu', { props: { bottom: true, left: true, offsetY: true } }, [button, list])
                     return menu
                 }
+            }
+        },
+        genButton(h, button: ButtonProps, isMenuButton = false) {
+            let props = { ...this.btnProps }
+            if (button.color) {
+                props.color = button.color
+            }
+            let iconDark = !stringUtils.isEmpty(props.color)
+            let icon = button.iconClass ? h('VIcon', {
+                // class: isMenuButton ? 'px-1 hidden-md-and-up' : 'px-1',
+                class: 'px-1',
+                props: {
+                    small: true,
+                    dark: iconDark
+                },
+                domProps: {
+                    innerHTML: button.iconClass
+                }
+            }) : null
+            let label = button.btnName ? h('span', {
+                class: 'mr-1 hidden-sm-and-down',
+                domProps: {
+                    innerHTML: button.btnName
+                }
+            }) : null
+            let objs = []
+            if (icon) {
+                objs.push(icon)
+            }
+            if (label) {
+                objs.push(label)
+            }
+            if (isMenuButton) {
+                let iconExtend = h('VIcon', {
+                    class: 'hidden-sm-and-down',
+                    domProps: {
+                        innerHTML: 'mdi-menu-down'
+                    }
+                })
+                objs.push(iconExtend)
+            }
+            if (objs && objs.length > 0) {
+                if (this.isMobile()) {
+                    props.fab = true
+                    props.minWidth = null
+                    props.outline = false
+                }
+                let btn = h('VBtn', {
+                    slot: isMenuButton ? 'activator' : undefined,
+                    staticClass: this.buttonStaticClass,
+                    props: {
+                        ...props,
+                        ariaLabel: isMenuButton ? button.btnName : undefined
+                    },
+                    domProps: {
+                        title: button.title ? button.title : undefined
+                    }
+                }, objs)
+                return btn
             }
         },
         genButtonGroupItem(h, button: ButtonProps) {
@@ -171,7 +233,11 @@ export default ({
                     innerHTML: button.iconClass
                 }
             }) : null
-            let action = button.iconClass ? h('VListItemAction', [icon]) : null
+            let action = button.iconClass ? h('VListItemAction', {
+                style: {
+                    marginRight: '0px'
+                }
+            }, [icon]) : null
 
             let title = button.btnName ? h('VListItemTitle', {
                 domProps: {
@@ -192,8 +258,7 @@ export default ({
                     class: 'v-list__tile--doc',
                     props: {
                         ripple: true,
-                        rel: 'noopener',
-                        dark: button.dark
+                        rel: 'noopener'
                     },
                     domProps: {
                         title: button.title ? button.title : undefined
@@ -224,10 +289,16 @@ export default ({
          * @param tagName 
          */
         getButtonStructure(tagName: string): Array<ButtonGroup> {
+            let isMobile = this.isMobile()
+            let data: Array<ButtonGroup> = null
             if (this.buttonStructure[tagName]) {
-                let result: Array<ButtonGroup> = this.buttonStructure[tagName]
-                return result
-            } else {
+                if (isMobile) {
+                    data = this.buttonStructure[tagName].mobileData
+                } else {
+                    data = this.buttonStructure[tagName].pcData
+                }
+            }
+            if (!data) {
                 let result = null
                 if (this.buttons && this.buttons.length > 0) {
                     if (this.buttonAreas) {
@@ -257,10 +328,11 @@ export default ({
                                     let buttonGroup: ButtonGroup = {
                                         isGroup,
                                         groupIcon: isGroup ? tagButtonArea.groupIcon : null,
-                                        groupText: isGroup ? (this.isMobile() ? null : tagButtonArea.groupText) : null,
-                                        buttons: securityButtons
+                                        groupText: isGroup ? (isMobile ? null : tagButtonArea.groupText) : null,
+                                        buttons: securityButtons,
+                                        groupButtonColor: tagButtonArea.groupButtonColor
                                     }
-                                    if (this.isMobile()) {
+                                    if (isMobile) {
                                         buttonGroup.groupText = null
                                         if (!tagButtonArea.mobileFixed) {
                                             notMobileFixedButtons = notMobileFixedButtons.concat(securityButtons)
@@ -272,23 +344,39 @@ export default ({
                                     }
                                 }
                             })
-                            if (this.isMobile() && notMobileFixedButtons.length > 0) {
+                            if (isMobile && notMobileFixedButtons.length > 0) {
                                 notMobileFixedButtons = arrayUtils.removeDuplicate(notMobileFixedButtons)
                                 let isGroup = notMobileFixedButtons.length > 1
                                 let buttonGroup: ButtonGroup = {
                                     isGroup,
-                                    groupIcon: isGroup ? 'list' : null,
+                                    groupIcon: isGroup ? 'mdi-format-list-bulleted' : null,
                                     groupText: null,
-                                    buttons: notMobileFixedButtons
+                                    buttons: notMobileFixedButtons,
+                                    groupButtonColor: null
                                 }
                                 allButtonGroups = mobileFixedButtonGroups.concat(buttonGroup)
                             }
                             result = allButtonGroups
-                            this.$set(this.buttonStructure, tagName, result)
+                            let tagNameData = this.buttonStructure[tagName]
+                            let obj: any = {}
+                            if (isMobile) {
+                                obj.mobileData = result
+                                if (tagNameData && tagNameData.pcData) {
+                                    obj.pcData = tagNameData.pcData
+                                }
+                            } else {
+                                obj.pcData = result
+                                if (tagNameData && tagNameData.mobileData) {
+                                    obj.mobileData = tagNameData.mobileData
+                                }
+                            }
+                            this.$set(this.buttonStructure, tagName, obj)
                             return result
                         }
                     }
                 }
+            } else {
+                return data
             }
         },
         isMobile(): boolean {

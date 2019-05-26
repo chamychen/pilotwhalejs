@@ -21,6 +21,8 @@ export default class ButtonAreaDefine {
 
     groupDownIcon: string = 'mdi-menu-down'
 
+    groupButtonColor: string
+
     /**
      * 手机端是否强制独立显示
      */
