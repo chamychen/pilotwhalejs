@@ -10,7 +10,7 @@ import VIcon from '../VIcon'
 
 // Mixins
 // TODO: Move this into core components v2.0
-import ButtonGroup from '../../mixins/button-group'
+import ButtonGroupInstance from '../../mixins/button-group'
 
 // Utilities
 import { convertToUnit } from '../../util/helpers'
@@ -182,7 +182,7 @@ export default VWindow.extend({
         children.push(child)
       }
 
-      return this.$createElement(ButtonGroup, {
+      return this.$createElement(ButtonGroupInstance, {
         props: {
           value: this.internalValue
         },

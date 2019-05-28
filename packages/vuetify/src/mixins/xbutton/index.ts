@@ -1,7 +1,9 @@
+import lodash from 'lodash'
+import Colorable from '../colorable'
 import { VNode } from 'vue'
-import ButtonAreaDefine from './ButtonAreaDefine'
-import { stringUtils, arrayUtils } from 'pilotwhale-utils'
-import ButtonProps from './ButtonProps'
+import ButtonGroup from './ButtonGroup'
+import { stringUtils, arrayUtils, guidUtils } from 'pilotwhale-utils'
+import Button from './Button'
 
 enum ButtonType {
     /**
@@ -19,26 +21,30 @@ enum ButtonType {
 }
 
 /**
- * 按钮组合
+ * 按钮组合实例
  */
-export class ButtonGroup {
+class ButtonGroupInstance {
     isGroup: boolean
     groupIcon: string
     groupText: string
     groupButtonColor: string
-    buttons: Array<ButtonProps>
+    buttons: Array<Button>
 }
 
 export default ({
     name: 'xbutton',
+    mixins: [Colorable],
     props: {
-        // 按钮配置的集合
-        buttons: {
-            type: [Array]
+        context: {
+            type: Object
         },
         // 按钮结构的集合
-        buttonAreas: {
-            type: [Array, Object]
+        buttonGroups: {
+            type: [Array]
+        },
+        // 按钮的集合
+        buttons: {
+            type: [Array]
         },
         // 是否页面级别按钮
         app: {
@@ -85,7 +91,6 @@ export default ({
     },
     data() {
         return {
-            buttonStructure: {}
         }
     },
     computed: {
@@ -121,42 +126,75 @@ export default ({
     methods: {
         genButtons(tagName: string): VNode[] | undefined {
             if (tagName) {
-                let buttonStructure: Array<ButtonGroup> = this.getButtonStructure(tagName)
+                let h = this.$createElement
+                let buttonStructure: Array<ButtonGroupInstance> = this.getButtonStructure(tagName)
                 if (buttonStructure) {
                     let result = []
                     buttonStructure.forEach(buttonGroup => {
                         if (buttonGroup.isGroup) {
-                            let group = this.genButtonGroup(this.$createElement, buttonGroup)
+                            let group = this.genDropDownList(h, buttonGroup)
                             if (group) {
                                 result.push(group)
                             }
                         } else {
                             buttonGroup.buttons.forEach(button => {
-                                let btn = this.genButton(this.$createElement, button)
+                                let btn = this.genButton(h, button)
                                 if (btn) {
                                     result.push(btn)
                                 }
                             })
                         }
                     })
-                    return result
+                    if (this.getButtonType() === ButtonType.APP) {
+                        this.genBottomNavigation(h, result)
+                        return null
+                    } else {
+                        if (!this.isMobile() && this.context && this.context.extendElements && this.context.extendElements.length > 0) {
+                            this.context.$set(this.context, 'extendElements', [])
+                        }
+                        return result
+                    }
                 }
             }
         },
-        genButtonGroup(h, buttonGroup: ButtonGroup) {
+        genBottomNavigation(h, buttons) {
+            if (this.context && this.context.extendElements) {
+                let result = []
+                if (buttons && buttons.length > 0) {
+                    let flexNo = parseInt(12 / buttons.length)
+                    let maxCount = 12 / flexNo
+                    let flexs = []
+                    for (let i = 0; i < maxCount; i++) {
+                        let flex = h('VFlex', { class: `xs${flexNo}` }, [buttons[i]])
+                        flexs.push(flex)
+                    }
+                    let layout = h('VLayout', flexs)
+                    let bottomNavigation = h('VBottomNavigation', {
+                        props: {
+                            app: true
+                        }
+                    }, [layout])
+                    result.push(bottomNavigation)
+                }
+                if (!lodash.isEqual(this.context.extendElements, result)) {
+                    this.context.$set(this.context, 'extendElements', result)
+                }
+            }
+        },
+        genDropDownList(h, buttonGroup: ButtonGroupInstance) {
             if (buttonGroup.buttons) {
                 let buttons = []
                 buttonGroup.buttons.forEach(buttonProps => {
-                    let button = this.genButtonGroupItem(h, buttonProps)
+                    let button = this.genDropDownItem(h, buttonProps)
                     if (button) {
                         buttons.push(button)
                     }
                 })
                 if (buttons && buttons.length > 0) {
                     let list = h('VList', { props: { light: true, dense: true } }, buttons)
-                    let buttonProps = new ButtonProps()
-                    buttonProps.btnName = buttonGroup.groupText
-                    buttonProps.iconClass = buttonGroup.groupIcon
+                    let buttonProps = new Button()
+                    buttonProps.text = buttonGroup.groupText
+                    buttonProps.icon = buttonGroup.groupIcon
                     buttonProps.color = buttonGroup.groupButtonColor
                     let button = this.genButton(h, buttonProps, true)
                     let menu = h('VMenu', { props: { bottom: true, left: true, offsetY: true } }, [button, list])
@@ -164,29 +202,103 @@ export default ({
                 }
             }
         },
-        genButton(h, button: ButtonProps, isMenuButton = false) {
+        genDropDownItem(h, button: Button) {
+            let icon = button.icon ? h('VIcon', {
+                props: {
+                    small: true,
+                    color: button.color ? button.color : undefined
+                },
+                domProps: {
+                    innerHTML: button.icon
+                }
+            }) : null
+            let action = button.icon ? h('VListItemAction', {
+                style: {
+                    marginRight: '0px'
+                }
+            }, [icon]) : null
+
+            let title = button.text ? h('VListItemTitle', {
+                domProps: {
+                    innerHTML: `<span>${button.text}</span>`
+                }
+            }) : null
+            let content = button.text ? h('VListItemContent', [title]) : null
+
+            let objs = []
+            if (action) {
+                objs.push(action)
+            }
+            if (content) {
+                objs.push(content)
+            }
+            if (objs && objs.length > 0) {
+                let on = null
+                if (button.event && this.context && this.context[button.event]) {
+                    on = {}
+                    on.click = this.context[button.event]
+                }
+                let listItem = h('VListItem', {
+                    class: 'v-list__tile--doc',
+                    props: {
+                        ripple: true,
+                        rel: 'noopener'
+                    },
+                    domProps: {
+                        title: button.tips ? button.tips : undefined
+                    },
+                    on
+                }, objs)
+                return listItem
+            }
+        },
+        genButton(h, button: Button, isMenuButton = false) {
+            if (this.getButtonType() === ButtonType.APP && !button.color) {
+                button.color = '#000000'
+            }
             let props = { ...this.btnProps }
             if (button.color) {
                 props.color = button.color
             }
             let iconDark = !stringUtils.isEmpty(props.color)
-            let icon = button.iconClass ? h('VIcon', {
+            let icon = button.icon ? h('VIcon', {
+                key: button.key ? button.key : guidUtils.newId(),
                 // class: isMenuButton ? 'px-1 hidden-md-and-up' : 'px-1',
                 class: 'px-1',
                 props: {
                     small: true,
-                    dark: iconDark
+                    dark: iconDark,
+                    color: this.getButtonType() === ButtonType.APP ? button.color : null
                 },
                 domProps: {
-                    innerHTML: button.iconClass
+                    innerHTML: button.icon
+                },
+                style: {
+                    fontSize: this.getButtonType() === ButtonType.APP ? '22px' : null
                 }
             }) : null
-            let label = button.btnName ? h('span', {
-                class: 'mr-1 hidden-sm-and-down',
+            let labelProps: any = button.text ? {
+                class: this.getButtonType() === ButtonType.APP ? 'mr-1' : 'mr-1 hidden-sm-and-down',
                 domProps: {
-                    innerHTML: button.btnName
+                    innerHTML: button.text
+                },
+                style: {
+                    fontSize: this.getButtonType() === ButtonType.APP ? '14px' : null
                 }
-            }) : null
+            } : null
+            if (labelProps) {
+                if (this.getButtonType() === ButtonType.APP) {
+                    if (this.isCssColor(button.color)) {
+                        if (!labelProps.style) {
+                            labelProps.style = {}
+                        }
+                        labelProps.style.color = button.color
+                    } else {
+                        labelProps.class += ` ${button.color}--text`
+                    }
+                }
+            }
+            let label = labelProps ? h('span', labelProps) : null
             let objs = []
             if (icon) {
                 objs.push(icon)
@@ -194,7 +306,7 @@ export default ({
             if (label) {
                 objs.push(label)
             }
-            if (isMenuButton) {
+            if (isMenuButton && this.getButtonType() !== ButtonType.APP) {
                 let iconExtend = h('VIcon', {
                     class: 'hidden-sm-and-down',
                     domProps: {
@@ -209,62 +321,36 @@ export default ({
                     props.minWidth = null
                     props.outline = false
                 }
+                let on = null
+                if (button.event && this.context && this.context[button.event]) {
+                    on = {}
+                    on.click = this.context[button.event]
+                }
+                let style: any = {}
+                let staticClass = null
+                if (this.getButtonType() === ButtonType.APP) {
+                    props.color = undefined
+                    staticClass = this.buttonStaticClass
+                    let objsLable = objs[1]
+                    objs[1] = objs[0]
+                    objs[0] = objsLable
+                } else {
+                    staticClass = this.buttonStaticClass ? this.buttonStaticClass + ' mx-1' : 'mx-1'
+                }
                 let btn = h('VBtn', {
                     slot: isMenuButton ? 'activator' : undefined,
-                    staticClass: this.buttonStaticClass,
+                    staticClass,
+                    style,
                     props: {
                         ...props,
-                        ariaLabel: isMenuButton ? button.btnName : undefined
+                        ariaLabel: isMenuButton ? button.text : undefined
                     },
                     domProps: {
-                        title: button.title ? button.title : undefined
-                    }
+                        title: button.tips ? button.tips : undefined
+                    },
+                    on
                 }, objs)
                 return btn
-            }
-        },
-        genButtonGroupItem(h, button: ButtonProps) {
-            let icon = button.iconClass ? h('VIcon', {
-                props: {
-                    small: true,
-                    color: button.color ? button.color : undefined
-                },
-                domProps: {
-                    innerHTML: button.iconClass
-                }
-            }) : null
-            let action = button.iconClass ? h('VListItemAction', {
-                style: {
-                    marginRight: '0px'
-                }
-            }, [icon]) : null
-
-            let title = button.btnName ? h('VListItemTitle', {
-                domProps: {
-                    innerHTML: `<span>${button.btnName}</span>`
-                }
-            }) : null
-            let content = button.btnName ? h('VListItemContent', [title]) : null
-
-            let objs = []
-            if (action) {
-                objs.push(action)
-            }
-            if (content) {
-                objs.push(content)
-            }
-            if (objs && objs.length > 0) {
-                let listItem = h('VListItem', {
-                    class: 'v-list__tile--doc',
-                    props: {
-                        ripple: true,
-                        rel: 'noopener'
-                    },
-                    domProps: {
-                        title: button.title ? button.title : undefined
-                    }
-                }, objs)
-                return listItem
             }
         },
         /**
@@ -272,12 +358,12 @@ export default ({
          */
         getButtonType() {
             let buttonType = ButtonType.DEFAULT
-            switch (this.name) {
-                case 'v-data-table':
+            switch (this.$options._componentTag) {
+                case 'VDataTable':
                     buttonType = ButtonType.INLINE_ROW
                     break
-                case 'c-tab':
-                    if (this.app) {
+                case 'CTab':
+                    if (this.app && this.isMobile()) {
                         buttonType = ButtonType.APP
                     }
                     break
@@ -288,95 +374,62 @@ export default ({
          * 获取标签/列名的按钮结构
          * @param tagName 
          */
-        getButtonStructure(tagName: string): Array<ButtonGroup> {
+        getButtonStructure(tagName: string): Array<ButtonGroupInstance> {
             let isMobile = this.isMobile()
-            let data: Array<ButtonGroup> = null
-            if (this.buttonStructure[tagName]) {
-                if (isMobile) {
-                    data = this.buttonStructure[tagName].mobileData
-                } else {
-                    data = this.buttonStructure[tagName].pcData
-                }
-            }
-            if (!data) {
-                let result = null
-                if (this.buttons && this.buttons.length > 0) {
-                    if (this.buttonAreas) {
-                        let buttonAreas: Array<ButtonAreaDefine> = null
-                        if (!Array.isArray(this.buttonAreas)) {
-                            buttonAreas = [this.buttonAreas]
-                        } else {
-                            buttonAreas = this.buttonAreas
-                        }
-                        let tagButtonAreas = buttonAreas.filter(i => stringUtils.compare(i.useTag, tagName))
-                        if (tagButtonAreas && tagButtonAreas.length > 0) {
-                            let allButtonGroups: Array<ButtonGroup> = []
-                            let notMobileFixedButtons = []
-                            let mobileFixedButtonGroups = []
-                            tagButtonAreas.forEach(tagButtonArea => {
-                                let buttonCodes = tagButtonArea.buttonCodes
-                                let securityButtons = []
-                                buttonCodes.forEach(code => {
-                                    let buttonConfig = this.buttons.find(i => stringUtils.compare(i.code, code))
-                                    if (buttonConfig) {
-                                        // 按钮操作权限
-                                        securityButtons.push(buttonConfig)
-                                    }
-                                })
-                                if (securityButtons && securityButtons.length > 0) {
-                                    let isGroup = securityButtons.length > 1 && (!stringUtils.isEmpty(tagButtonArea.groupIcon) || !stringUtils.isEmpty(tagButtonArea.groupText))
-                                    let buttonGroup: ButtonGroup = {
-                                        isGroup,
-                                        groupIcon: isGroup ? tagButtonArea.groupIcon : null,
-                                        groupText: isGroup ? (isMobile ? null : tagButtonArea.groupText) : null,
-                                        buttons: securityButtons,
-                                        groupButtonColor: tagButtonArea.groupButtonColor
-                                    }
-                                    if (isMobile) {
-                                        buttonGroup.groupText = null
-                                        if (!tagButtonArea.mobileFixed) {
-                                            notMobileFixedButtons = notMobileFixedButtons.concat(securityButtons)
-                                        } else {
-                                            mobileFixedButtonGroups.push(buttonGroup)
-                                        }
-                                    } else {
-                                        allButtonGroups.push(buttonGroup)
-                                    }
-                                }
-                            })
-                            if (isMobile && notMobileFixedButtons.length > 0) {
-                                notMobileFixedButtons = arrayUtils.removeDuplicate(notMobileFixedButtons)
-                                let isGroup = notMobileFixedButtons.length > 1
-                                let buttonGroup: ButtonGroup = {
-                                    isGroup,
-                                    groupIcon: isGroup ? 'mdi-format-list-bulleted' : null,
-                                    groupText: null,
-                                    buttons: notMobileFixedButtons,
-                                    groupButtonColor: null
-                                }
-                                allButtonGroups = mobileFixedButtonGroups.concat(buttonGroup)
+            let result = null
+            if (this.buttonGroups && this.buttonGroups.length > 0 && this.buttons && this.buttons.length > 0) {
+                let buttonGroups: Array<ButtonGroup> = this.buttonGroups
+                let tagbuttonGroups = buttonGroups.filter(i => stringUtils.compare(i.useTag, tagName))
+                if (tagbuttonGroups && tagbuttonGroups.length > 0) {
+                    let buttons: Array<Button> = this.buttons
+                    let allButtonGroups: Array<ButtonGroupInstance> = []
+                    let notMobileFixedButtons = []
+                    let mobileFixedButtonGroups = []
+                    tagbuttonGroups.forEach(tagButtonArea => {
+                        let groupButtons: Array<Button> = []
+                        let buttonKeys = tagButtonArea.buttonKeys
+                        buttonKeys.forEach(key => {
+                            let button: Button = buttons.find(i => stringUtils.compare(i.key, key))
+                            if (button) {
+                                groupButtons.push(button)
                             }
-                            result = allButtonGroups
-                            let tagNameData = this.buttonStructure[tagName]
-                            let obj: any = {}
+                        })
+                        if (groupButtons && groupButtons.length > 0) {
+                            let isGroup = groupButtons.length > 1 && (!stringUtils.isEmpty(tagButtonArea.groupIcon) || !stringUtils.isEmpty(tagButtonArea.groupText))
+                            let buttonGroup: ButtonGroupInstance = {
+                                isGroup,
+                                groupIcon: isGroup ? tagButtonArea.groupIcon : null,
+                                groupText: isGroup ? tagButtonArea.groupText : null,
+                                buttons: groupButtons,
+                                groupButtonColor: tagButtonArea.groupButtonColor
+                            }
                             if (isMobile) {
-                                obj.mobileData = result
-                                if (tagNameData && tagNameData.pcData) {
-                                    obj.pcData = tagNameData.pcData
+                                if (!tagButtonArea.mobileFixed) {
+                                    notMobileFixedButtons = notMobileFixedButtons.concat(groupButtons)
+                                } else {
+                                    mobileFixedButtonGroups.push(buttonGroup)
+                                    allButtonGroups.push(buttonGroup)
                                 }
                             } else {
-                                obj.pcData = result
-                                if (tagNameData && tagNameData.mobileData) {
-                                    obj.mobileData = tagNameData.mobileData
-                                }
+                                allButtonGroups.push(buttonGroup)
                             }
-                            this.$set(this.buttonStructure, tagName, obj)
-                            return result
                         }
+                    })
+                    if (isMobile && notMobileFixedButtons.length > 0) {
+                        notMobileFixedButtons = arrayUtils.removeDuplicate(notMobileFixedButtons)
+                        let isGroup = notMobileFixedButtons.length > 1
+                        let buttonGroup: ButtonGroupInstance = {
+                            isGroup,
+                            groupIcon: isGroup ? 'mdi-format-list-bulleted' : null,
+                            groupText: 'more',
+                            buttons: notMobileFixedButtons,
+                            groupButtonColor: null
+                        }
+                        allButtonGroups = mobileFixedButtonGroups.concat(buttonGroup)
                     }
+                    result = allButtonGroups
+                    return result
                 }
-            } else {
-                return data
             }
         },
         isMobile(): boolean {

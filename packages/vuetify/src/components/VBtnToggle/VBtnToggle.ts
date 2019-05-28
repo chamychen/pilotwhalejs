@@ -2,10 +2,10 @@
 import './VBtnToggle.sass'
 
 // Mixins
-import ButtonGroup from '../../mixins/button-group'
+import ButtonGroupInstance from '../../mixins/button-group'
 
 /* @vue/component */
-export default ButtonGroup.extend({
+export default ButtonGroupInstance.extend({
   name: 'v-btn-toggle',
 
   props: {
@@ -19,7 +19,7 @@ export default ButtonGroup.extend({
   computed: {
     classes (): object {
       return {
-        ...ButtonGroup.options.computed.classes.call(this),
+        ...ButtonGroupInstance.options.computed.classes.call(this),
         'v-btn-toggle': true,
         'v-btn-toggle--rounded': this.rounded
       }

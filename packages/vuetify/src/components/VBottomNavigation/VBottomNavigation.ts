@@ -3,7 +3,7 @@ import './VBottomNavigation.sass'
 
 // Mixins
 import Applicationable from '../../mixins/applicationable'
-import ButtonGroup from '../../mixins/button-group'
+import ButtonGroupInstance from '../../mixins/button-group'
 import Colorable from '../../mixins/colorable'
 import Measurable from '../../mixins/measurable'
 import Proxyable from '../../mixins/proxyable'
@@ -136,6 +136,6 @@ export default mixins(
       })
     }
 
-    return h(ButtonGroup, data, this.$slots.default)
+    return h(ButtonGroupInstance, data, this.$slots.default)
   }
 })
