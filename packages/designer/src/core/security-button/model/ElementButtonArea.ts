@@ -13,13 +13,15 @@ export default class ElementButtonArea {
      * @type {Array<string>}
      * @memberof ElementButtons
      */
-    buttonCodes: Array<string>
+    buttonKeys: Array<string>
 
     groupText: string
 
     groupIcon: string
 
     groupDownIcon: string = 'mdi-menu-down'
+
+    groupButtonColor: string
 
     /**
      * 手机端是否强制独立显示
@@ -31,9 +33,9 @@ export default class ElementButtonArea {
      * @param useTag 应用区域标记
      * @param buttonCodes 按钮code
      */
-    constructor(useTag: string, buttonCodes: Array<string>, groupText?: string, groupIcon?: string, mobileFixed?: boolean) {
+    constructor(useTag: string, buttonKeys: Array<string>, groupText?: string, groupIcon?: string, mobileFixed?: boolean) {
         this.useTag = useTag
-        this.buttonCodes = buttonCodes
+        this.buttonKeys = buttonKeys
         this.groupText = groupText
         this.groupIcon = groupIcon
         this.mobileFixed = mobileFixed

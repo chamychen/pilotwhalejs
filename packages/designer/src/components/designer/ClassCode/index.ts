@@ -1,5 +1,6 @@
 import BaseDesigner from '@core/BaseDesigner'
 import ClassCodeLayout from '@core/class-code/layout'
+import ClassCodeButtons from './button'
 
 export default ({
   mixins: [BaseDesigner],
@@ -11,7 +12,8 @@ export default ({
   data() {
     return {
       uiEntity: new ClassCodeLayout(),
-      currentValue: {}
+      currentValue: {},
+      buttons: ClassCodeButtons
     }
   },
   methods: {

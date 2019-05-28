@@ -3,20 +3,19 @@ import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
 import ClassCodeItem from './model/ClassCodeItem'
 import ClassCode from './model/ClassCode'
 import DesignerDecoratorType from '@core/element/decorator'
-import ClassCodeButtons from './button'
-import ClassCodeData from '@core/security-button/data'
 import ElementPropsTmpl from '@core/element/decorator/ElementPropsTmpl'
+import ClassCodeButtonGroups from './ClassCodeButtonGroups'
 
 /**
  * 分类码
  */
 export default class ClassCodeLayout {
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.tab))
-    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { items: ['main'], ...ElementPropsTmpl.tab, buttonAreas: ClassCodeButtons.mainTab, buttons: ClassCodeData })
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { items: ['main'], app: true, ...ElementPropsTmpl.tab, buttonGroups: ClassCodeButtonGroups.mainTab })
     classCodeMainTab = null
 
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.tab))
-    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { items: ['child'], ...ElementPropsTmpl.tab, buttonAreas: ClassCodeButtons.childTab, buttons: ClassCodeData })
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { items: ['child'], ...ElementPropsTmpl.tab, buttonGroups: ClassCodeButtonGroups.childTab })
     classCodeChildTab = null
 
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.layout, 'classCodeMainTab', 'main'))

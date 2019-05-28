@@ -7,7 +7,7 @@ const ElementPropsTmpl = {
         buttonStyle: 'raised', // raised|flat|depressed|icon|fab
         // buttonOutline: true,
         buttonRound: false,
-        buttonStaticClass: 'mx-1'
+        buttonStaticClass: null
     },
     verticalTab: {
         vertical: true

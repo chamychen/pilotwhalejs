@@ -38,16 +38,19 @@ export default ({
      * 设置tab的高度
      */
     setTabContextHeight() {
-      let height = 0
-      let bodyHeight = window.innerHeight
-      let appBar = document.getElementById('appBar')
-      if (appBar) {
-        let appBarHeight = appBar.children[0].clientHeight
-        height = bodyHeight - appBarHeight
-      } else {
-        height = bodyHeight
+      let tab = this.$refs.tabs
+      if (tab && tab.currentContextHeight) {
+        let height = 0
+        let bodyHeight = window.innerHeight
+        let appBar = document.getElementById('appBar')
+        if (appBar) {
+          let appBarHeight = appBar.children[0].clientHeight
+          height = bodyHeight - appBarHeight
+        } else {
+          height = bodyHeight
+        }
+        tab.currentContextHeight = height + 'px'
       }
-      this.$refs.tabs.currentContextHeight = height + 'px'
     },
     /**
      * 获取分类码选项

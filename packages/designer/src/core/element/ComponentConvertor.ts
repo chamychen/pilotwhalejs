@@ -161,6 +161,11 @@ export default class ComponentConvertor {
                     case 'classCodeMethod':
                         // 分类码部分此处不处理
                         break
+                    case 'buttonGroups':
+                        config.props.context = this.context
+                        config.props.buttons = this.context['buttons']
+                        config.props.buttonGroups = fieldValue
+                        break
                     default:
                         config.props[field] = fieldValue
                         break

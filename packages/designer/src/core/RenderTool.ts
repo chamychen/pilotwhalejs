@@ -23,7 +23,8 @@ export default class RenderTool {
     public genUI(current?: any): VNode {
         let entites = this.entites
         if (entites) {
-            if (!current) {
+            let isRoot = !current
+            if (isRoot) {
                 current = ElementFactory.createElement(ElementTypes.container).toProps()
                 current.class = 'grid-list-md'
             }
