@@ -55,6 +55,7 @@ export default class ComponentConvertor {
                         break
                     // 可不设置，设置后则比key中的model配置优先
                     case 'model':
+                        config.attrs.modelName = fieldValue
                         config.model = {
                             value: this.getModel(fieldValue, true),
                             callback: val => {

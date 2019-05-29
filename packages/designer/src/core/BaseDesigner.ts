@@ -1,9 +1,11 @@
+import CommonButtonEvent from '@core/CommonButtonEvent'
 import ClassCodeItem from '@core/class-code/model/ClassCodeItem'
 import Vue from 'vue'
 import DecoratorCompiler from './element/decorator/DecoratorCompiler'
 import RenderTool from './RenderTool'
 
 export default Vue.extend({
+    mixins: [CommonButtonEvent],
     props: {
     },
     data() {

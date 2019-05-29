@@ -7,7 +7,7 @@ add.key = 'B-Add'
 add.text = 'Add'
 add.icon = 'mdi-plus'
 add.color = 'primary'
-add.event = 'addChild'
+add.event = 'addChildRow'
 ClassCodeButtons.push(add)
 
 let edit = new SecurityButton()
@@ -22,6 +22,7 @@ del.key = 'B-Del'
 del.text = 'Delete'
 del.icon = 'mdi-delete'
 del.color = 'error'
+del.event = 'delChildRow'
 ClassCodeButtons.push(del)
 
 let importData = new SecurityButton()

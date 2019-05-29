@@ -1,6 +1,7 @@
 import BaseDesigner from '@core/BaseDesigner'
 import ClassCodeLayout from '@core/class-code/layout'
 import ClassCodeButtons from './button'
+import ClassCodeItem from '@core/class-code/model/ClassCodeItem'
 
 export default ({
   mixins: [BaseDesigner],
@@ -13,12 +14,16 @@ export default ({
     return {
       uiEntity: new ClassCodeLayout(),
       currentValue: {},
-      buttons: ClassCodeButtons
+      buttons: ClassCodeButtons,
+      childSelectedItem: null
     }
   },
   methods: {
-    addChild() {
-      alert(1)
+    addChildRow() {
+      this.addTableRow('child', new ClassCodeItem())
+    },
+    delChildRow() {
+      this.delTableRow('child')
     }
   },
   created() {
