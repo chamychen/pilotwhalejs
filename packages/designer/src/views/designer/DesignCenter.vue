@@ -88,9 +88,11 @@ export default {
   methods: {
     setContentHeight() {
       let bodyHeight = window.innerHeight
-      let appBarHeight = document.getElementById("appBar").children[0].clientHeight
-      let designerContentTabHeight = document.getElementById('designerContentTab').children[0].clientHeight
-      let height = bodyHeight - appBarHeight - designerContentTabHeight - 20 - 2
+      let appBar = document.getElementsByClassName("v-app-bar")
+      let appBarHeight = appBar && !this.fullscreen ? appBar[0].clientHeight : 0
+      let designerContentTab = document.getElementById('designerContentTab')
+      let designerContentTabHeight = designerContentTab ? designerContentTab.children[0].clientHeight : 0
+      let height = bodyHeight - appBarHeight - designerContentTabHeight - 40 - 2
       this.$set(this, 'contentHeight', height)
     },
     setFullscreen() {
@@ -127,7 +129,7 @@ export default {
 }
 
 #designerContainer .v-window {
-  padding: 20px 15px 0px 15px;
+  padding: 20px;
 }
 
 #fieldListContext, #fieldSetterContext {

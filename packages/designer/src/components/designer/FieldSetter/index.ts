@@ -39,7 +39,7 @@ export default ({
      */
     setTabContextHeight() {
       let tab = this.$refs.tabs
-      if (tab && tab.currentContextHeight) {
+      if (tab) {
         let height = 0
         let bodyHeight = window.innerHeight
         let appBar = document.getElementById('appBar')
