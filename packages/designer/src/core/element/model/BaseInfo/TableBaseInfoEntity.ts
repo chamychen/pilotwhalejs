@@ -1,3 +1,4 @@
+import ElementClassCode, { ClassCodeType } from '@core/element/decorator/ElementClassCode'
 import 'reflect-metadata'
 import ElementTypes, { ElementType } from '@core/element/types'
 import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
@@ -17,13 +18,18 @@ export default class TableBaseInfoEntity extends CommonBaseInfoEntity {
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.natural_integer, [6]))
     singleSelect: boolean = true
 
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.select))
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, ElementPropsTmpl.singleSelect)
+    @Reflect.metadata(DesignerDecoratorType.ClassCode, new ElementClassCode(ClassCodeType.Code, 'D-Table-Mode'))
+    tableMode: number = 0
+
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('disableGroups', 1))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, [6]))
     disablePagination: boolean = true
 
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('disableGroups', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, [6]))
-    disableSort: number = null
+    disableSort: boolean = true
 
     @Reflect.metadata(DesignerDecoratorType.ElementGroup, new ElementGroup('fixedGroups', 2))
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.natural_integer, [6]))

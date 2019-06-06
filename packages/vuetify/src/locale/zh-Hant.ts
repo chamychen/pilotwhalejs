@@ -8,6 +8,7 @@ export default {
     prevPage: '上一頁'
   },
   dataTable: {
+    rowNoCol: '序号',
     rowsPerPageText: '每頁行數：'
   },
   noDataText: '無可用數據',

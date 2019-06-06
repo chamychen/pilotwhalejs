@@ -4,7 +4,10 @@ const HappyPack = require('happypack')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const { VuetifyProgressiveModule } = require('vuetify-loader')
-const { config: baseWebpackConfig, happyThreadPool } = require('./webpack.base.config')
+const {
+  config: baseWebpackConfig,
+  happyThreadPool
+} = require('./webpack.base.config')
 
 // Helpers
 const resolve = file => path.resolve(__dirname, file)
@@ -43,14 +46,11 @@ module.exports = merge(baseWebpackConfig, {
       {
         test: /\.js$/,
         use: 'happypack/loader?id=js',
-        exclude: /node_modules/
+        exclude: /node_modules|pilotwhale-utils/
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ]
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.(png|jpe?g|gif|svg|eot|ttf|woff|woff2)$/,

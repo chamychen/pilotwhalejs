@@ -23,6 +23,6 @@ export default class ClassCodeLayout {
     main: ClassCode = new ClassCode()
 
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createContainerElement(ElementTypes.table, 'classCodeChildTab', 'child'))
-    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { model: 'childSelectedItem', itemKey: 'id', singleSelect: false, disablePagination: true })
+    @Reflect.metadata(DesignerDecoratorType.ExtendProps, { model: 'childSelectedItem', itemKey: 'id', tableMode: 2, singleSelect: false, disablePagination: true })
     child: ClassCodeItem = new ClassCodeItem()
 }

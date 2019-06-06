@@ -4,6 +4,8 @@ import { VNode } from 'vue'
 import ButtonGroup from './ButtonGroup'
 import { stringUtils, arrayUtils, guidUtils } from 'pilotwhale-utils'
 import Button from './Button'
+import { PropValidator } from 'vue/types/options'
+import xMobile from '../xMobile'
 
 enum ButtonType {
     /**
@@ -33,7 +35,7 @@ class ButtonGroupInstance {
 
 export default ({
     name: 'xbutton',
-    mixins: [Colorable],
+    mixins: [Colorable, xMobile],
     props: {
         context: {
             type: Object
@@ -41,11 +43,11 @@ export default ({
         // 按钮结构的集合
         buttonGroups: {
             type: [Array]
-        },
+        } as PropValidator<Array<ButtonGroup>>,
         // 按钮的集合
         buttons: {
             type: [Array]
-        },
+        } as PropValidator<Array<Button>>,
         // 是否页面级别按钮
         app: {
             type: Boolean,
@@ -68,7 +70,7 @@ export default ({
         },
         buttonStyle: {
             type: String
-        },
+        }, // raised|flat|depressed|icon|fab
         buttonOutline: {
             type: Boolean
         },
@@ -83,10 +85,6 @@ export default ({
         },
         buttonStaticClass: {
             type: String
-        },
-        mobileBreakpoint: {
-            type: Number,
-            default: 1024
         }
     },
     data() {
@@ -124,7 +122,7 @@ export default ({
         }
     },
     methods: {
-        genButtons(tagName: string): VNode[] | undefined {
+        genButtons(tagName: string, item?: any, rowIndex?: number): VNode[] | undefined {
             if (tagName) {
                 let h = this.$createElement
                 let buttonStructure: Array<ButtonGroupInstance> = this.getButtonStructure(tagName)
@@ -132,13 +130,13 @@ export default ({
                     let result = []
                     buttonStructure.forEach(buttonGroup => {
                         if (buttonGroup.isGroup) {
-                            let group = this.genDropDownList(h, buttonGroup)
+                            let group = this.genDropDownList(h, buttonGroup, item, rowIndex)
                             if (group) {
                                 result.push(group)
                             }
                         } else {
                             buttonGroup.buttons.forEach(button => {
-                                let btn = this.genButton(h, button)
+                                let btn = this.genButton(h, button, false, item, rowIndex)
                                 if (btn) {
                                     result.push(btn)
                                 }
@@ -149,7 +147,7 @@ export default ({
                         this.genBottomNavigation(h, result)
                         return null
                     } else {
-                        if (!this.isMobile() && this.context && this.context.extendElements && this.context.extendElements.length > 0) {
+                        if (!this.isMobile && this.context && this.context.hasOwnProperty('extendElements') && this.context.extendElements.length > 0) {
                             this.context.$set(this.context, 'extendElements', [])
                         }
                         return result
@@ -181,17 +179,19 @@ export default ({
                 }
             }
         },
-        genDropDownList(h, buttonGroup: ButtonGroupInstance) {
+        genDropDownList(h, buttonGroup: ButtonGroupInstance, item?: any, rowIndex?: number) {
             if (buttonGroup.buttons) {
                 let buttons = []
                 buttonGroup.buttons.forEach(buttonProps => {
-                    let button = this.genDropDownItem(h, buttonProps)
+                    let button = this.genDropDownItem(h, buttonProps, item, rowIndex)
                     if (button) {
                         buttons.push(button)
                     }
                 })
                 if (buttons && buttons.length > 0) {
-                    let list = h('VList', { props: { light: true, dense: true } }, buttons)
+                    let list = h('VList', {
+                        props: { light: true, dense: true }
+                    }, buttons)
                     let buttonProps = new Button()
                     buttonProps.text = buttonGroup.groupText
                     buttonProps.icon = buttonGroup.groupIcon
@@ -202,7 +202,7 @@ export default ({
                 }
             }
         },
-        genDropDownItem(h, button: Button) {
+        genDropDownItem(h, button: Button, item?: any, rowIndex?: number) {
             let icon = button.icon ? h('VIcon', {
                 props: {
                     small: true,
@@ -236,9 +236,14 @@ export default ({
                 let on = null
                 if (button.event && this.context && this.context[button.event]) {
                     on = {}
-                    on.click = this.context[button.event]
+                    on.click = (e) => {
+                        this.context[button.event](e, this.$vnode.key, item, rowIndex)
+                        e.stopPropagation()
+                    }
                 }
+                let buttonKey = item ? `${item[this.itemKey]}_${button.key ? button.key : guidUtils.newId()}` : `${button.key ? button.key : guidUtils.newId()}`
                 let listItem = h('VListItem', {
+                    key: buttonKey,
                     class: 'v-list__tile--doc',
                     props: {
                         ripple: true,
@@ -252,7 +257,7 @@ export default ({
                 return listItem
             }
         },
-        genButton(h, button: Button, isMenuButton = false) {
+        genButton(h, button: Button, isMenuButton: boolean, item?: any, rowIndex?: number) {
             if (this.getButtonType() === ButtonType.APP && !button.color) {
                 button.color = '#000000'
             }
@@ -261,8 +266,9 @@ export default ({
                 props.color = button.color
             }
             let iconDark = !stringUtils.isEmpty(props.color)
+            let buttonKey = item ? `${item[this.itemKey]}_${button.key ? button.key : guidUtils.newId()}` : `${button.key ? button.key : guidUtils.newId()}`
             let icon = button.icon ? h('VIcon', {
-                key: button.key ? button.key : guidUtils.newId(),
+                key: buttonKey + '_icon',
                 // class: isMenuButton ? 'px-1 hidden-md-and-up' : 'px-1',
                 class: 'px-1',
                 props: {
@@ -294,7 +300,8 @@ export default ({
                         }
                         labelProps.style.color = button.color
                     } else {
-                        labelProps.class += ` ${button.color}--text`
+                        labelProps.class += ` ${button.color
+                            }--text`
                     }
                 }
             }
@@ -316,18 +323,24 @@ export default ({
                 objs.push(iconExtend)
             }
             if (objs && objs.length > 0) {
-                if (this.isMobile()) {
+                if (this.isMobile) {
                     props.fab = true
                     props.minWidth = null
                     props.outline = false
                 }
-                let on = null
+                let on: any = {}
                 if (button.event && this.context && this.context[button.event]) {
-                    on = {}
-                    on.click = this.context[button.event]
+                    on.click = (e) => {
+                        this.context[button.event](e, this.$vnode.key, item, rowIndex)
+                        e.stopPropagation()
+                    }
+                } else {
+                    on.click = (e) => {
+                        e.stopPropagation()
+                    }
                 }
                 let style: any = {}
-                let staticClass = null
+                let staticClass: string = null
                 if (this.getButtonType() === ButtonType.APP) {
                     props.color = undefined
                     staticClass = this.buttonStaticClass
@@ -335,10 +348,12 @@ export default ({
                     objs[1] = objs[0]
                     objs[0] = objsLable
                 } else {
-                    staticClass = this.buttonStaticClass ? this.buttonStaticClass + ' mx-1' : 'mx-1'
+                    let mx1Class: string = this.buttonStyle !== 'flat' ? 'mx-1' : ''
+                    staticClass = this.buttonStaticClass ? (this.buttonStaticClass + ' ' + mx1Class) : mx1Class
                 }
                 let btn = h('VBtn', {
                     slot: isMenuButton ? 'activator' : undefined,
+                    key: buttonKey,
                     staticClass,
                     style,
                     props: {
@@ -363,7 +378,7 @@ export default ({
                     buttonType = ButtonType.INLINE_ROW
                     break
                 case 'CTab':
-                    if (this.app && this.isMobile()) {
+                    if (this.app && this.isMobile) {
                         buttonType = ButtonType.APP
                     }
                     break
@@ -375,7 +390,7 @@ export default ({
          * @param tagName 
          */
         getButtonStructure(tagName: string): Array<ButtonGroupInstance> {
-            let isMobile = this.isMobile()
+            let isMobile = this.isMobile
             let result = null
             if (this.buttonGroups && this.buttonGroups.length > 0 && this.buttons && this.buttons.length > 0) {
                 let buttonGroups: Array<ButtonGroup> = this.buttonGroups
@@ -431,9 +446,6 @@ export default ({
                     return result
                 }
             }
-        },
-        isMobile(): boolean {
-            return this.$vuetify.breakpoint.width < this.mobileBreakpoint
         }
     }
 })

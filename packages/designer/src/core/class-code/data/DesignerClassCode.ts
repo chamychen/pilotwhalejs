@@ -23,17 +23,54 @@ const box = new ClassCodeItem()
 box.id = 'D-IFRT-BOX'
 box.text = 'BOX'
 box.value = 'box'
-box.sortNo = 1
+box.sortNo = 2
 box.treeNo = 2
 inputFieldRenderType.child.push(box)
 const outline = new ClassCodeItem()
 outline.id = 'D-IFRT-OUTLINE'
 outline.text = 'OUTLINE'
 outline.value = 'outline'
-outline.sortNo = 1
+outline.sortNo = 3
 outline.treeNo = 3
 inputFieldRenderType.child.push(outline)
 DesignerClassCode.push(inputFieldRenderType)
+
+// 表格编缉模式
+const tableMode = new ClassCodeDTO()
+tableMode.main = new ClassCode()
+tableMode.main.id = 'D-Table-Mode'
+tableMode.main.name = 'Table Mode'
+tableMode.main.code = 'D-Table-Mode'
+tableMode.child = []
+const viewMode = new ClassCodeItem()
+viewMode.id = 'D-Table-Mode-SingleLine'
+viewMode.text = 'View Mode'
+viewMode.value = 0
+viewMode.sortNo = 0
+viewMode.treeNo = 0
+tableMode.child.push(viewMode)
+const singleLineEditMode = new ClassCodeItem()
+singleLineEditMode.id = 'D-Table-Mode-SingleLine'
+singleLineEditMode.text = 'Single Line Edit Mode'
+singleLineEditMode.value = 1
+singleLineEditMode.sortNo = 1
+singleLineEditMode.treeNo = 1
+tableMode.child.push(singleLineEditMode)
+const multilineEditMode = new ClassCodeItem()
+multilineEditMode.id = 'D-Table-Mode-MultiLine'
+multilineEditMode.text = 'Multi Line Edit Mode'
+multilineEditMode.value = 2
+multilineEditMode.sortNo = 2
+multilineEditMode.treeNo = 2
+tableMode.child.push(multilineEditMode)
+const popupEditMode = new ClassCodeItem()
+popupEditMode.id = 'D-Table-Mode-Popup'
+popupEditMode.text = 'Popup Edit Mode'
+popupEditMode.value = 3
+popupEditMode.sortNo = 3
+popupEditMode.treeNo = 3
+tableMode.child.push(popupEditMode)
+DesignerClassCode.push(tableMode)
 
 // Button属性sizes
 const buttonPropSizes = new ClassCodeDTO()

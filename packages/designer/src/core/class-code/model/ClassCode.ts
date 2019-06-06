@@ -14,6 +14,9 @@ export default class ClassCode {
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.text, [12, 3]))
     name: string = null
 
+    @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.checkbox, [12, 3]))
+    multiLevel: string = null
+
     @Reflect.metadata(DesignerDecoratorType.Element, SimpleElementCreator.createCommonElement(ElementTypes.textarea, [12]))
     desc: string = null
 }

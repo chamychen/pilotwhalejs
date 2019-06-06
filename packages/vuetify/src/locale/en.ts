@@ -7,6 +7,7 @@ export default {
   },
   dataTable: {
     itemsPerPageText: 'Rows per page:',
+    rowNoCol: 'No',
     ariaLabel: {
       sortDescending: ': Sorted descending. Activate to remove sorting.',
       sortAscending: ': Sorted ascending. Activate to sort descending.',

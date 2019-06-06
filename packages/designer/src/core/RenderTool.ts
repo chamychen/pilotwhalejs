@@ -1,7 +1,7 @@
 import utils from 'pilotwhale-utils'
 import { VNode } from 'vue'
 import ComponentConvertor from './element/ComponentConvertor'
-import ElementTypes from './element/types'
+import ElementTypes, { ElementType } from './element/types'
 import ElementFactory from '@core/element/types/ElementFactory'
 
 
@@ -49,7 +49,7 @@ export default class RenderTool {
                         let col = {
                             text: item.key,
                             value: item.key.replace(regex, ''),
-                            editor: item
+                            editor: item.elementTypeName !== ElementTypes.textCoulumn.elementTypeName ? new ComponentConvertor(this.context, this.i18n).getConfig(item) : null
                         }
                         headers.push(col)
                     })

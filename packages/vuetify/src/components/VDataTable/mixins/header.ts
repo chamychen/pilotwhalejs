@@ -7,10 +7,6 @@ import Vue, { PropType } from 'vue'
 import mixins from '../../../util/mixins'
 import { compareFn } from '../../../util/helpers'
 
-export interface CellEditor {
-  type?: string
-  flexClass?: string
-}
 
 export interface TableHeader {
   text: string
@@ -23,7 +19,7 @@ export interface TableHeader {
   filter?: (value: any, search: string, item: any) => boolean
   sort?: compareFn
   fixedStyle?: string
-  editor?: CellEditor
+  editor?: any
 }
 
 type VDataTableInstance = InstanceType<typeof VDataTable>
@@ -61,7 +57,7 @@ export default mixins<options>().extend({
   },
 
   methods: {
-    genSelectAll () {
+    genSelectAll() {
       const data = {
         props: {
           value: this.everyItem,
@@ -81,7 +77,7 @@ export default mixins<options>().extend({
         ...data
       })
     },
-    genSortIcon () {
+    genSortIcon() {
       return this.$createElement(VIcon, [this.sortIcon])
     }
   }
