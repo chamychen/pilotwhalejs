@@ -385,9 +385,9 @@ export default class TreeGridHandler {
                     beMovingItems = beMovingItems.concat(youngerBrothers)
                 }
                 if (numberOfDigits > 0) {
-                    beMovingItems = beMovingItems.sort((a, b) => b[this.treeListDescribe.shortCodeField] - a[this.treeListDescribe.shortCodeField])
+                    beMovingItems.sort((a, b) => b[this.treeListDescribe.shortCodeField] - a[this.treeListDescribe.shortCodeField])
                 } else if (numberOfDigits < 0) {
-                    beMovingItems = beMovingItems.sort((a, b) => a[this.treeListDescribe.shortCodeField] - b[this.treeListDescribe.shortCodeField])
+                    beMovingItems.sort((a, b) => a[this.treeListDescribe.shortCodeField] - b[this.treeListDescribe.shortCodeField])
                 }
                 beMovingItems.forEach(item => {
                     let thisLongCode = item[this.treeListDescribe.longCodeField]
