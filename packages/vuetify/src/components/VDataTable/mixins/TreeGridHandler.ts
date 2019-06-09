@@ -155,7 +155,7 @@ export default class TreeGridHandler {
                     for (let j = 0; j < this._data.length; j++) {
                         let item = this._data[j]
                         if (i[this.treeListDescribe.idField] === item[this.treeListDescribe.idField]) {
-                            this.context.$set(this._data, j, item)
+                            this.context.$set(this._data, j, i)
                             return false
                         }
                     }
@@ -183,7 +183,7 @@ export default class TreeGridHandler {
                 for (let j = 0; j < this._data.length; j++) {
                     let item = this._data[j]
                     if (i[this.treeListDescribe.idField] === item[this.treeListDescribe.idField]) {
-                        this.context.$set(this._data, j, item)
+                        this.context.$set(this._data, j, i)
                         return false
                     }
                 }
