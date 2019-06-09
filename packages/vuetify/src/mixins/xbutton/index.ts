@@ -181,9 +181,10 @@ export default ({
         },
         genDropDownList(h, buttonGroup: ButtonGroupInstance, item?: any, rowIndex?: number) {
             if (buttonGroup.buttons) {
+                let menuId = guidUtils.newId()
                 let buttons = []
                 buttonGroup.buttons.forEach(buttonProps => {
-                    let button = this.genDropDownItem(h, buttonProps, item, rowIndex)
+                    let button = this.genDropDownItem(h, menuId, buttonProps, item, rowIndex)
                     if (button) {
                         buttons.push(button)
                     }
@@ -197,12 +198,12 @@ export default ({
                     buttonProps.icon = buttonGroup.groupIcon
                     buttonProps.color = buttonGroup.groupButtonColor
                     let button = this.genButton(h, buttonProps, true)
-                    let menu = h('VMenu', { props: { bottom: true, left: true, offsetY: true } }, [button, list])
+                    let menu = h('VMenu', { key: menuId, ref: menuId, props: { closeOnClick: true, bottom: true, left: true, offsetY: true } }, [button, list])
                     return menu
                 }
             }
         },
-        genDropDownItem(h, button: Button, item?: any, rowIndex?: number) {
+        genDropDownItem(h, menuId: string, button: Button, item?: any, rowIndex?: number) {
             let icon = button.icon ? h('VIcon', {
                 props: {
                     small: true,
@@ -238,6 +239,7 @@ export default ({
                     on = {}
                     on.click = (e) => {
                         this.context[button.event](e, this.$vnode.key, item, rowIndex)
+                        this.$refs[menuId].isActive = false
                         e.stopPropagation()
                     }
                 }
@@ -329,14 +331,16 @@ export default ({
                     props.outline = false
                 }
                 let on: any = {}
-                if (button.event && this.context && this.context[button.event]) {
-                    on.click = (e) => {
-                        this.context[button.event](e, this.$vnode.key, item, rowIndex)
-                        e.stopPropagation()
-                    }
-                } else {
-                    on.click = (e) => {
-                        e.stopPropagation()
+                if (!isMenuButton) {
+                    if (button.event && this.context && this.context[button.event]) {
+                        on.click = (e) => {
+                            this.context[button.event](e, this.$vnode.key, item, rowIndex)
+                            e.stopPropagation()
+                        }
+                    } else {
+                        on.click = (e) => {
+                            e.stopPropagation()
+                        }
                     }
                 }
                 let style: any = {}

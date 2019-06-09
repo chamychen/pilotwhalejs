@@ -19,6 +19,7 @@ export default {
         this.getActivator(e).blur()
         this.isActive = false
       }
+      e.stopPropagation()
     },
     mouseEnterHandler () {
       this.runDelay('open', () => {

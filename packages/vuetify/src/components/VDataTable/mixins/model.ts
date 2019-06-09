@@ -107,3 +107,13 @@ export class TreeListDescribe {
   sortNoField: string = 'sortNo'
   expandField: string
 }
+
+/**
+ * 滚动条数据
+ */
+export class ScrollData {
+  scrollWidth: number
+  scrollHeight: number
+  scrollTop: number
+  scrollLeft: number
+}

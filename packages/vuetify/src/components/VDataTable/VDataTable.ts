@@ -18,15 +18,16 @@ import VSimpleTable from './VSimpleTable'
 // Helpers
 import { deepEqual, getObjectValueByPath, compareFn, getPrefixedScopedSlots } from '../../util/helpers'
 import { breaking } from '../../util/console'
-import { TableMode, TableType, GroupField, TreeListDescribe } from './mixins/model'
-import VDataTableItems from './row/VDataTableItems'
+import { TableMode, TableType, GroupField, TreeListDescribe, ScrollData } from './mixins/model'
+import VDataTableItems from './extends/VDataTableItems'
 import xbutton from '../../mixins/xbutton'
+import VTreeGrid from './extends/VTreeGrid'
 
 /* @vue/component */
 /* eslint-disable indent */
 export default VDataIterator.extend({
   name: 'v-data-table',
-  mixins: [VDataTableItems, xbutton],
+  mixins: [VTreeGrid, VDataTableItems, xbutton],
   props: {
     // 上下文对象
     context: Object,
@@ -69,15 +70,6 @@ export default VDataIterator.extend({
     groupFields: {
       type: Array
     } as PropValidator<GroupField[]>,
-    // 是否树形表格
-    isTreeGrid: {
-      type: Boolean,
-      default: false
-    },
-    // 树形数据描述
-    treeListDescribe: {
-      type: Object
-    } as PropValidator<TreeListDescribe>,
     // 分组/树形展开按钮
     expandIcon: {
       type: String,
@@ -112,11 +104,16 @@ export default VDataIterator.extend({
     buttonStyle: {
       type: String,
       default: 'fab'
-    } // raised|flat|depressed|icon|fab
+    }, // raised|flat|depressed|icon|fab
+    // 行平均高度，设置此值以解决性能问题
+    rowAvgHeight: {
+      type: Number
+    }
   },
 
   data() {
     return {
+      scrollData: null,
       internalGroupBy: [] as string[],
       openCache: {} as { [key: string]: boolean },
       widths: [] as number[],
@@ -347,7 +344,17 @@ export default VDataIterator.extend({
     genItems(items: any[], props: DataProps) {
       const empty = this.genEmpty(props.pagination.itemsLength)
       if (empty) return [empty]
-      return items.map((item, index) => this.genRow(this.$createElement, item, index))
+      let result = []
+      items.forEach((item, index) => {
+        if (this.isTreeGrid && this.hiddenLongCodes) {
+          let longCode = item[this.treeListDescribe.longCodeField]
+          let isHidden = this.hiddenLongCodes.some(i => new RegExp(`^${i}\\.`).test(longCode))
+          if (!isHidden) {
+            result.push(this.genRow(this.$createElement, item, index))
+          }
+        }
+      })
+      return result
     },
     genBody(props: DataProps): VNode | string | VNodeChildren {
       const data = {
@@ -366,27 +373,24 @@ export default VDataIterator.extend({
       ])
     },
     genFooters(props: DataProps) {
-      const data = {
-        props: {
-          options: props.options,
-          pagination: props.pagination,
-          itemsPerPageText: '$vuetify.dataTable.itemsPerPageText',
-          ...this.footerProps
-        },
-        on: {
-          'update:options': (value: any) => props.updateOptions(value)
-        },
-        widths: this.widths,
-        headers: this.computedHeaders
-      }
-
-      const children: VNodeChildren = [this.genSlots('footer', data)]
-
-      if (!this.hideDefaultFooter) {
+      if (!this.hideDefaultFooter && !this.disablePagination) {
+        const data = {
+          props: {
+            options: props.options,
+            pagination: props.pagination,
+            itemsPerPageText: '$vuetify.dataTable.itemsPerPageText',
+            ...this.footerProps
+          },
+          on: {
+            'update:options': (value: any) => props.updateOptions(value)
+          },
+          widths: this.widths,
+          headers: this.computedHeaders
+        }
+        const children: VNodeChildren = [this.genSlots('footer', data)]
         children.push(this.$createElement(VDataFooter, data))
+        return children
       }
-
-      return children
     },
     genDefaultScopedSlot(props: DataProps): VNode {
       const simpleProps = {
@@ -462,7 +466,10 @@ export default VDataIterator.extend({
           this.internalCurrentItems = v
           this.$emit('current-items', v)
         },
-        'page-count': (v: number) => this.$emit('page-count', v)
+        'page-count': (v: number) => this.$emit('page-count', v),
+        'changeScroll': (v: ScrollData) => {
+          this.$set(this, 'scrollData', v)
+        }
       },
       scopedSlots: {
         default: this.genDefaultScopedSlot as any

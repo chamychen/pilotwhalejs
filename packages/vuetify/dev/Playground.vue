@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn @click="addRootRow"></v-btn>
-    <v-data-table key="test" ref="test" :headers=" h" itemKey="id" :items="currentValue.test" show-select v-model="c" :tableMode='m' showRowNo isTreeGrid :buttonGroups="buttonGroups" :buttons="buttons" :treeListDescribe="treeListDescribe" buttonSize='small' :context="this">
+    <v-data-table key="test" ref="test" :height="600" :rowAvgHeight="48" disablePagination :headers=" h" itemKey="id" :items="currentValue.test" show-select v-model="c" :tableMode='m' showRowNo isTreeGrid :buttonGroups="buttonGroups" :buttons="buttons" :treeListDescribe="treeListDescribe" buttonSize='small' :context="this">
     </v-data-table>
   </div>
 </template>
@@ -60,7 +60,8 @@ export default {
     c: [{ id: '2', key: 'b' }, { id: '3', key: 'c' }],
     m: TableMode.SINGLE_LINE,
     buttonGroups: [
-      new ElementButtonArea('actions', ['B-Add', 'B-Edit', 'B-Del'])
+      new ElementButtonArea('actions', ['B-Add', 'B-Edit', 'B-Del']),
+      new ElementButtonArea('actions', ['B-MoveUp', 'B-MoveDown', 'B-MoveLeft', 'B-MoveRight'], 'move', 'mdi-cursor-move')
     ],
     currentValue: {
       test: []
@@ -87,37 +88,70 @@ export default {
       del.icon = 'mdi-delete'
       del.color = 'error'
       del.event = 'delTestRow'
-      return [add, edit, del]
+      let moveUp = new Button()
+      moveUp.key = 'B-MoveUp'
+      moveUp.text = 'Move Up'
+      moveUp.icon = 'mdi-gesture-swipe-up'
+      moveUp.color = 'grey'
+      moveUp.event = 'moveUp'
+      let moveDown = new Button()
+      moveDown.key = 'B-MoveDown'
+      moveDown.text = 'Move Down'
+      moveDown.icon = 'mdi-gesture-swipe-down'
+      moveDown.color = 'grey'
+      moveDown.event = 'moveDown'
+      let moveLeft = new Button()
+      moveLeft.key = 'B-MoveLeft'
+      moveLeft.text = 'Move Left'
+      moveLeft.icon = 'mdi-gesture-swipe-left'
+      moveLeft.color = 'grey'
+      moveLeft.event = 'moveLeft'
+      let moveRight = new Button()
+      moveRight.key = 'B-MoveRight'
+      moveRight.text = 'Move Right'
+      moveRight.icon = 'mdi-gesture-swipe-right'
+      moveRight.color = 'grey'
+      moveRight.event = 'moveRight'
+      return [add, edit, del, moveUp, moveDown, moveLeft, moveRight]
     }
   },
   methods: {
     addRootRow(e) {
-      let treeListHandler = new TreeListHandler(
-        this.currentValue.test,
-        this.treeListDescribe
-      )
+      // for (let i = 0; i < 3000; i++) {
+      let treeListHandler = this.$refs.test.treeGridHandler
       treeListHandler.add()
       this.$set(this.currentValue, 'test', treeListHandler.data)
+      // }
     },
     addTestRow(e, key, item, rowIndex) {
-      let treeListHandler = new TreeListHandler(
-        this.currentValue.test,
-        this.treeListDescribe
-      )
+      let treeListHandler = this.$refs.test.treeGridHandler
       treeListHandler.add(item['id'])
       this.$set(this.currentValue, 'test', treeListHandler.data)
     },
     delTestRow(e, key, item, rowIndex) {
-      let treeListHandler = new TreeListHandler(
-        this.currentValue.test,
-        this.treeListDescribe
-      )
+      let treeListHandler = this.$refs.test.treeGridHandler
       treeListHandler.delete(item['id'])
       this.$set(this.currentValue, 'test', treeListHandler.data)
     },
     editTestRow(e, key, item, rowIndex) {
       let tableHandler = new TableHandler(this)
       tableHandler.editRow(key, item)
+    },
+    moveUp(e, key, item, rowIndex) {
+      let treeListHandler = this.$refs.test.treeGridHandler
+      treeListHandler.moveUp(item)
+    },
+    moveDown(e, key, item, rowIndex) {
+      let treeListHandler = this.$refs.test.treeGridHandler
+      treeListHandler.moveDown(item)
+    },
+    moveLeft(e, key, item, rowIndex) {
+      let treeListHandler = this.$refs.test.treeGridHandler
+      treeListHandler.moveLeft(item)
+    },
+    moveRight(e, key, item, rowIndex) {
+      let treeListHandler = this.$refs.test.treeGridHandler
+      treeListHandler.moveRight(item)
     }
   }
 }

@@ -44,7 +44,7 @@ export default baseMixins.extend<options>().extend({
   props: {
     activeClass: {
       type: String,
-      default (): string | undefined {
+      default(): string | undefined {
         if (!this.listItemGroup) return 'primary--text'
 
         return this.listItemGroup.activeClass
@@ -67,7 +67,7 @@ export default baseMixins.extend<options>().extend({
   }),
 
   computed: {
-    classes (): object {
+    classes(): object {
       return {
         'v-list-item': true,
         'v-list-item--active': this.isActive,
@@ -80,11 +80,11 @@ export default baseMixins.extend<options>().extend({
         [this.activeClass]: this.isActive
       }
     },
-    computedRipple (): RippleOptions | boolean {
+    computedRipple(): RippleOptions | boolean {
       if (this.disabled) return false
       return this.ripple !== null ? this.ripple : this.isLink
     },
-    isLink (): boolean {
+    isLink(): boolean {
       const hasClick = this.$listeners && (this.$listeners.click || this.$listeners['!click'])
 
       return Boolean(
@@ -97,7 +97,7 @@ export default baseMixins.extend<options>().extend({
     }
   },
 
-  created () {
+  created() {
     /* istanbul ignore next */
     if ('avatar' in this.$attrs) {
       removed('avatar', this)
@@ -105,7 +105,7 @@ export default baseMixins.extend<options>().extend({
   },
 
   methods: {
-    click (e: MouseEvent | KeyboardEvent) {
+    click(e: MouseEvent | KeyboardEvent) {
       if (e.detail) this.$el.blur()
 
       this.$emit('click', e)
@@ -114,7 +114,7 @@ export default baseMixins.extend<options>().extend({
     }
   },
 
-  render (h): VNode {
+  render(h): VNode {
     const isRouteLink = !this.inactive && this.isLink
     const { tag, data } = isRouteLink ? this.generateRouteLink(this.classes) : {
       tag: this.tag || 'div',
@@ -140,7 +140,7 @@ export default baseMixins.extend<options>().extend({
       }
     }
     data.ref = 'link'
-
+    
     const children = this.$scopedSlots.default
       ? this.$scopedSlots.default({
         active: this.isActive,

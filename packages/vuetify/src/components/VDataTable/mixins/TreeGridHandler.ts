@@ -1,14 +1,16 @@
-import { TreeListDescribe } from '../src/components/VDataTable/mixins/model'
+import { TreeListDescribe } from './model'
 import { stringUtils, guidUtils } from 'pilotwhale-utils'
 
-export default class TreeListHandler {
+export default class TreeGridHandler {
+    private context: any
+
     /**
-       *数据
-       *
-       * @private
-       * @type {Array<any>}
-       * @memberof TreeListHandler
-       */
+     *数据
+     *
+     * @private
+     * @type {Array<any>}
+     * @memberof TreeListHandler
+     */
     private _data: Array<any>
 
     /**
@@ -35,10 +37,11 @@ export default class TreeListHandler {
      * @param treeListDescribe 树形数据描述
      * @param levelBits 各层级位数
      */
-    constructor(data: Array<any>, treeListDescribe: TreeListDescribe, levelBits?: Array<number>) {
+    constructor(data: Array<any>, treeListDescribe: TreeListDescribe, context: any, levelBits?: Array<number>) {
         this.checkTreeListDescribe(treeListDescribe)
         this.treeListDescribe = treeListDescribe
         this._data = data && data.length > 0 ? data : []
+        this.context = context
         this.levelBits = levelBits && levelBits.length > 0 ? levelBits : []
     }
 
@@ -149,12 +152,13 @@ export default class TreeListHandler {
                 let itemList = this.reCalculateLongCode(item, prevLongCode)
                 let allList = prevList.concat(itemList)
                 allList.forEach(i => {
-                    this._data.find((j, index) => {
-                        if (j[this.treeListDescribe.idField] === i[this.treeListDescribe.idField]) {
-                            this._data[index] = i
-                            return true
+                    for (let j = 0; j < this._data.length; j++) {
+                        let item = this._data[j]
+                        if (i[this.treeListDescribe.idField] === item[this.treeListDescribe.idField]) {
+                            this.context.$set(this._data, j, item)
+                            return false
                         }
-                    })
+                    }
                 })
             }
         }
@@ -175,9 +179,14 @@ export default class TreeListHandler {
             let nextList = this.reCalculateLongCode(nextItem, oldLongCode)
             let itemList = this.reCalculateLongCode(item, nextLongCode)
             let allList = nextList.concat(itemList)
-            this._data.forEach(i => {
-                let newItem = allList.find(j => j[this.treeListDescribe.idField] === i[this.treeListDescribe.idField])
-                i = newItem
+            allList.forEach(i => {
+                for (let j = 0; j < this._data.length; j++) {
+                    let item = this._data[j]
+                    if (i[this.treeListDescribe.idField] === item[this.treeListDescribe.idField]) {
+                        this.context.$set(this._data, j, item)
+                        return false
+                    }
+                }
             })
         }
     }
@@ -192,9 +201,22 @@ export default class TreeListHandler {
             let oldLongCode = item[this.treeListDescribe.longCodeField]
             let oldParentLongCode = this.getParentLongCode(oldLongCode)
             let newParentLongCode = this.getParentLongCode(oldParentLongCode)
-            let newShortCode = this.getShortCode(newParentLongCode) + 1
+            let newShortCode = this.getShortCode(oldParentLongCode) + 1
             let newLongCode = newParentLongCode ? `${newParentLongCode}.${newShortCode}` : `${newShortCode}`
             this.moveItem(item, newLongCode)
+            let regex = new RegExp(`^${oldParentLongCode}\\.`)
+            let oldParentLongCodeIsLeaf = !this._data.some(i => regex.test(i[this.treeListDescribe.longCodeField]))
+            // 更新原父级的leaf属性
+            if (oldParentLongCodeIsLeaf) {
+                for (let i = 0; i < this._data.length; i++) {
+                    let item = this._data[i]
+                    if (item[this.treeListDescribe.longCodeField] === oldParentLongCode) {
+                        item[this.treeListDescribe.leafField] = true
+                        this.context.$set(this._data, i, item)
+                        return false
+                    }
+                }
+            }
         }
     }
 
@@ -212,9 +234,23 @@ export default class TreeListHandler {
             let prevItem = this._data.find(i => i[this.treeListDescribe.longCodeField] === prevLongCode)
             if (prevItem) {
                 let prevItemChilds = this._data.filter(i => i[this.treeListDescribe.parentIdField] === prevItem[this.treeListDescribe.idField])
-                let newShortCode = prevItemChilds.length
+                let newShortCode = prevItemChilds.length + 1
                 let newLongCode = `${prevLongCode}.${newShortCode}`
                 this.moveItem(item, newLongCode)
+                let newParentLongCode = this.getParentLongCode(newLongCode)
+                // 更新新父级的leaf属性
+                if (newParentLongCode) {
+                    for (let i = 0; i < this._data.length; i++) {
+                        let item = this._data[i]
+                        if (item[this.treeListDescribe.longCodeField] === newParentLongCode) {
+                            if (item[this.treeListDescribe.leafField] === true) {
+                                item[this.treeListDescribe.leafField] = false
+                                this.context.$set(this._data, i, item)
+                            }
+                            return false
+                        }
+                    }
+                }
             }
         }
     }
@@ -305,13 +341,13 @@ export default class TreeListHandler {
                 let items = this._data.filter(i => i[this.treeListDescribe.leafField] === 1)
                 return items
             } else {
-                let longCodeLevel = longCode.split('.')
+                let longCodeLevel = longCode.split('.').length
                 let parentLongCode = this.getParentLongCode(longCode)
                 let shortCode = this.getShortCode(longCode)
                 let items = this._data.filter(i => {
                     if (i[this.treeListDescribe.levelField] === longCodeLevel) {
                         if (!parentLongCode) {
-                            if (parseInt(i[this.treeListDescribe.longCodeField]) < shortCode) {
+                            if (parseInt(i[this.treeListDescribe.longCodeField]) > shortCode) {
                                 return true
                             }
                         } else {
@@ -319,7 +355,7 @@ export default class TreeListHandler {
                             let thisParentLongCode = this.getParentLongCode(thisLongCode)
                             if (thisParentLongCode === parentLongCode) {
                                 let thisShortCode = this.getShortCode(thisLongCode)
-                                if (thisShortCode < shortCode) {
+                                if (thisShortCode > shortCode) {
                                     return true
                                 }
                             }
@@ -401,12 +437,12 @@ export default class TreeListHandler {
                 let thisOldLongCode = thisItem[this.treeListDescribe.longCodeField]
                 let regex
                 let thisNewLongCode
-                if (thisOldLongCode.indexOf('.') > -1) {
-                    regex = new RegExp(`^${oldLongCode}\\.`)
-                    thisNewLongCode = thisOldLongCode.replace(regex, newLongCode + '.')
-                } else {
+                if (thisOldLongCode === oldLongCode) {
                     regex = new RegExp(`^${oldLongCode}`)
                     thisNewLongCode = thisOldLongCode.replace(regex, newLongCode)
+                } else {
+                    regex = new RegExp(`^${oldLongCode}\\.`)
+                    thisNewLongCode = thisOldLongCode.replace(regex, newLongCode + '.')
                 }
                 thisItem[this.treeListDescribe.longCodeField] = thisNewLongCode
                 thisItem[this.treeListDescribe.levelField] = thisNewLongCode.split('.').length
