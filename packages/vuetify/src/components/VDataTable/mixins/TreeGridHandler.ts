@@ -1,5 +1,5 @@
-import { TreeListDescribe } from './model'
 import { stringUtils, guidUtils } from 'pilotwhale-utils'
+import { TreeListDescribe } from './model'
 
 export default class TreeGridHandler {
     private context: any

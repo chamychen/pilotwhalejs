@@ -1,4 +1,4 @@
-import { TableMode, TreeListDescribe, ScrollData } from '../mixins/model'
+import { TableMode, ScrollData } from '../mixins/model'
 import { VNode } from 'vue/types/vnode'
 import { TableHeader } from '../mixins/header'
 import { CreateElement } from 'vue'
@@ -6,6 +6,7 @@ import { stringUtils } from 'pilotwhale-utils'
 import VDefaultRowPC from './VDefaultRowPC'
 import { VSimpleCheckbox } from '../../VCheckbox'
 import { getPrefixedScopedSlots } from '../../../util/helpers'
+import { DataProps } from '@components/VData/VData'
 
 export default ({
     mixins: [VDefaultRowPC],
@@ -14,16 +15,16 @@ export default ({
     data() {
         return {
             rtl: this.$vuetify.rtl,
-            currentItems: this.items,
+            dataList: this.items ? this.items : [],
             currentItemsCount: this.items ? this.items.length : 0,
             currentEditRowId: null, // 当前编缉行id
             currentTableMode: this.tableMode,
             currentMobileTableMode: this.mobileTableMode ? this.mobileTableMode : this.tableMode,
             currentItemSlots: [],
             // 滚动条当前位置前多少行（用于显示）
-            prevScrollRows: 5,
+            prevScrollRows: 15,
             // 滚动条当前位置后多少行（用于显示）
-            nextScrollRows: 5
+            nextScrollRows: 15
         }
     },
     computed: {
@@ -37,9 +38,50 @@ export default ({
                     return 0
                 }
             }
+        },
+        currentItems: {
+            get() {
+                if (this.isTreeGrid) {
+                    let sortNoField = this.treeListDescribe.sortNoField
+                    return this.dataList.sort((a: string, b: string) => {
+                        // 此排序仅支持10个层级，每个层级999个节点
+                        let a1 = parseFloat(a[sortNoField].substr(0, 15))
+                        let a2 = parseFloat(a[sortNoField].substr(15))
+                        let b1 = parseFloat(b[sortNoField].substr(0, 15))
+                        let b2 = parseFloat(b[sortNoField].substr(15))
+                        if (a1 < b1) {
+                            return -1
+                        } else if (a1 > b1) {
+                            return 1
+                        } else {
+                            return a2 - b2
+                        }
+                    })
+                } else {
+                    return this.dataList
+                }
+            },
+            set(newVal) {
+                this.$set(this, 'dataList', newVal)
+            }
         }
     },
     methods: {
+        genItems(props: DataProps) {
+            const empty = this.genEmpty(props.pagination.itemsLength)
+            if (empty) return [empty]
+            let result = []
+            this.currentItems.forEach((item, index) => {
+                if (this.isTreeGrid && this.hiddenLongCodes) {
+                    let longCode = item[this.treeListDescribe.longCodeField]
+                    let isHidden = this.hiddenLongCodes.some(i => new RegExp(`^${i}\\.`).test(longCode))
+                    if (!isHidden) {
+                        result.push(this.genRow(this.$createElement, item, index))
+                    }
+                }
+            })
+            return result
+        },
         genRow(h: CreateElement, item: any, rowIndex: number) {
             let isEdit = false
             let id = item[this.itemKey]
@@ -105,16 +147,6 @@ export default ({
                 let fieldName = header.value
                 let editorConfig = Object.assign({}, header.editor)
                 editorConfig.key = editorConfig.ref = `${itemId}_${fieldName}`
-                // editorConfig.model = {
-                //     value: item[fieldName]
-                //     // callback: value => {
-                //     //     item[fieldName] = value
-                //     //     if (this.valid && this.valid.$each && this.valid.$each[rowIndex]) {
-                //     //         let validProp = this.valid.$each[this.rowIndex][fieldName]
-                //     //         validProp.$touch()
-                //     //     }
-                //     // }
-                // }
                 editorConfig.props.value = item[fieldName]
                 editorConfig.on = {
                     change: value => {
@@ -125,6 +157,16 @@ export default ({
                         }
                     }
                 }
+                // editorConfig.model = {
+                //     value: item[fieldName]
+                //     // callback: value => {
+                //     //     item[fieldName] = value
+                //     //     if (this.valid && this.valid.$each && this.valid.$each[rowIndex]) {
+                //     //         let validProp = this.valid.$each[this.rowIndex][fieldName]
+                //     //         validProp.$touch()
+                //     //     }
+                //     // }
+                // }
                 element = h(editorConfig.props.elementName, editorConfig)
                 return element
             }

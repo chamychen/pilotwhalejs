@@ -15,7 +15,6 @@ import ElementButtonArea from '../../designer/src/core/security-button/model/Ele
 import Button from '../src/mixins/xbutton/Button'
 import { guidUtils } from 'pilotwhale-utils'
 import TableHandler from './TableHandler'
-import TreeListHandler from './TreeListHandler'
 
 export default {
   data: () => ({
@@ -117,41 +116,29 @@ export default {
   },
   methods: {
     addRootRow(e) {
-      // for (let i = 0; i < 3000; i++) {
-      let treeListHandler = this.$refs.test.treeGridHandler
-      treeListHandler.add()
-      this.$set(this.currentValue, 'test', treeListHandler.data)
-      // }
+      this.$refs.test.addTreeNode()
     },
     addTestRow(e, key, item, rowIndex) {
-      let treeListHandler = this.$refs.test.treeGridHandler
-      treeListHandler.add(item['id'])
-      this.$set(this.currentValue, 'test', treeListHandler.data)
+      this.$refs.test.addTreeNode(item['id'])
     },
     delTestRow(e, key, item, rowIndex) {
-      let treeListHandler = this.$refs.test.treeGridHandler
-      treeListHandler.delete(item['id'])
-      this.$set(this.currentValue, 'test', treeListHandler.data)
+      this.$refs.test.deleteTreeNode(item['id'])
     },
     editTestRow(e, key, item, rowIndex) {
       let tableHandler = new TableHandler(this)
       tableHandler.editRow(key, item)
     },
     moveUp(e, key, item, rowIndex) {
-      let treeListHandler = this.$refs.test.treeGridHandler
-      treeListHandler.moveUp(item)
+      this.$refs.test.moveUp(item)
     },
     moveDown(e, key, item, rowIndex) {
-      let treeListHandler = this.$refs.test.treeGridHandler
-      treeListHandler.moveDown(item)
+      this.$refs.test.moveDown(item)
     },
     moveLeft(e, key, item, rowIndex) {
-      let treeListHandler = this.$refs.test.treeGridHandler
-      treeListHandler.moveLeft(item)
+      this.$refs.test.moveLeft(item)
     },
     moveRight(e, key, item, rowIndex) {
-      let treeListHandler = this.$refs.test.treeGridHandler
-      treeListHandler.moveRight(item)
+      this.$refs.test.moveRight(item)
     }
   }
 }

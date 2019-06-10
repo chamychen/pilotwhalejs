@@ -105,7 +105,7 @@ export class TreeListDescribe {
   nameField: string = 'name'
   linkNameField: string = 'linkName'
   sortNoField: string = 'sortNo'
-  expandField: string
+  expandField: string = 'longCode'
 }
 
 /**

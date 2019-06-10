@@ -341,21 +341,6 @@ export default VDataIterator.extend({
         )
       ])
     },
-    genItems(items: any[], props: DataProps) {
-      const empty = this.genEmpty(props.pagination.itemsLength)
-      if (empty) return [empty]
-      let result = []
-      items.forEach((item, index) => {
-        if (this.isTreeGrid && this.hiddenLongCodes) {
-          let longCode = item[this.treeListDescribe.longCodeField]
-          let isHidden = this.hiddenLongCodes.some(i => new RegExp(`^${i}\\.`).test(longCode))
-          if (!isHidden) {
-            result.push(this.genRow(this.$createElement, item, index))
-          }
-        }
-      })
-      return result
-    },
     genBody(props: DataProps): VNode | string | VNodeChildren {
       const data = {
         ...props,
@@ -368,7 +353,7 @@ export default VDataIterator.extend({
 
       return this.$createElement('tbody', [
         this.genSlots('body.prepend', data),
-        this.genItems(props.items, props),
+        this.genItems(props),
         this.genSlots('body.append', data)
       ])
     },
@@ -399,28 +384,6 @@ export default VDataIterator.extend({
         hasFixedCols: this.fixedLeftCols > 0 || this.fixedRightCols > 0,
         dense: this.dense,
         isMobile: this.isMobile
-      }
-
-      if (this.virtualRows) {
-        return this.$createElement(
-          VVirtualTable,
-          {
-            props: Object.assign(simpleProps, {
-              itemsLength: props.items.length,
-              height: this.height,
-              rowHeight: this.dense ? 24 : 48,
-              headerHeight: this.dense ? 32 : 48
-              // TODO: expose rest of props from virtual table?
-            }),
-            scopedSlots: {
-              items: ({ start, stop }) => this.genItems(props.items.slice(start, stop), props) as any // TODO: fix typing
-            }
-          },
-          [
-            this.proxySlot('body.before', [this.genCaption(props), this.genHeaders(props)]),
-            this.proxySlot('bottom', this.genFooters(props))
-          ]
-        )
       }
 
       return this.$createElement(
