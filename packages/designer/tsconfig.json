@@ -16,6 +16,7 @@
         "src/*"
       ]
     },
+    "jsx": "preserve",
     "experimentalDecorators": true, //启用注解
     "emitDecoratorMetadata": true, //启用注解Metadata
     "strict": false,

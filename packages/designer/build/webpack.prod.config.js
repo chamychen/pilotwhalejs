@@ -48,7 +48,7 @@ module.exports = merge(baseWebpackConfig, {
   module: {
     rules: [
       {
-        test: /\.[jt]s$/,
+        test: /\.[jt]sx?$/,
         use: 'happypack/loader?id=scripts',
         exclude: /node_modules/
       }
@@ -66,7 +66,11 @@ module.exports = merge(baseWebpackConfig, {
         'babel-loader',
         {
           loader: 'ts-loader',
-          options: { happyPackMode: true }
+          options: {
+            appendTsSuffixTo: [/\.vue$/],
+            appendTsxSuffixTo: [/\.vue$/],
+            happyPackMode: true
+          }
         }
       ]
     })

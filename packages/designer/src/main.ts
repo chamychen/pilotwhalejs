@@ -1,4 +1,4 @@
-import 'babel-polyfill' // 为支持ie
+// import '@babel/polyfill' // 为支持ie
 import Vue from 'vue'
 import App from './App.vue'
 import '@config'

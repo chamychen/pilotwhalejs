@@ -10,7 +10,7 @@
   </v-app>
 </template>
 
-<script>
+<script lang="ts">
 import { mapActions, mapState, mapMutations } from 'vuex'
 export default {
   computed: {

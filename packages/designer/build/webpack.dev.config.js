@@ -45,13 +45,13 @@ module.exports = merge(baseWebpackConfig, {
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        use: 'happypack/loader?id=ts',
+        test: /\.jsx?$/,
+        use: 'happypack/loader?id=js',
         exclude: /node_modules/
       },
       {
-        test: /\.js$/,
-        use: 'happypack/loader?id=js',
+        test: /\.tsx?$/,
+        use: 'happypack/loader?id=ts',
         exclude: /node_modules/
       }
     ]
@@ -62,6 +62,12 @@ module.exports = merge(baseWebpackConfig, {
       tsconfig: resolve('../tsconfig.json')
     }),
     new HappyPack({
+      id: 'js',
+      threadPool: happyThreadPool,
+      loaders: ['babel-loader', 'eslint-loader?cache=false?emitWarning=true'],
+      debug: true
+    }),
+    new HappyPack({
       id: 'ts',
       threadPool: happyThreadPool,
       loaders: [
@@ -70,17 +76,12 @@ module.exports = merge(baseWebpackConfig, {
           loader: 'ts-loader',
           options: {
             appendTsSuffixTo: [/\.vue$/],
+            appendTsxSuffixTo: [/\.vue$/],
             happyPackMode: true
           }
         },
         'eslint-loader?cache=false?emitWarning=true'
       ],
-      debug: true
-    }),
-    new HappyPack({
-      id: 'js',
-      threadPool: happyThreadPool,
-      loaders: ['babel-loader', 'eslint-loader?cache=false?emitWarning=true'],
       debug: true
     })
   ]
