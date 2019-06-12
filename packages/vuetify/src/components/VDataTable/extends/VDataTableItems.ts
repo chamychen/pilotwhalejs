@@ -7,9 +7,10 @@ import VDefaultRowPC from './VDefaultRowPC'
 import { VSimpleCheckbox } from '../../VCheckbox'
 import { getPrefixedScopedSlots } from '../../../util/helpers'
 import { DataProps } from '@components/VData/VData'
+import VDefaultRowMobile from './VDefaultRowMobile'
 
 export default {
-  mixins: [VDefaultRowPC],
+  mixins: [VDefaultRowPC, VDefaultRowMobile],
   props: {},
   data() {
     return {
@@ -86,10 +87,10 @@ export default {
       return result
     },
     genRow(h: CreateElement, item: any, rowIndex: number) {
-      // return <div>1111</div>（页面必须是tsx）
       let isEdit = false
       let id = item[this.itemKey]
       let limitCells = null
+      // 编缉权限控制
       if (
         this.tableMode === TableMode.MULTI_LINE ||
         (this.tableMode === TableMode.SINGLE_LINE &&
@@ -106,9 +107,9 @@ export default {
           }
         }
       }
-      if (this.isMobile) {
+      if (this.isMobile) { // 手机行
         return this.genMobileRow(h, item, rowIndex, isEdit, limitCells)
-      } else {
+      } else { // PC行
         let minScrollIndex = this.scrollRowIndex - this.prevScrollRows
         if (minScrollIndex < 0) {
           minScrollIndex = 0

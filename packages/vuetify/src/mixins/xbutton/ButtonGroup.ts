@@ -26,5 +26,5 @@ export default class ButtonGroupInstance {
     /**
      * 手机端是否强制独立显示
      */
-    mobileFixed: boolean
+    refusedMergeForMobile: boolean
 }

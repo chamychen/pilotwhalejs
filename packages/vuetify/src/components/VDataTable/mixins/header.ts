@@ -20,6 +20,7 @@ export interface TableHeader {
   sort?: compareFn
   fixedStyle?: string
   editor?: any
+  mobileHidden?: boolean
 }
 
 type VDataTableInstance = InstanceType<typeof VDataTable>

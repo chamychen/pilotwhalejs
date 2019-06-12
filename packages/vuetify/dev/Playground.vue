@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn @click="addRootRow"></v-btn>
-    <v-data-table key="test" ref="test" :height="600" :rowAvgHeight="48" disablePagination :headers=" h" itemKey="id" :items="currentValue.test" show-select v-model="c" :tableMode='m' showRowNo isTreeGrid :buttonGroups="buttonGroups" :buttons="buttons" :treeListDescribe="treeListDescribe" buttonSize='small' :context="this" :fixedLeftCols="1" :fixedRightCols="1">
+    <v-data-table key="test" ref="test" :height="600" :rowAvgHeight="48" disablePagination :headers=" h" itemKey="id" :items="currentValue.test" show-select v-model="c" :tableMode='m' showRowNo isTreeGrid :buttonGroups="buttonGroups" :buttons="buttons" :treeListDescribe="treeListDescribe" buttonSize='small' :context="this" :fixedLeftCols="1" :fixedRightCols="1" :mobileRenderMethod="testMobileRender">
     </v-data-table>
   </div>
 </template>
@@ -37,24 +37,24 @@ export default {
       {
         text: 'parentId',
         value: 'parentId',
-        editor: { props: { elementName: 'VTextField' } }
+        editor: { props: { elementName: 'VTextField' } }, mobileHidden: true
       },
       {
         text: 'sortNo',
         value: 'sortNo',
-        editor: { props: { elementName: 'VTextField' } }
+        editor: { props: { elementName: 'VTextField' } }, mobileHidden: true
       },
       {
         text: 'level',
         value: 'level',
-        editor: { props: { elementName: 'VTextField' } }
+        editor: { props: { elementName: 'VTextField' } }, mobileHidden: true
       },
       {
         text: 'leaf',
         value: 'leaf',
         editor: { props: { elementName: 'VCheckbox' } }
       },
-      { text: '按钮', value: 'actions', width: 200 }
+      { text: '按钮', value: 'actions', width: 200, mobileHidden: true }
     ],
     c: [{ id: '2', key: 'b' }, { id: '3', key: 'c' }],
     m: TableMode.SINGLE_LINE,
@@ -139,6 +139,20 @@ export default {
     },
     moveRight(e, key, item, rowIndex) {
       this.$refs.test.moveRight(item)
+    },
+    testMobileRender(h, headers, item, itemKey, rowIndex) {
+      if (!h || !item) {
+        return
+      } else {
+        return (<v-list-item slot='activator'>
+          <v-list-item-icon>
+            <v-icon>mdi-plus</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>
+            <v-subheader>{item.longCode}</v-subheader>
+          </v-list-item-title>
+        </v-list-item>)
+      }
     }
   }
 }

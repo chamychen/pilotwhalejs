@@ -122,6 +122,30 @@ export default ({
         }
     },
     methods: {
+        /**
+         * 生成表格移动端按钮
+         * @param tagName 
+         * @param item 
+         * @param rowIndex 
+         */
+        genTableMobileButtons(tagName: string, item?: any, rowIndex?: number) {
+            if (tagName) {
+                let h = this.$createElement
+                let buttonStructure: Array<ButtonGroupInstance> = this.getButtonStructure(tagName)
+                if (buttonStructure) {
+                    let result = []
+                    buttonStructure.forEach(buttonGroup => {
+                        buttonGroup.buttons.forEach(button => {
+                            let btn = this.genButton(h, button, false, item, rowIndex)
+                            if (btn) {
+                                result.push(h('VListItem', { style: { margin: '2px 0px', left: '-4px' } }, [btn]))
+                            }
+                        })
+                    })
+                    return result
+                }
+            }
+        },
         genButtons(tagName: string, item?: any, rowIndex?: number): VNode[] | undefined {
             if (tagName) {
                 let h = this.$createElement
@@ -260,6 +284,7 @@ export default ({
             }
         },
         genButton(h, button: Button, isMenuButton: boolean, item?: any, rowIndex?: number) {
+            let isMobileTableInlinButton = this.getButtonType() === ButtonType.INLINE_ROW && this.isMobile
             if (this.getButtonType() === ButtonType.APP && !button.color) {
                 button.color = '#000000'
             }
@@ -276,7 +301,7 @@ export default ({
                 props: {
                     small: true,
                     dark: iconDark,
-                    color: this.getButtonType() === ButtonType.APP ? button.color : null
+                    color: this.getButtonType() === ButtonType.APP || isMobileTableInlinButton ? button.color : null
                 },
                 domProps: {
                     innerHTML: button.icon
@@ -285,8 +310,17 @@ export default ({
                     fontSize: this.getButtonType() === ButtonType.APP ? '22px' : null
                 }
             }) : null
+            let labelClass = 'mr-1'
+            if (this.getButtonType() !== ButtonType.APP) {
+                if (isMobileTableInlinButton) {
+                    labelClass = 'mr-1'
+                } else {
+                    labelClass = 'mr-1 hidden-sm-and-down'
+                }
+            }
             let labelProps: any = button.text ? {
-                class: this.getButtonType() === ButtonType.APP ? 'mr-1' : 'mr-1 hidden-sm-and-down',
+                // class: this.getButtonType() === ButtonType.APP ? 'mr-1' : 'mr-1 hidden-sm-and-down',
+                class: labelClass,
                 domProps: {
                     innerHTML: button.text
                 },
@@ -295,15 +329,14 @@ export default ({
                 }
             } : null
             if (labelProps) {
-                if (this.getButtonType() === ButtonType.APP) {
+                if (this.getButtonType() === ButtonType.APP || isMobileTableInlinButton) {
                     if (this.isCssColor(button.color)) {
                         if (!labelProps.style) {
                             labelProps.style = {}
                         }
                         labelProps.style.color = button.color
                     } else {
-                        labelProps.class += ` ${button.color
-                            }--text`
+                        labelProps.class += ` ${button.color}--text`
                     }
                 }
             }
@@ -326,19 +359,35 @@ export default ({
             }
             if (objs && objs.length > 0) {
                 if (this.isMobile) {
-                    props.fab = true
-                    props.minWidth = null
-                    props.outline = false
+                    if (this.getButtonType() === ButtonType.INLINE_ROW) {
+                        props.fab = false
+                        props.minWidth = null
+                        props.width = '100%'
+                        props.small = false
+                        props.color = '#ffffff'
+                    } else {
+                        props.fab = true
+                        props.minWidth = null
+                        props.outline = false
+                    }
                 }
                 let on: any = {}
                 if (!isMenuButton) {
                     if (button.event && this.context && this.context[button.event]) {
                         on.click = (e) => {
-                            this.context[button.event](e, this.$vnode.key, item, rowIndex)
+                            this.context[button.event](e, this.$vnode.key, item, rowIndex)                            
+                            // 关闭bottom sheet
+                            if (isMobileTableInlinButton) {
+                                this.$set(this, 'showBottomSheetButton', false)
+                            }
                             e.stopPropagation()
                         }
                     } else {
                         on.click = (e) => {
+                            // 关闭bottom sheet
+                            if (isMobileTableInlinButton) {
+                                this.$set(this, 'showBottomSheetButton', false)
+                            }
                             e.stopPropagation()
                         }
                     }
@@ -379,6 +428,7 @@ export default ({
             let buttonType = ButtonType.DEFAULT
             switch (this.$options._componentTag) {
                 case 'VDataTable':
+                case 'v-data-table':
                     buttonType = ButtonType.INLINE_ROW
                     break
                 case 'CTab':
@@ -423,7 +473,7 @@ export default ({
                                 groupButtonColor: tagButtonArea.groupButtonColor
                             }
                             if (isMobile) {
-                                if (!tagButtonArea.mobileFixed) {
+                                if (!tagButtonArea.refusedMergeForMobile) {
                                     notMobileFixedButtons = notMobileFixedButtons.concat(groupButtons)
                                 } else {
                                     mobileFixedButtonGroups.push(buttonGroup)

@@ -24,20 +24,20 @@ export default class ElementButtonArea {
     groupButtonColor: string
 
     /**
-     * 手机端是否强制独立显示
+     * 手机端是否强制独立显示(即手机端也不合并按钮)
      */
-    mobileFixed: boolean
+    refusedMergeForMobile: boolean
 
     /**
      * 
      * @param useTag 应用区域标记
      * @param buttonCodes 按钮code
      */
-    constructor(useTag: string, buttonKeys: Array<string>, groupText?: string, groupIcon?: string, mobileFixed?: boolean) {
+    constructor(useTag: string, buttonKeys: Array<string>, groupText?: string, groupIcon?: string, refusedMergeForMobile?: boolean) {
         this.useTag = useTag
         this.buttonKeys = buttonKeys
         this.groupText = groupText
         this.groupIcon = groupIcon
-        this.mobileFixed = mobileFixed
+        this.refusedMergeForMobile = refusedMergeForMobile
     }
 }

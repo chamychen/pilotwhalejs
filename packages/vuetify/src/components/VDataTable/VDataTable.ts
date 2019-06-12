@@ -1,7 +1,7 @@
 import './VDataTable.sass'
 
 // Types
-import { VNode, VNodeChildrenArrayContents, VNodeChildren } from 'vue'
+import { VNode, VNodeChildrenArrayContents, VNodeChildren, CreateElement } from 'vue'
 import { PropValidator } from 'vue/types/options'
 import { DataProps, DataPaginaton, DataOptions } from '../VData/VData'
 import { TableHeader } from './mixins/header'
@@ -106,9 +106,12 @@ export default VDataIterator.extend({
     // 行平均高度，设置此值以解决性能问题
     rowAvgHeight: {
       type: Number
-    }
+    },
+    // 移动端行渲染函数
+    mobileRenderMethod: {
+      type: Function
+    } as PropValidator<(h: CreateElement, headers: TableHeader[], item: any, itemKey: string, rowIndex: Number) => VNode>
   },
-
   data() {
     return {
       scrollData: null,
@@ -382,28 +385,41 @@ export default VDataIterator.extend({
       }
     },
     genDefaultScopedSlot(props: DataProps): VNode {
-      const simpleProps = {
-        height: this.height,
-        fixedHeader: this.fixedHeader,
-        hasFixedCols: this.fixedLeftCols > 0 || this.fixedRightCols > 0,
-        dense: this.dense,
-        isMobile: this.isMobile
-      }
+      if (!this.isMobile) {
+        const simpleProps = {
+          height: this.height,
+          fixedHeader: this.fixedHeader,
+          hasFixedCols: this.fixedLeftCols > 0 || this.fixedRightCols > 0,
+          dense: this.dense,
+          isMobile: this.isMobile
+        }
 
-      return this.$createElement(
-        VSimpleTable,
-        {
-          props: simpleProps
-        },
-        [
-          this.proxySlot('top', this.genSlots('top', props)),
-          this.genCaption(props),
-          this.genColgroup(props),
-          this.genHeaders(props),
-          this.genBody(props),
-          this.proxySlot('bottom', this.genFooters(props))
-        ]
-      )
+        return this.$createElement(
+          VSimpleTable,
+          {
+            props: simpleProps
+          },
+          [
+            this.proxySlot('top', this.genSlots('top', props)),
+            this.genCaption(props),
+            this.genColgroup(props),
+            this.genHeaders(props),
+            this.genBody(props),
+            this.proxySlot('bottom', this.genFooters(props))
+          ]
+        )
+      } else {
+        let items = this.genItems(props)
+        let divider = this.$createElement('VDivider')
+        let elements = []
+        if (items) {
+          items.forEach(item => {
+            elements.push(item)
+            elements.push(divider)
+          })
+        }
+        return this.$createElement('VList', { class: 'v-datatable-mobile' }, elements)
+      }
     },
     proxySlot(slot: string, content: VNodeChildren) {
       return this.$createElement('template', { slot }, content)
