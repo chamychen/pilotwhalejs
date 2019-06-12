@@ -66,9 +66,7 @@ module.exports = merge(baseWebpackConfig, {
         'babel-loader',
         {
           loader: 'ts-loader',
-          options: {
-            appendTsSuffixTo: [/\.vue$/],
-            appendTsxSuffixTo: [/\.vue$/],
+          options: {          
             happyPackMode: true
           }
         }

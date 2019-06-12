@@ -83,9 +83,9 @@
   "dependencies": {
     "@mdi/font": "^3.6.95",
     "dotenv": "^7.0.0",
-    "reflect-metadata": "^0.1.13",
     "vue": "^2.6.4",
     "vuelidate": "^0.7.4",
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "reflect-metadata": "^0.1.13"
   }
 }

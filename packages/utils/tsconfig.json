@@ -1,15 +1,22 @@
 {
   "extends": "../../tsconfig.json",
-  "include": ["src"],
+  "include": [
+    "src"
+  ],
   "compilerOptions": {
     "locale": "zh-CN",
     "baseUrl": ".",
     "paths": {
-      "@/test/*": ["test/*"],
-      "@*": ["src/*"]
+      "@/test/*": [
+        "test/*"
+      ],
+      "@*": [
+        "src/*"
+      ]
     },
+    "jsx": "preserve",
     "experimentalDecorators": true, //启用注解
-    "emitDecoratorMetadata": true,//启用注解Metadata
+    "emitDecoratorMetadata": true, //启用注解Metadata
     "strict": false,
     "allowJs": true,
     "noUnusedLocals": false /* Report errors on unused locals. */,

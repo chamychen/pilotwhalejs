@@ -10,10 +10,8 @@ import { TableHeader } from './mixins/header'
 import { VData } from '../VData'
 import { VDataFooter, VDataIterator } from '../VDataIterator'
 import VDataTableHeader from './VDataTableHeader'
-import VVirtualTable from './VVirtualTable'
 import VProgressLinear from '../VProgressLinear'
 import VSimpleTable from './VSimpleTable'
-
 
 // Helpers
 import { deepEqual, getObjectValueByPath, compareFn, getPrefixedScopedSlots } from '../../util/helpers'
@@ -250,13 +248,19 @@ export default VDataIterator.extend({
     genColgroup(props: DataProps) {
       return this.$createElement(
         'colgroup',
-        this.computedHeaders.map(header => {
+        this.computedHeaders.map((header: TableHeader) => {
+          let headerWidth = header.width
+          if (header.width) {
+            if (typeof (header.width) === 'number') {
+              headerWidth = `${header.width}px`
+            }
+          }
           return this.$createElement('col', {
             class: {
               divider: header.divider
             },
             style: {
-              width: header.width
+              width: headerWidth
             }
           })
         })

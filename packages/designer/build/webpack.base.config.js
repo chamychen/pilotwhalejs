@@ -32,7 +32,7 @@ const sassLoaders = [
 exports.config = {
   mode: isProd ? 'production' : 'development',
   resolve: {
-    extensions: ['*', '.js', '.json', '.vue', '.ts', '.tsx']
+    extensions: ['*', '.js', '.jsx', '.json', '.vue', '.ts', '.tsx']
   },
   node: {
     fs: 'empty'

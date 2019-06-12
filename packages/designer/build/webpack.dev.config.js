@@ -19,7 +19,7 @@ module.exports = merge(baseWebpackConfig, {
     disableHostCheck: true
   },
   devtool: 'source-map',
-  entry: ['babel-polyfill', './src/main.ts'],
+  entry: ['@babel/polyfill', './src/main.ts'],
   output: {
     filename: '[name].js',
     path: resolve('../public'),

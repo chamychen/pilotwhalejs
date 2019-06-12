@@ -29,7 +29,7 @@ module.exports = merge(baseWebpackConfig, {
   module: {
     rules: [
       {
-        test: /\.[jt]s$/,
+        test: /\.[jt]sx?$/,
         use: 'happypack/loader?id=scripts',
         exclude: /node_modules/
       }

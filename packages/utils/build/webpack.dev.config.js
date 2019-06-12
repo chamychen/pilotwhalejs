@@ -10,7 +10,6 @@ const resolve = file => path.resolve(__dirname, file)
 
 module.exports = merge(baseWebpackConfig, {
   devtool: 'source-map',
-  entry: ['babel-polyfill', './dev/index.js'],
   output: {
     filename: '[name].js',
     path: resolve('../dev'),
@@ -35,12 +34,12 @@ module.exports = merge(baseWebpackConfig, {
         }
       },
       {
-        test: /\.ts$/,
+        test: /\.tsx?$/,
         use: 'happypack/loader?id=ts',
         exclude: /node_modules/
       },
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         use: 'happypack/loader?id=js',
         exclude: /node_modules/
       }
@@ -61,6 +60,7 @@ module.exports = merge(baseWebpackConfig, {
           loader: 'ts-loader',
           options: {
             appendTsSuffixTo: [/\.vue$/],
+            appendTsxSuffixTo: [/\.vue$/],
             happyPackMode: true
           }
         },

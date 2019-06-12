@@ -1,7 +1,7 @@
 {
   "presets": [
     [
-      "env",
+      "@babel/preset-env",
       {
         "targets": {
           "browsers": [
@@ -14,25 +14,40 @@
         },
         "modules": false
       }
+    ],
+    [
+      "@vue/babel-preset-jsx"
     ]
   ],
   "plugins": [
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-proposal-object-rest-spread",
     [
-      "transform-define",
-      "./build/babel-transform-define.js"
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
     ],
-    "transform-object-rest-spread"
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": true
+      }
+    ]
   ],
   "env": {
     "test": {
       "presets": [
         [
-          "env",
+          "@babel/preset-env",
           {
             "targets": {
               "node": true
             }
           }
+        ],
+        [
+          "@vue/babel-preset-jsx"
         ]
       ],
       "plugins": [
@@ -42,7 +57,14 @@
             "root": [
               "./src"
             ],
-            "alias": {}
+            "alias": {
+              "~components": "components",
+              "~directives": "directives",
+              "~mixins": "mixins",
+              "~stylus": "stylus",
+              "~scss": "scss",
+              "~util": "util"
+            }
           }
         ]
       ]
@@ -50,7 +72,7 @@
     "es5": {
       "presets": [
         [
-          "env",
+          "@babel/preset-env",
           {
             "targets": {
               "browsers": [
@@ -62,6 +84,9 @@
               "node": 8
             }
           }
+        ],
+        [
+          "@vue/babel-preset-jsx"
         ]
       ]
     }

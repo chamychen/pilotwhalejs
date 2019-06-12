@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-btn @click="addRootRow"></v-btn>
-    <v-data-table key="test" ref="test" :height="600" :rowAvgHeight="48" disablePagination :headers=" h" itemKey="id" :items="currentValue.test" show-select v-model="c" :tableMode='m' showRowNo isTreeGrid :buttonGroups="buttonGroups" :buttons="buttons" :treeListDescribe="treeListDescribe" buttonSize='small' :context="this">
+    <v-data-table key="test" ref="test" :height="600" :rowAvgHeight="48" disablePagination :headers=" h" itemKey="id" :items="currentValue.test" show-select v-model="c" :tableMode='m' showRowNo isTreeGrid :buttonGroups="buttonGroups" :buttons="buttons" :treeListDescribe="treeListDescribe" buttonSize='small' :context="this" :fixedLeftCols="1" :fixedRightCols="1">
     </v-data-table>
   </div>
 </template>
@@ -54,7 +54,7 @@ export default {
         value: 'leaf',
         editor: { props: { elementName: 'VCheckbox' } }
       },
-      { text: '按钮', value: 'actions' }
+      { text: '按钮', value: 'actions', width: 200 }
     ],
     c: [{ id: '2', key: 'b' }, { id: '3', key: 'c' }],
     m: TableMode.SINGLE_LINE,

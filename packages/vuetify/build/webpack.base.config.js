@@ -37,7 +37,7 @@ const plugins = [
 exports.config = {
   mode: isProd ? 'production' : 'development',
   resolve: {
-    extensions: ['*', '.js', '.json', '.vue', '.ts']
+    extensions: ['*', '.js', '.json', '.vue', '.ts', '.tsx']
   },
   node: {
     fs: 'empty'

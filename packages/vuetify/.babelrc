@@ -1,46 +1,100 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "browsers": [">0.5%", "last 2 versions", "not dead", "not op_mini all"],
-        "node": 8
-      },
-      "modules": false
-    }]
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "browsers": [
+            ">0.5%",
+            "last 2 versions",
+            "not dead",
+            "not op_mini all"
+          ],
+          "node": 8
+        },
+        "modules": false
+      }
+    ],
+    [
+      "@vue/babel-preset-jsx"
+    ]
   ],
   "plugins": [
-    ["transform-define", "./build/babel-transform-define.js"],
-    "transform-object-rest-spread"
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-proposal-object-rest-spread",
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    [
+      "@babel/plugin-proposal-class-properties",
+      {
+        "loose": true
+      }
+    ],
+    [
+      "transform-define",
+      {
+        "__VUETIFY_VERSION__": "2.0.0-alpha.11",
+        "__REQUIRED_VUE__": "2.6.4"
+      }
+    ]
   ],
   "env": {
     "test": {
       "presets": [
-        ["env", {
-          "targets": { "node": true }
-        }]
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "node": true
+            }
+          }
+        ],
+        [
+          "@vue/babel-preset-jsx"
+        ]
       ],
       "plugins": [
-        ["module-resolver", {
-          "root": ["./src"],
-          "alias": {
-            "~components": "components",
-            "~directives": "directives",
-            "~mixins": "mixins",
-            "~stylus": "stylus",
-            "~scss": "scss",
-            "~util": "util"
+        [
+          "module-resolver",
+          {
+            "root": [
+              "./src"
+            ],
+            "alias": {
+              "~components": "components",
+              "~directives": "directives",
+              "~mixins": "mixins",
+              "~stylus": "stylus",
+              "~scss": "scss",
+              "~util": "util"
+            }
           }
-        }]
+        ]
       ]
     },
     "es5": {
       "presets": [
-        ["env", {
-          "targets": {
-            "browsers": [">0.5%", "last 2 versions", "not dead", "not op_mini all"],
-            "node": 8
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "browsers": [
+                ">0.5%",
+                "last 2 versions",
+                "not dead",
+                "not op_mini all"
+              ],
+              "node": 8
+            }
           }
-        }]
+        ],
+        [
+          "@vue/babel-preset-jsx"
+        ]
       ],
       "plugins": [
         "./build/babel-transform-stylus-paths.js",
