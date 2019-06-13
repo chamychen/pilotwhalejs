@@ -1,8 +1,10 @@
 <template>
   <div>
     <v-btn @click="addRootRow"></v-btn>
-    <v-data-table key="test" ref="test" :height="600" :rowAvgHeight="48" disablePagination :headers=" h" itemKey="id" :items="currentValue.test" show-select v-model="c" :tableMode='m' showRowNo isTreeGrid :buttonGroups="buttonGroups" :buttons="buttons" :treeListDescribe="treeListDescribe" buttonSize='small' :context="this" :fixedLeftCols="1" :fixedRightCols="1" :mobileRenderMethod="testMobileRender">
-    </v-data-table>
+    <div style="width:400px">
+      <v-data-table key="test" ref="test" :height="600" :rowAvgHeight="48" disablePagination :headers=" h" itemKey="id" :items="currentValue.test" show-select v-model="c" :tableMode='m' showRowNo isTreeGrid :buttonGroups="buttonGroups" :buttons="buttons" :treeListDescribe="treeListDescribe" buttonSize='small' :context="this" :fixedLeftCols="1" :fixedRightCols="1" :mobileRenderMethod="testMobileRender">
+      </v-data-table>
+    </div>
   </div>
 </template>
 

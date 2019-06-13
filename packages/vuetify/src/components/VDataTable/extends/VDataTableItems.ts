@@ -74,14 +74,16 @@ export default {
       if (empty) return [empty]
       let result = []
       this.currentItems.forEach((item, index) => {
+        let isHidden = false
+        // 树形表格展开&收缩控制
         if (this.isTreeGrid && this.hiddenLongCodes) {
           let longCode = item[this.treeListDescribe.longCodeField]
-          let isHidden = this.hiddenLongCodes.some(i =>
+          isHidden = this.hiddenLongCodes.some(i =>
             new RegExp(`^${i}\\.`).test(longCode)
           )
-          if (!isHidden) {
-            result.push(this.genRow(this.$createElement, item, index))
-          }
+        }
+        if (!isHidden) {
+          result.push(this.genRow(this.$createElement, item, index))
         }
       })
       return result

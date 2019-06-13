@@ -103,7 +103,7 @@ export default VDataIterator.extend({
       type: String,
       default: 'fab'
     }, // raised|flat|depressed|icon|fab
-    // 行平均高度，设置此值以解决性能问题
+    // PC行平均高度，此为虚拟表格配置
     rowAvgHeight: {
       type: Number
     },
