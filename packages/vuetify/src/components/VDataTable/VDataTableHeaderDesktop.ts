@@ -77,9 +77,13 @@ export default mixins(header).extend({
         }
       }
 
+      // const fixedStyle = !header.fixedStyle
+      //   ? 'z-index:10'
+      //   : header.fixedStyle.replace(/z-index:3;/g, 'z-index:30;').replace(/z-index:2;/g, 'z-index:20;')
+
       const fixedStyle = !header.fixedStyle
-        ? 'z-index:10'
-        : header.fixedStyle.replace(/z-index:3;/g, 'z-index:30;').replace(/z-index:2;/g, 'z-index:20;')
+      ? 'z-index:2'
+      : header.fixedStyle.replace(/z-index:3;/g, 'z-index:4;').replace(/z-index:2;/g, 'z-index:3;')
 
       return this.$createElement(
         'th',

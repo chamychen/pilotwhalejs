@@ -15,8 +15,7 @@ export default {
   data() {
     return {
       rtl: this.$vuetify.rtl,
-      dataList: this.items ? this.items : [],
-      currentItemsCount: this.items ? this.items.length : 0,
+      currentItems: this.getCurrentItems(true),
       currentEditRowId: null, // 当前编缉行id
       currentTableMode: this.tableMode,
       currentMobileTableMode: this.mobileTableMode
@@ -30,6 +29,9 @@ export default {
     }
   },
   computed: {
+    currentItemsCount() {
+      return this.currentItems ? this.currentItems.length : 0
+    },
     // 当前滚动条所在行位置
     scrollRowIndex() {
       if (this.rowAvgHeight) {
@@ -40,37 +42,51 @@ export default {
           return 0
         }
       }
-    },
-    currentItems: {
-      get() {
-        if (this.isTreeGrid) {
-          let sortNoField = this.treeListDescribe.sortNoField
-          return this.dataList.sort((a: string, b: string) => {
-            // 此排序仅支持10个层级，每个层级999个节点
-            let a1 = parseFloat(a[sortNoField].substr(0, 15))
-            let a2 = parseFloat(a[sortNoField].substr(15))
-            let b1 = parseFloat(b[sortNoField].substr(0, 15))
-            let b2 = parseFloat(b[sortNoField].substr(15))
-            if (a1 < b1) {
-              return -1
-            } else if (a1 > b1) {
-              return 1
-            } else {
-              return a2 - b2
-            }
-          })
-        } else {
-          return this.dataList
-        }
-      },
-      set(newVal) {
-        this.$set(this, 'dataList', newVal)
-      }
     }
   },
   methods: {
+    /**
+     * 
+     * @param isInit 是否初始化调用
+     */
+    getCurrentItems(isInit) {
+      let items = isInit ? this.items : this.currentItems
+      let dataList = items ? [...items] : null
+      if (this.isTreeGrid) {
+        let sortNoField = this.treeListDescribe.sortNoField
+        return dataList.sort((a: string, b: string) => {
+          // 此排序仅支持10个层级，每个层级999个节点
+          let a1 = parseFloat(a[sortNoField].substr(0, 15))
+          let a2 = parseFloat(a[sortNoField].substr(15))
+          let b1 = parseFloat(b[sortNoField].substr(0, 15))
+          let b2 = parseFloat(b[sortNoField].substr(15))
+          if (a1 < b1) {
+            return -1
+          } else if (a1 > b1) {
+            return 1
+          } else {
+            return a2 - b2
+          }
+        })
+      }
+      return dataList
+    },
+    /**
+     * 获取选项值的文本
+     * @param header 
+     * @param elementVal 
+     */
+    getItemText(header: TableHeader, elementVal: any) {
+      if (elementVal && header.editor && header.editor.props.items) {
+        let item = header.editor.props.items.find(i => i.value.toString() === elementVal.toString())
+        if (item) {
+          elementVal = item.text
+        }
+      }
+      return elementVal ? elementVal.toString() : ''
+    },
     genItems(props: DataProps) {
-      const empty = this.genEmpty(props.pagination.itemsLength)
+      const empty = this.genEmpty(this.currentItemsCount)
       if (empty) return [empty]
       let result = []
       this.currentItems.forEach((item, index) => {
@@ -167,27 +183,49 @@ export default {
       let element: VNode = null
       if (header.editor && item) {
         let fieldName = header.value
-        let editorConfig = Object.assign({}, header.editor)
-        editorConfig.key = editorConfig.ref = `${itemId}_${fieldName}`
-        editorConfig.props.value = item[fieldName]
+        let editorConfig = { ...header.editor }
+        editorConfig.key = `${itemId}_${fieldName}`
+        editorConfig.ref = null // 不可以设置ref
+        editorConfig.model = {
+          value: item[fieldName],
+          callback: value => {
+            // 保持为空
+          }
+        }
         editorConfig.on = {
-          change: value => {
-            item[fieldName] = value
+          change: (newVal) => {
+            item[fieldName] = newVal
+            this.$set(this.currentItems, rowIndex, item)
             if (this.valid && this.valid.$each && this.valid.$each[rowIndex]) {
               let validProp = this.valid.$each[this.rowIndex][fieldName]
               validProp.$touch()
             }
           }
         }
-        // editorConfig.model = {
-        //     value: item[fieldName]
-        //     // callback: value => {
-        //     //     item[fieldName] = value
-        //     //     if (this.valid && this.valid.$each && this.valid.$each[rowIndex]) {
-        //     //         let validProp = this.valid.$each[this.rowIndex][fieldName]
-        //     //         validProp.$touch()
-        //     //     }
-        //     // }
+        // if (editorConfig.props.elementName === 'VSelect') {
+        //   editorConfig.model = {
+        //     value: item[fieldName],
+        //     callback: value => {
+        //       item[fieldName] = value
+        //       this.$set(this.currentItems, rowIndex, item)
+        //       if (this.valid && this.valid.$each && this.valid.$each[rowIndex]) {
+        //         let validProp = this.valid.$each[this.rowIndex][fieldName]
+        //         validProp.$touch()
+        //       }
+        //     }
+        //   }
+        // } else {
+        //   editorConfig.props.value = item[fieldName]
+        //   editorConfig.on = {
+        //     change: value => {
+        //       item[fieldName] = value
+        //       this.$set(this.currentItems, rowIndex, item)
+        //       if (this.valid && this.valid.$each && this.valid.$each[rowIndex]) {
+        //         let validProp = this.valid.$each[this.rowIndex][fieldName]
+        //         validProp.$touch()
+        //       }
+        //     }
+        //   }
         // }
         element = h(editorConfig.props.elementName, editorConfig)
         return element

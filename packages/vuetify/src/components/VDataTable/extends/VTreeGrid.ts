@@ -165,10 +165,11 @@ export default {
         },
         /**
          * 新增树形节点
-         * @param parentId 
+         * @param parentId 父级节点id
+         * @param data 默认数据
          */
-        addTreeNode(parentId?: string) {
-            let newItem: any = {}
+        addTreeNode(parentId?: string, data?: Object) {
+            let newItem: any = !data ? {} : data
             let parent = null
             let parentChildCount = 0
             if (stringUtils.isEmpty(parentId)) {
@@ -178,7 +179,8 @@ export default {
                 parent = this.currentItems.find(i => i[this.treeListDescribe.idField] === parentId)
             }
             parentChildCount = this.currentItems.filter(i => i[this.treeListDescribe.parentIdField] === parentId).length
-            newItem[this.treeListDescribe.idField] = guidUtils.newId()
+            let id = guidUtils.newId()
+            newItem[this.treeListDescribe.idField] = id
             newItem[this.treeListDescribe.parentIdField] = parentId
             newItem[this.treeListDescribe.shortCodeField] = parentChildCount + 1
             newItem[this.treeListDescribe.longCodeField] = parent ? `${parent[this.treeListDescribe.longCodeField]}.${newItem[this.treeListDescribe.shortCodeField]}` : `${newItem[this.treeListDescribe.shortCodeField]}`
@@ -192,6 +194,7 @@ export default {
                 if (parent && parent[this.treeListDescribe.leafField]) {
                     parent[this.treeListDescribe.leafField] = false
                 }
+                return id
             }
         },
         /**
@@ -270,11 +273,12 @@ export default {
                         for (let j = 0; j < this.currentItems.length; j++) {
                             let item = this.currentItems[j]
                             if (i[this.treeListDescribe.idField] === item[this.treeListDescribe.idField]) {
-                                this.context.$set(this.currentItems, j, i)
-                                return false
+                                this.$set(this.currentItems, j, i)
+                                break
                             }
                         }
                     })
+                    this.$set(this, 'currentItems', this.getCurrentItems())
                 }
             }
         },
@@ -298,11 +302,12 @@ export default {
                     for (let j = 0; j < this.currentItems.length; j++) {
                         let item = this.currentItems[j]
                         if (i[this.treeListDescribe.idField] === item[this.treeListDescribe.idField]) {
-                            this.context.$set(this.currentItems, j, i)
-                            return false
+                            this.$set(this.currentItems, j, i)
+                            break
                         }
                     }
                 })
+                this.$set(this, 'currentItems', this.getCurrentItems())
             }
         },
 
@@ -327,11 +332,12 @@ export default {
                         let item = this.currentItems[i]
                         if (item[this.treeListDescribe.longCodeField] === oldParentLongCode) {
                             item[this.treeListDescribe.leafField] = true
-                            this.context.$set(this.currentItems, i, item)
-                            return false
+                            this.$set(this.currentItems, i, item)
+                            break
                         }
                     }
                 }
+                this.$set(this, 'currentItems', this.getCurrentItems())
             }
         },
 
@@ -363,12 +369,13 @@ export default {
                                 if (item[this.treeListDescribe.longCodeField] === newParentLongCode) {
                                     if (item[this.treeListDescribe.leafField] === true) {
                                         item[this.treeListDescribe.leafField] = false
-                                        this.context.$set(this.currentItems, i, item)
+                                        this.$set(this.currentItems, i, item)
                                     }
-                                    return false
+                                    break
                                 }
                             }
                         }
+                        this.$set(this, 'currentItems', this.getCurrentItems())
                     }
                 }
             }

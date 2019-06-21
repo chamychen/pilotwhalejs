@@ -16,16 +16,17 @@ import VSimpleTable from './VSimpleTable'
 // Helpers
 import { deepEqual, getObjectValueByPath, compareFn, getPrefixedScopedSlots } from '../../util/helpers'
 import { breaking } from '../../util/console'
-import { TableMode, TableType, GroupField, TreeListDescribe, ScrollData } from './mixins/model'
+import { TableMode, TableType, GroupField, ScrollData } from './mixins/model'
 import VDataTableItems from './extends/VDataTableItems'
 import xbutton from '../../mixins/xbutton'
 import VTreeGrid from './extends/VTreeGrid'
+import VDataTableOperation from './extends/VDataTableOperation'
 
 /* @vue/component */
 /* eslint-disable indent */
 export default VDataIterator.extend({
   name: 'v-data-table',
-  mixins: [VTreeGrid, VDataTableItems, xbutton],
+  mixins: [VTreeGrid, VDataTableItems, xbutton, VDataTableOperation],
   props: {
     // 上下文对象
     context: Object,

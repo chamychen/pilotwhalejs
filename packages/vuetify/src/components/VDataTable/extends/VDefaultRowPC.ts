@@ -37,7 +37,7 @@ export default {
                                 element = scopedSlot({ item, header, value: elementVal })
                             }
                         } else {
-                            element = elementVal ? elementVal.toString() : ''
+                            element = this.getItemText(header, elementVal)
                         }
                         children.push(element)
                         tdConfig = {
@@ -64,6 +64,10 @@ export default {
                     let btnList = this.genButtons(header.value, item, rowIndex)
                     if (btnList && btnList.length > 0) {
                         children = children.concat(btnList)
+                    }
+                    if (isEditTd) {
+                        // 主要是强制内容在同一行
+                        children = [h('VLayout', children)]
                     }
                     return h('td', tdConfig, children)
                 }

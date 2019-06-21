@@ -70,7 +70,7 @@ export default ({
         },
         buttonStyle: {
             type: String
-        }, // raised|flat|depressed|icon|fab
+        }, // raised|text|depressed|icon|fab
         buttonOutline: {
             type: Boolean
         },
@@ -222,7 +222,7 @@ export default ({
                     buttonProps.icon = buttonGroup.groupIcon
                     buttonProps.color = buttonGroup.groupButtonColor
                     let button = this.genButton(h, buttonProps, true)
-                    let menu = h('VMenu', { key: menuId, ref: menuId, props: { closeOnClick: true, bottom: true, left: true, offsetY: true } }, [button, list])
+                    let menu = h('VMenu', { key: menuId, props: { closeOnClick: true, bottom: true, left: true, offsetY: true } }, [button, list])
                     return menu
                 }
             }
@@ -258,14 +258,10 @@ export default ({
                 objs.push(content)
             }
             if (objs && objs.length > 0) {
-                let on = null
-                if (button.event && this.context && this.context[button.event]) {
-                    on = {}
-                    on.click = (e) => {
-                        this.context[button.event](e, this.$vnode.key, item, rowIndex)
-                        this.$refs[menuId].isActive = false
-                        e.stopPropagation()
-                    }
+                let on: any = {}
+                let clickEvent = this.getClickEvent(button, item, rowIndex, false, menuId, true, false)
+                if (clickEvent) {
+                    on.click = clickEvent
                 }
                 let buttonKey = item ? `${item[this.itemKey]}_${button.key ? button.key : guidUtils.newId()}` : `${button.key ? button.key : guidUtils.newId()}`
                 let listItem = h('VListItem', {
@@ -292,7 +288,7 @@ export default ({
             if (button.color) {
                 props.color = button.color
             }
-            let iconDark = !stringUtils.isEmpty(props.color)
+            let iconDark = !stringUtils.isEmpty(props.color) && !props.text
             let buttonKey = item ? `${item[this.itemKey]}_${button.key ? button.key : guidUtils.newId()}` : `${button.key ? button.key : guidUtils.newId()}`
             let icon = button.icon ? h('VIcon', {
                 key: buttonKey + '_icon',
@@ -301,7 +297,7 @@ export default ({
                 props: {
                     small: true,
                     dark: iconDark,
-                    color: this.getButtonType() === ButtonType.APP || isMobileTableInlinButton ? button.color : null
+                    color: this.getButtonType() === ButtonType.APP || props.text || isMobileTableInlinButton ? button.color : null
                 },
                 domProps: {
                     innerHTML: button.icon
@@ -372,25 +368,9 @@ export default ({
                     }
                 }
                 let on: any = {}
-                if (!isMenuButton) {
-                    if (button.event && this.context && this.context[button.event]) {
-                        on.click = (e) => {
-                            this.context[button.event](e, this.$vnode.key, item, rowIndex)                            
-                            // 关闭bottom sheet
-                            if (isMobileTableInlinButton) {
-                                this.$set(this, 'showBottomSheetButton', false)
-                            }
-                            e.stopPropagation()
-                        }
-                    } else {
-                        on.click = (e) => {
-                            // 关闭bottom sheet
-                            if (isMobileTableInlinButton) {
-                                this.$set(this, 'showBottomSheetButton', false)
-                            }
-                            e.stopPropagation()
-                        }
-                    }
+                let clickEvent = this.getClickEvent(button, item, rowIndex, isMenuButton, null, false, isMobileTableInlinButton)
+                if (clickEvent) {
+                    on.click = clickEvent
                 }
                 let style: any = {}
                 let staticClass: string = null
@@ -401,7 +381,7 @@ export default ({
                     objs[1] = objs[0]
                     objs[0] = objsLable
                 } else {
-                    let mx1Class: string = this.buttonStyle !== 'flat' ? 'mx-1' : ''
+                    let mx1Class: string = this.buttonStyle !== 'text' ? 'mx-1' : ''
                     staticClass = this.buttonStaticClass ? (this.buttonStaticClass + ' ' + mx1Class) : mx1Class
                 }
                 let btn = h('VBtn', {
@@ -420,6 +400,68 @@ export default ({
                 }, objs)
                 return btn
             }
+        },
+        /**
+         * 实例化点击事件
+         * @param button 
+         * @param item 
+         * @param rowIndex 
+         * @param isMenuButton 
+         * @param munuButtonMenuId 
+         * @param isMenuButtonItem 
+         * @param isMobileTableInlinButton 
+         */
+        getClickEvent(button: Button, item: any, rowIndex: number, isMenuButton: boolean, munuButtonMenuId: string, isMenuButtonItem: boolean, isMobileTableInlinButton: boolean) {
+            let clickEvent = null
+            if (!isMenuButton) {
+                if (button.event) {
+                    clickEvent = (e) => {
+                        let eventScope = button.scope && this.context.$refs[button.scope]
+                        let isDefaultEvent = eventScope && /^@@.+/.test(button.event)
+                        let defaultEventName = isDefaultEvent ? button.event.substr(2) : null
+                        let initData = null
+                        if (defaultEventName) { // 表格默认事件                           
+                            if (!stringUtils.isEmpty(button.initData)) {
+                                try {
+                                    let obj = JSON.parse(button.initData)
+                                    if (obj && typeof (obj) === 'object' && !Array.isArray(obj)) {
+                                        initData = obj
+                                    }
+                                } catch (e) {
+                                    console.log(e)
+                                }
+                            }
+                        }
+                        if (defaultEventName) { // 表格默认事件                           
+                            eventScope.runDefaultEvent(defaultEventName, item, rowIndex, initData)
+                        } else if (this.context && this.context[button.event]) { // 用户自定义事件
+                            this.context[button.event](e, this.$vnode.key, item, rowIndex)
+                        }
+                        // 关闭bottom sheet
+                        if (isMobileTableInlinButton) {
+                            this.$set(this, 'showBottomSheetButton', false)
+                        }
+                        // 如果是menuButtonItem
+                        // if (isMenuButtonItem) {
+                        //     this.$refs[munuButtonMenuId].isActive = false
+                        // }
+                        e.stopPropagation()
+                    }
+                } else {
+                    clickEvent = (e) => {
+                        // 关闭bottom sheet
+                        if (isMobileTableInlinButton) {
+                            this.$set(this, 'showBottomSheetButton', false)
+                        }
+                        // 如果是menuButtonItem
+                        // if (isMenuButtonItem) {
+                        //     this.$refs[munuButtonMenuId].isActive = false
+                        // }
+                        e.stopPropagation()
+                    }
+                }
+            }
+            return clickEvent
         },
         /**
          * 获取按钮类型

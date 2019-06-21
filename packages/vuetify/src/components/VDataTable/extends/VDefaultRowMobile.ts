@@ -66,6 +66,7 @@ export default {
                     let title = header.text
                     let titleTd = h('VListItemIcon', [title])
                     let value = item[header.value]
+                    value = this.getItemText(header, value)
                     let spacer = h('VSpacer')
                     let valueTd = h('VListItemContent', { style: { color: 'grey' } }, [spacer, value])
                     let listItem = h('VListItem', [titleTd, valueTd])
