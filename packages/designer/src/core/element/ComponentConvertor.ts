@@ -166,6 +166,7 @@ export default class ComponentConvertor {
                         config.props.context = this.context
                         config.props.buttons = this.context['buttons']
                         config.props.buttonGroups = fieldValue
+                        // config.props.buttonGroups = this.context[field]
                         break
                     default:
                         config.props[field] = fieldValue
@@ -254,7 +255,7 @@ export default class ComponentConvertor {
         if (entity.classCodeType) {
             let entityKey = entity['key']
             let items = null
-            if (Object.keys(this.context.classCode).includes(entityKey)) {
+            if (this.context.classCode && Object.keys(this.context.classCode).includes(entityKey)) {
                 items = this.context.classCode[entityKey]
             } else {
                 let elementClassCode: ElementClassCode = null
@@ -273,7 +274,13 @@ export default class ComponentConvertor {
                         break
                 }
                 items = elementClassCode.getItems(this.context)
-                this.context.$set(this.context.classCode, entityKey, items)
+                if (this.context.classCode) {
+                    this.context.$set(this.context.classCode, entityKey, items)
+                } else {
+                    let obj = {}
+                    obj[entityKey] = items
+                    this.context.$set(this.context, 'classCode', obj)
+                }
             }
             config.props.items = items
         }

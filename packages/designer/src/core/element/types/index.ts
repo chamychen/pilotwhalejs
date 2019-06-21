@@ -53,7 +53,7 @@ const ElementTypes = {
     float: new ElementType('VTextField', 'number', 'float', 'InputElement'), // 浮点数
     positive_float: new ElementType('VTextField', 'number', 'positive_float', 'InputElement'), // 正浮点数
     negative_float: new ElementType('VTextField', 'number', 'negative_float', 'InputElement'), // 负浮点数
-    datetime: new ElementType('VDateTimeField', null, 'datetime', 'InputElement'), // 日期时间
+    datetime: new ElementType('VTextField', 'date', 'datetime', 'InputElement'), // 日期时间
     year: new ElementType('VYear', null, 'year', 'InputElement'), // 年度
     month: new ElementType('VMonth', null, 'month', 'InputElement'), // 月度
     date: new ElementType('VDate', null, 'date', 'InputElement'), // 日期

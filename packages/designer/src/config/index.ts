@@ -27,7 +27,7 @@ Vue.use(VueLazyload, {
   preLoad: 1.5 // 启用图片懒加载,按屏幕的1.5倍
 })
 
-utils.componentUtils.registerComponent(require.context('@components', true, /(\.vue$)|(index\.ts$)/))
+utils.componentUtils.registerComponent(require.context('@components', true, /(\.vue$)|(index\.ts$)|(index\.tsx$)/))
 
 // 异常处理
 // Vue.config.errorHandler = function(err, vm, info) {}

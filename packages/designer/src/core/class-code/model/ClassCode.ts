@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import SimpleElementCreator from '@core/element/decorator/SimpleElementCreator'
 import DesignerDecoratorType from '@core/element/decorator'
 import ElementTypes from '@core/element/types'

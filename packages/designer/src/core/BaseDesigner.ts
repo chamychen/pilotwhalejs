@@ -40,11 +40,6 @@ export default Vue.extend({
     }
   },
   render(h: any) {
-    // return (
-    //   <div>
-    //     <span>2222</span>
-    //   </div>
-    // )
     if (this.uiEntity) {
       let dto = new DecoratorCompiler(this.uiEntity).getInitElements()
       let el = new RenderTool(this, dto, null).genUI(null)

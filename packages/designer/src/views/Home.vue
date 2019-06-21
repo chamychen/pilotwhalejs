@@ -23,6 +23,12 @@ export default Vue.extend({
       fullscreen: false,
       designerMenuItems: [
         {
+          key: 'bizObject',
+          text: '业务对象',
+          icon: 'mdi-google-pages',
+          routeName: 'bizObject'
+        },
+        {
           key: 'formDesignBtn',
           text: '表单设计器',
           icon: 'mdi-google-pages',

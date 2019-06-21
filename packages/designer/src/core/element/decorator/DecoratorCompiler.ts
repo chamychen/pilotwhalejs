@@ -90,7 +90,6 @@ export default class DecoratorCompiler {
                     currentElement.sortNo = currentSortNo
                     if (this.listElementTypeNames.includes(currentElement.elementTypeName)) {
                         currentElement.key = elementPropName
-                        // currentElement.parentKey = currentElement.parentKey
                     } else {
                         currentElement.key = parentKey ? `${parentKey}_${elementPropName}` : elementPropName
                         currentElement.parentKey = currentParentKey

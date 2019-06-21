@@ -45,19 +45,22 @@ export default class SimpleElementCreator {
             element.noFlex = noFlex
             if (elementFlex) {
                 let lastFlex = 12
-                elementFlex.forEach((flex, index) => {
-                    switch (index) {
+                for (let i = 0; i < 3; i++) {
+                    if (elementFlex[i]) {
+                        lastFlex = elementFlex[i]
+                    }
+                    switch (i) {
                         case 0:
-                            lastFlex = element.smallFlex = flex || lastFlex
+                            element.smallFlex = lastFlex
                             break
                         case 1:
-                            lastFlex = element.middleFlex = flex || lastFlex
+                            element.middleFlex = lastFlex
                             break
                         case 2:
-                            lastFlex = element.largeFlex = flex || lastFlex
+                            element.largeFlex = lastFlex
                             break
                     }
-                })
+                }
             }
             return element
         } else {

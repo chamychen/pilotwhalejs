@@ -1,10 +1,14 @@
 const ElementPropsTmpl = {
+    readonly: {
+        counter: false,
+        readonly: true
+    },
     tab: {
         buttonMinWidth: 80,
         buttonSize: 'small',
         // buttonColor: 'white',
         buttonDark: false,
-        buttonStyle: 'raised', // raised|flat|depressed|icon|fab
+        buttonStyle: 'text', // raised|text|depressed|icon|fab
         // buttonOutline: true,
         buttonRound: false,
         buttonStaticClass: null
@@ -21,7 +25,8 @@ const ElementPropsTmpl = {
         clearable: false,
         chips: false,
         deletableChips: false,
-        smallChips: false
+        smallChips: false,
+        counter: false
     },
     multiSelect: {
         multiple: true,
@@ -35,7 +40,8 @@ const ElementPropsTmpl = {
         clearable: false,
         chips: true,
         deletableChips: true,
-        smallChips: true
+        smallChips: true,
+        counter: false
     },
     multiCombobox: {
         multiple: true,
@@ -43,6 +49,26 @@ const ElementPropsTmpl = {
         chips: true,
         deletableChips: true,
         smallChips: true
+    },
+    treeGrid: {
+        rowAvgHeight: 48,
+        disablePagination: true,
+        itemKey: 'id',
+        showSelect: true,
+        tableMode: 2,
+        showRowNo: true,
+        isTreeGrid: true,
+        buttonSize: 'small',
+        singleSelect: false
+    },
+    grid: {
+        rowAvgHeight: 48,
+        disablePagination: false,
+        itemKey: 'id',
+        showSelec: true,
+        tableMode: 2,
+        showRowNo: true,
+        buttonSize: 'small'
     }
 }
 
