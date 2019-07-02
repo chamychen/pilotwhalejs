@@ -1,3 +1,4 @@
+import classcodeUtils from './classcodeUtils'
 import arrayUtils from './arrayUtils'
 import stringUtils from './stringUtils'
 import componentUtils from './componentUtils'
@@ -9,7 +10,8 @@ const utils = {
     stringUtils,
     componentUtils,
     cookieUtils,
-    guidUtils
+    guidUtils,
+    classcodeUtils
 }
 
 export default utils
