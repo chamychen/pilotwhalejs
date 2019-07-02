@@ -1,5 +1,4 @@
 require('dotenv').config()
-
 const os = require('os')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HappyPack = require('happypack')
@@ -8,10 +7,12 @@ const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
 const isProd = process.env.NODE_ENV === 'production'
 const extractCSS = isProd || process.env.TARGET === 'development'
+const resolve = file => require('path').resolve(__dirname, file)
 
 exports.happyThreadPool = HappyPack.ThreadPool({
   size: Math.min(os.cpus().length, 4)
 })
+exports.resolve = resolve
 
 const cssLoaders = [
   // https://github.com/webpack-contrib/mini-css-extract-plugin#user-content-advanced-configuration-example
@@ -32,7 +33,20 @@ const sassLoaders = [
 exports.config = {
   mode: isProd ? 'production' : 'development',
   resolve: {
-    extensions: ['*', '.js', '.jsx', '.json', '.vue', '.ts', '.tsx']
+    extensions: ['*', '.js', '.jsx', '.json', '.vue', '.ts', '.tsx'],
+    alias: {
+      designer: resolve('../src'),
+      vue$: 'vue/dist/vue.esm.js',
+      '@assets': resolve('../src/assets'),
+      '@views': resolve('../src/views'),
+      '@components': resolve('../src/components'),
+      '@config': resolve('../src/config'),
+      '@core': resolve('../src/core'),
+      '@api': resolve('../src/api'),
+      '@service': resolve('../src/service'),
+      '@entity': resolve('../src/entity'),
+      '@mock': resolve('../src/mock')
+    }
   },
   node: {
     fs: 'empty'

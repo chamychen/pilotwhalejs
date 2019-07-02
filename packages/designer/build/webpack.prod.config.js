@@ -3,11 +3,9 @@ const HappyPack = require('happypack')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const {
   config: baseWebpackConfig,
-  happyThreadPool
+  happyThreadPool,
+  resolve
 } = require('./webpack.base.config')
-
-// Helpers
-const resolve = file => require('path').resolve(__dirname, file)
 
 module.exports = merge(baseWebpackConfig, {
   entry: {
@@ -20,22 +18,6 @@ module.exports = merge(baseWebpackConfig, {
     libraryTarget: 'umd',
     libraryExport: 'default',
     globalObject: 'typeof self !== "undefined" ? self : this'
-  },
-  resolve: {
-    alias: {
-      designer: resolve('../src'),
-      vue$: 'vue/dist/vue.esm.js',
-      '@config': resolve('../src/config'),
-      '@components': resolve('../src/components'),
-      '@views': resolve('../src/views'),
-      '@core': resolve('../src/core'),
-      '@dto': resolve('../src/dto'),
-      '@entity': resolve('../src/entity'),
-      '@service': resolve('../src/service'),
-      '@data': resolve('../src/data'),
-      '@api': resolve('../src/api'),
-      '@assets': resolve('../src/assets')
-    }
   },
   externals: {
     vue: {
